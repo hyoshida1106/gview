@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+<BorderPane
+   xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
+   stylesheets="@GView.css" fx:controller="gview.gui.MainCtrl">
+   <top>
+      <MenuBar fx:id="menu" BorderPane.alignment="CENTER" styleClass="MenuBar">
+         <menus>
+            <Menu text="ファイル(_F)" fx:id="fileMenu" mnemonicParsing="true"
+                  onShowing="#onShowingFileMenu" >
+               <items>
+                  <MenuItem text="リポジトリを開く(_O)..." fx:id="fileOpenMenu" accelerator="Shortcut+O"
+                              onAction="#onMenuOpenRepository">
+                     	<graphic><FontIcon iconLiteral="mdi-folder"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="新規リポジトリ(_N)..." fx:id="fileCreateMenu" accelerator="Shortcut+N"
+                              onAction="#onMenuCreateNewRepository">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-plus"/></graphic>
+                  </MenuItem>
+                  <SeparatorMenuItem/>
+                  <MenuItem text="終了(_X)" fx:id="fileQuitMenu"
+                            onAction="#onMenuQuit" />
+               </items>
+            </Menu>
+            <Menu text="ブランチ(_B)" fx:id="branchMenu" mnemonicParsing="true">
+               <items>
+                  <MenuItem text="チェックアウト(_C)" fx:id="branchCheckoutMenu">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-star"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="プッシュ(_P)" fx:id="branchPushMenu" accelerator="Shortcut+Shift+P">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-upload"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="プル(_L)" fx:id="branchPullMenu" accelerator="Shortcut+Shift+L">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-download"/></graphic>
+                  </MenuItem>
+                  <SeparatorMenuItem/>
+                  <MenuItem text="名称変更(_R)..." fx:id="branchRenameMenu">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-move"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="削除(_D)" fx:id="branchRemoveMenu">
+                     	<graphic><FontIcon iconLiteral="mdi-folder-remove"/></graphic>
+                  </MenuItem>
+               </items>
+            </Menu>
+            <Menu text="ワークツリー(_W)" fx:id="workTreeMenu" mnemonicParsing="true">
+               <items>
+                  <MenuItem text="ステージ(_S)..." fx:id="workTreeStageMenu" accelerator="Shortcut+S">
+                     	<graphic><FontIcon iconLiteral="mdi-arrow-up-bold-circle-outline"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="アンステージ(_U)..." fx:id="workTreeUnstageMenu" accelerator="Shortcut+Shift+S">
+                     	<graphic><FontIcon iconLiteral="mdi-arrow-down-bold-circle-outline"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="コミット(_C)..." fx:id="workTreeCommitMenu" accelerator="Shortcut+C">
+                     	<graphic><FontIcon iconLiteral="mdi-checkbox-marked-circle-outline"/></graphic>
+                  </MenuItem>
+               </items>
+            </Menu>
+            <Menu text="コミット(_C)" fx:id="commitMenu" mnemonicParsing="true">
+               <items>
+                  <MenuItem text="タグ検索(_F)..." fx:id="commitTagSearchMenu"/>
+                  <MenuItem text="コメント検索(_S)..." fx:id="commitCommentSearchMenu" accelerator="Shortcut+Shift+F"/>
+                  <SeparatorMenuItem/>
+                  <MenuItem text="ブランチ..." fx:id="commitCreateBranchMenu" accelerator="Shortcut+B">
+                     	<graphic><FontIcon iconLiteral="mdi-source-branch"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="マージ..." fx:id="commitMergeMenu" accelerator="Shortcut+M">
+                     	<graphic><FontIcon iconLiteral="mdi-source-merge"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="チェリーピック..." fx:id="commitCherryPickMenu" accelerator="Shortcut+P">
+                     	<graphic><FontIcon iconLiteral="mdi-source-pull"/></graphic>
+                  </MenuItem>
+                  <SeparatorMenuItem/>
+                  <MenuItem text="新規タグ..." fx:id="commitCreateTagMenu" />
+                  <MenuItem text="タグ削除..." fx:id="commitRemoveTagMenu" />
+               </items>
+            </Menu>
+            <Menu text="ヘルプ(_H)" fx:id="helpMenu" mnemonicParsing="true">
+               <items>
+                  <MenuItem text="ヘルプ..." fx:id="helpHelpMenu" accelerator="Shortcut+H">
+                     	<graphic><FontIcon iconLiteral="mdi-help-circle-outline"/></graphic>
+                  </MenuItem>
+                  <MenuItem text="プログラムについて..." fx:id="helpAboutMenu" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <SplitPane fx:id="mainSplit" dividerPositions="0.2, 0.5" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane fx:id="branchTree" SplitPane.resizableWithParent="false" />
+          <AnchorPane fx:id="commitList" SplitPane.resizableWithParent="false" />
+          <AnchorPane fx:id="commitInfo" />
+        </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <AnchorPane fx:id="statusBar" styleClass="StatusBar">
+        <Label fx:id="repositoryPath" styleClass="StatusBarPath"/>
+      </AnchorPane>
+   </bottom>
+</BorderPane>

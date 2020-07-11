@@ -1,0 +1,31 @@
+
+/* ================================================================
+    Main View
+*/
+/* SplitPaneの移動ハンドルを細くする */
+.MainView .split-pane-divider {
+    -fx-padding: 2;
+}
+/* Status Bar */
+.MainView .StatusBar {
+    -fx-background-color: rgb(200,200,200);
+    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
+}
+.MainView .StatusBar .StatusBarPath {
+    -fx-padding: 1 5 0 5;
+}
+/* Menu Bar */
+.MainView .MenuBar {
+    -fx-background-color: rgb(200,200,200);
+    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
+}
+
+/* ================================================================
+    FontIcon
+*/
+FontIcon {
+    -fx-icon-size: 18;
+	-fx-icon-color: #202020;
+}
+.menu-item FontIcon         { -fx-icon-color: -fx-selection-bar;      }
+.menu-item:focused FontIcon { -fx-icon-color: -fx-selection-bar-text; }
