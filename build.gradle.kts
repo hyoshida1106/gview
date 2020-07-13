@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.3.72"
+    kotlin("plugin.serialization") version "1.3.72"
     id("org.openjfx.javafxplugin") version "0.0.8"
 }
 

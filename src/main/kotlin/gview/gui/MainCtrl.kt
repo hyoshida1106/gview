@@ -1,5 +1,6 @@
 package gview.gui
 
+import gview.conf.Configuration
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
@@ -8,6 +9,7 @@ import javafx.stage.Stage
 import kotlin.system.exitProcess
 import gview.gui.framework.BaseCtrl
 import gview.gui.util.CommonDialog
+import javafx.beans.property.SimpleObjectProperty
 
 
 class MainCtrl : BaseCtrl() {
@@ -17,8 +19,22 @@ class MainCtrl : BaseCtrl() {
     @FXML private lateinit var commitList: AnchorPane
     @FXML private lateinit var commitInfo: AnchorPane
 
+    //SplitPaneのDivider位置を保持するProperty
+    private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()
+    private val splitPositions: DoubleArray get() { return splitPositionsProperty.value }
+
     //初期化処理
     fun initialize() {
+        //Dividerの初期設定
+        splitPositionsProperty.value = Configuration.systemModal.mainSplitPosProperty.value
+        mainSplit.setDividerPositions(splitPositions[0], splitPositions[1])
+        //Divider移動時にsplitPositionPropertyを更新する
+        mainSplit.dividers[0].positionProperty().addListener { _, _, value
+            -> splitPositions[0] = value.toDouble() }
+        mainSplit.dividers[1].positionProperty().addListener { _, _, value
+            -> splitPositions[1] = value.toDouble() }
+        //Configuration情報にsplitPositionsPropertyをbind
+        Configuration.systemModal.mainSplitPosProperty.bind(splitPositionsProperty)
     }
 
     /* =================================================================

@@ -1,5 +1,6 @@
 package gview
 
+import gview.conf.Configuration
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
@@ -21,13 +22,20 @@ class GViewApp : Application() {
             //Main Windowsのセットアップ
             mainStage = stage
             mainStage.title = "G/View"
-            mainStage.scene = Scene(MainView.root, 1200.0, 900.0)
+            mainStage.scene = Scene(MainView.root,
+                Configuration.systemModal.mainWidth,
+                Configuration.systemModal.mainHeight)
             mainStage.setOnShown { _ -> BaseCtrl.displayCompleted() }
+            //IDLE状態モニタ設定
             monitor.register(stage.scene)
-
+            //Main WindowサイズをModal Informationにバインドする
+            with(Configuration.systemModal) {
+                mainHeightProperty.bind(mainStage.heightProperty())
+                mainWidthProperty.bind(mainStage.widthProperty())
+                maximumProperty.bind(mainStage.fullScreenProperty())
+            }
             //Main Window表示
             stage.show()
-
         } catch(e: java.lang.Exception) {
             e.printStackTrace()
             exitProcess(-1)
@@ -37,6 +45,7 @@ class GViewApp : Application() {
     // 1秒のIDLE状態タイマ
     private val monitor = IdleMonitor(1000) {
         BaseCtrl.updateConfigInfo()
+        Configuration.saveToFile()
     }
 }
 
