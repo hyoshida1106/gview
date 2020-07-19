@@ -1,13 +1,14 @@
 package gview
 
 import gview.conf.Configuration
+import gview.gui.MainView
+import gview.gui.framework.BaseCtrl
+import gview.gui.util.IdleMonitor
+import gview.model.GviewRepositoryModel
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
 import kotlin.system.exitProcess
-import gview.gui.MainView
-import gview.gui.framework.BaseCtrl
-import gview.gui.util.IdleMonitor
 
 /*
     Main Class
@@ -52,4 +53,9 @@ class GViewApp : Application() {
 // Main Function
 fun main(args: Array<String>) {
     Application.launch(GViewApp::class.java, *args)
+}
+
+//現在のRepositoryインスタンス
+fun getCurrentRepository(): GviewRepositoryModel {
+    return MainView.controller.repository
 }

@@ -1,23 +1,27 @@
 package gview.gui
 
 import gview.conf.Configuration
+import gview.gui.branchlist.BranchListView
+import gview.gui.framework.BaseCtrl
+import gview.gui.util.CommonDialog
+import gview.model.GviewRepositoryModel
+import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import kotlin.system.exitProcess
-import gview.gui.framework.BaseCtrl
-import gview.gui.util.CommonDialog
-import javafx.beans.property.SimpleObjectProperty
 
 
 class MainCtrl : BaseCtrl() {
 
     @FXML private lateinit var mainSplit:  SplitPane
-    @FXML private lateinit var branchTree: AnchorPane
     @FXML private lateinit var commitList: AnchorPane
     @FXML private lateinit var commitInfo: AnchorPane
+
+    //リポジトリ
+    val repository = GviewRepositoryModel()
 
     //SplitPaneのDivider位置を保持するProperty
     private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()
@@ -28,25 +32,52 @@ class MainCtrl : BaseCtrl() {
         //Dividerの初期設定
         splitPositionsProperty.value = Configuration.systemModal.mainSplitPosProperty.value
         mainSplit.setDividerPositions(splitPositions[0], splitPositions[1])
+
         //Divider移動時にsplitPositionPropertyを更新する
         mainSplit.dividers[0].positionProperty().addListener { _, _, value
             -> splitPositions[0] = value.toDouble() }
         mainSplit.dividers[1].positionProperty().addListener { _, _, value
             -> splitPositions[1] = value.toDouble() }
+
         //Configuration情報にsplitPositionsPropertyをbind
         Configuration.systemModal.mainSplitPosProperty.bind(splitPositionsProperty)
+
+        //初期化
+        initBranchList()
+        initStatusBar()
+        initMenuBar()
     }
 
     /* =================================================================
-        Status Bar Instance
+        ブランチ一覧
+    */
+    @FXML private lateinit var branchList: AnchorPane
+
+    //初期化
+    private fun initBranchList() {
+        branchList.children.add(BranchListView.root)
+    }
+
+    /* =================================================================
+        ステータスバー
      */
     @FXML private lateinit var statusBar: AnchorPane
     @FXML private lateinit var repositoryPath: Label
 
+    //初期化
+    private fun initStatusBar() {
+        //リポジトリのパスを表示
+        repositoryPath.textProperty().bind(repository.localPathProperty)
+    }
+
     /* =================================================================
-        Menu Bar Instance
+        メニューバー
      */
     @FXML private lateinit var menu: MenuBar
+
+    //初期化
+    private fun initMenuBar() {
+    }
 
     /* ================================================================
         File Menu
@@ -56,15 +87,21 @@ class MainCtrl : BaseCtrl() {
     @FXML private lateinit var fileCreateMenu: MenuItem
     @FXML private lateinit var fileQuitMenu: MenuItem
 
+    //"File"メニュー表示
     @FXML private fun onShowingFileMenu() {
     }
 
+    //既存リポジトリを開く
     @FXML private fun onMenuOpenRepository() {
         val chooser = DirectoryChooser()
         chooser.title = "リポジトリを開く"
         val dir = chooser.showDialog(MainView.root.scene.window as? Stage?)
         if(dir != null) {
-            //Open
+            try {
+                repository.openExist(dir.path)
+            } catch(e: Exception) {
+                CommonDialog.createErrorDialog(e)
+            }
         }
     }
 

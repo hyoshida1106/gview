@@ -1,0 +1,67 @@
+
+* {
+    -foreground-color: rgb( 10, 10, 10);
+    -background-color: rgb(200,200,200);
+    -split-pane-color: rgb(220,220,220);
+    -selected-color:   rgb(  0,150,200);
+}
+
+.split-pane-divider {
+    -fx-border-color: -background-color;
+    -fx-background-color: -split-pane-color;
+}
+
+/* ================================================================
+    Main View
+*/
+/* SplitPaneの移動ハンドルを細くする */
+.MainView .split-pane-divider {
+    -fx-padding: 2;
+}
+/* Status Bar */
+.MainView .StatusBar {
+    -fx-background-color: -background-color;
+    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
+}
+.MainView .StatusBar .StatusBarPath {
+    -fx-padding: 1 5 0 5;
+}
+/* Menu Bar */
+.MainView .MenuBar {
+    -fx-background-color: -background-color;
+    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
+}
+
+/* ================================================================
+    Branch List
+*/
+.BranchListView {
+    -fx-padding: 0;
+}
+/* Cell */
+.BranchListView .cell {
+    -fx-padding: 2 0 2 0;
+    -fx-font-size: 1.05em;
+    -fx-text-fill: black;
+    -fx-background-color: -background-color;
+}
+.BranchListView .cell:selected {
+    -fx-background-color: -selected-color;
+}
+/* CheckBox */
+.BranchListView .check-box {
+    -fx-padding: 0 0 0 2;
+}
+.BranchList .check-box > .box {
+    -fx-padding: 0;
+}
+
+/* ================================================================
+    FontIcon
+*/
+FontIcon {
+    -fx-icon-size: 18;
+	-fx-icon-color: #202020;
+}
+.menu-item FontIcon         { -fx-icon-color: -fx-selection-bar;      }
+.menu-item:focused FontIcon { -fx-icon-color: -fx-selection-bar-text; }

@@ -4,8 +4,8 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 
 open class BaseView<Controller>(form: String, className: String) {
-    val root: Parent                        //親インスタンス参照
-    private val controller: Controller      //コントローラ参照
+    val root: Parent                //親インスタンス参照
+    val controller: Controller      //コントローラ参照
 
     init {
         //FXMLフォームの読み込み
