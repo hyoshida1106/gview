@@ -15,7 +15,7 @@ class CommitDataModel(private val repo: Repository,
                       private val prev: CommitDataModel?) {
 
     // ID
-    val id : String = ObjectId.toString(commit.id)
+    val id: ObjectId = commit.id
 
     // Commit message (short)
     val shortMessage : String = commit.shortMessage
