@@ -14,11 +14,11 @@ import java.io.File
 class GviewRepositoryModel {
 
     //JGitリポジトリ
-    val repositoryProperty: ObjectProperty<Repository>
-    val repository: Repository? get() { return repositoryProperty.value }
+    private val repositoryProperty: ObjectProperty<Repository>
+    private val repository: Repository? get() { return repositoryProperty.value }
 
     //ブランチ一覧(ローカル/リモート)
-    val branchList = GviewBranchListModel()
+    val branchList: GviewBranchListModel
 
     //現在のブランチ名称
     val branchName: String? get() { return repository?.branch }
@@ -33,11 +33,11 @@ class GviewRepositoryModel {
         repositoryProperty = SimpleObjectProperty<Repository>(null)
         localPathProperty  = SimpleStringProperty("")
 
+        branchList = GviewBranchListModel(repositoryProperty)
+
         repositoryProperty.addListener { _, _, newRepository ->
             //ローカスパスの設定
             localPathProperty.value = newRepository.directory.absolutePath
-            //
-            branchList.update(newRepository)
         }
     }
 

@@ -1,5 +1,6 @@
 package gview.model.branch
 
+import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.Repository
 
@@ -13,4 +14,7 @@ class GviewLocalBranchModel(val ref: Ref): GviewBranchModel {
     override val path: String = ref.name
     //リモートブランチへのリンク
     var remoteBranch: GviewRemoteBranchModel? = null
+    //表示対象フラグ
+    val selectedProperty = SimpleBooleanProperty(true)
+    val selected: Boolean get() { return selectedProperty.value }
 }

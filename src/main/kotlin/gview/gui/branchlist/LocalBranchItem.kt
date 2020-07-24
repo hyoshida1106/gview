@@ -1,8 +1,6 @@
 package gview.gui.branchlist
 
 import gview.model.branch.GviewLocalBranchModel
-import javafx.beans.property.BooleanProperty
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.Node
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ContextMenu
@@ -19,16 +17,11 @@ class LocalBranchItem(val model: GviewLocalBranchModel): BranchListCtrl.BranchTr
     override fun isLeaf(): Boolean = true
     override val contextMenu: ContextMenu? = null
 
-    //チェックボックス選択状態を取得するProperty
-    val selectedProperty: BooleanProperty
-    val isSelected: Boolean get() { return selectedProperty.value }
-
     //初期化
     init {
         showInTree.isAllowIndeterminate = false
-        showInTree.isSelected = true
-        selectedProperty = SimpleBooleanProperty(true)
+        showInTree.isSelected = model.selected
         //チェックボックス選択状態プロパティを接続
-        selectedProperty.bind(showInTree.selectedProperty())
+        model.selectedProperty.bind(showInTree.selectedProperty())
     }
 }
