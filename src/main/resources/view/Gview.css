@@ -36,6 +36,7 @@
     Branch List
 */
 .BranchListView {
+    -fx-font-family: "Meiryo UI", sans-serif;
     -fx-padding: 0;
 }
 /* Cell */
@@ -54,6 +55,29 @@
 }
 .BranchList .check-box > .box {
     -fx-padding: 0;
+}
+
+/* ================================================================
+    Commit List
+*/
+.CommitListView {
+    -fx-padding: 0;
+}
+.CommitListView .column-header-background {     /* ヘッダ高さを固定する */
+    -fx-min-height: 10;
+    -fx-max-height: 10;
+    -fx-pref-height: 10;
+}
+.CommitListView .table-row-cell {
+    -fx-border-style: none;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+.CommitListView .table-row-cell:odd:filled {    /* 偶数行のバックグラウンド */
+    -fx-control-inner-background: rgb(220, 230, 255);
+}
+.CommitListView .table-row-cell:empty {         /* 空行 */
+    -fx-background-color: -background-color;
 }
 
 /* ================================================================

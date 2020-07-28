@@ -6,7 +6,6 @@ import gview.gui.commitlist.CommitListView
 import gview.gui.framework.BaseCtrl
 import gview.gui.util.CommonDialog
 import gview.model.GviewRepositoryModel
-import gview.model.commit.CommitDataModel
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -19,6 +18,8 @@ import kotlin.system.exitProcess
 class MainCtrl : BaseCtrl() {
 
     @FXML private lateinit var mainSplit:  SplitPane
+    @FXML private lateinit var branchList: AnchorPane
+    @FXML private lateinit var commitList: AnchorPane
     @FXML private lateinit var commitInfo: AnchorPane
 
     //リポジトリ
@@ -44,30 +45,11 @@ class MainCtrl : BaseCtrl() {
         Configuration.systemModal.mainSplitPosProperty.bind(splitPositionsProperty)
 
         //初期化
-        initBranchList()
-        initCommitList()
+        branchList.children.add(BranchListView.root)
+        commitList.children.add(CommitListView.root)
+
         initStatusBar()
         initMenuBar()
-    }
-
-    /* =================================================================
-        ブランチ一覧
-    */
-    @FXML private lateinit var branchList: AnchorPane
-
-    //初期化
-    private fun initBranchList() {
-        branchList.children.add(BranchListView.root)
-    }
-
-    /* =================================================================
-        コミット一覧
-    */
-    @FXML private lateinit var commitList: AnchorPane
-
-    //初期化
-    private fun initCommitList() {
-        commitList.children.add(CommitListView.root)
     }
 
     /* =================================================================

@@ -36,7 +36,7 @@ class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
         headIdProperty = SimpleObjectProperty<ObjectId?>()
 
         headFiles = GviewHeadFilesModel(repositoryProperty, headIdProperty)
-        commits = GviewCommitListModel(repositoryProperty, localBranchesProperty)
+        commits = GviewCommitListModel(repositoryProperty, localBranchesProperty, remoteBranchesProperty)
 
         //ブランチ一覧の更新
         repositoryProperty.addListener { _, _, newRepository -> update(newRepository) }

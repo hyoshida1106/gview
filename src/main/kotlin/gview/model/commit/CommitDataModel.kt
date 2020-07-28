@@ -1,18 +1,21 @@
 package gview.model.commit
 
+import gview.model.GviewCommitListModel
+import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GviewRemoteBranchModel
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommit
 import org.eclipse.jgit.revplot.PlotLane
 import java.text.DateFormat
 
-
 /*
     CommitDiffModel
  */
 class CommitDataModel(private val repo: Repository,
+                      private val commitList: GviewCommitListModel,
                       private val commit: PlotCommit<PlotLane>,
-                      private val prev: CommitDataModel?) {
+                      private val prevCommit: CommitDataModel?) {
 
     // ID
     val id: ObjectId = commit.id
@@ -38,52 +41,74 @@ class CommitDataModel(private val repo: Repository,
     // true if merge
     val isMerge : Boolean = ( commit.parentCount > 1 )
 
-    // Passways
-//    val passWays : MutableList<Int> by lazy {
-//        commitList.getPassways(commit).sorted().toMutableList()
-//    }
 
-    // Parents
-//    private val parents: List<Int> by lazy {
-//        List(commit.parentCount) { commitList[commit.getParent(it).id]!!.laneNumber }.sorted()
-//    }
+    //以下のプロパティは、インスタンス生成後に外部から設定する
 
-    // Children
-//    val children: List<Int> by lazy {
-//        List(commit.childCount) { commitList[commit.getChild(it).id]!!.laneNumber }.sorted()
-//    }
+    //ローカルブランチとのリンク
+    val localBranches: MutableList<GviewLocalBranchModel> = mutableListOf()
 
-    // BranchTo
-//    val branchTo : MutableList<Int> by lazy {
-//        val branchLanes = mutableListOf<Int>()
-//        if(this.prev != null) {
-//            val p: CommitDataModel  = this.prev          // not null
-//            p.passWays.forEach {
-//                if(!this.passWays.contains(it)) {
-//                    branchLanes.add(it)
-//                }
-//            }
-//            if(!this.passWays.contains(p.laneNumber)) {
-//                branchLanes.add(p.laneNumber)
-//            }
-//            if(p.parents.contains(this.laneNumber)) {
-//                branchLanes.add(this.laneNumber)
-//            }
-//        }
-//        branchLanes.sorted().distinct().toMutableList()
-//    }
+    //リモートブランチとのリンク
+    val remoteBranches: MutableList<GviewRemoteBranchModel> = mutableListOf()
 
-    // MergeFrom
-//    val mergeFrom : List<Int> by lazy {
-//        List<Int>(commit.parentCount) {
-//            val c = commitList[commit.getParent(it).id]
-//            if(c?.branchTo?.contains(this.laneNumber) != true) {
-//                c!!.laneNumber
-//            } else {
-//                this.laneNumber
-//            }
-//        }.sorted().distinct()
-//    }
+    //タグ、当面は名称のみ
+    val tags: MutableList<String> = mutableListOf()
+
+
+    //通過パス(このコミットの前後でつながるパス
+    val passWays : List<Int> by lazy {
+        val result = mutableSetOf<PlotLane>()
+        commitList.plotCommitList.findPassingThrough(commit, result)
+        result.map { it.position }
+    }
+
+    //親コミットの一覧を取得する
+    private val parents: List<CommitDataModel> by lazy {
+        val list = mutableListOf<CommitDataModel>()
+        (0 until commit.parentCount).forEach {
+            val parent = commitList.commitMap[commit.getParent(it).id]
+            if(parent != null) list.add(parent)
+        }
+        list
+    }
+
+    //このコミットから出るレーン
+    val branchTo : List<Int> by lazy {
+        val branchLanes = mutableListOf<Int>()
+        //１つ先のコミット情報をチェクする
+        if(prevCommit != null) {
+            //このコミットにない通過レーンがあれば、分岐する必要がある
+            prevCommit.passWays.filterNot { passWays.contains(it) }.forEach {
+                branchLanes.add(it)
+            }
+            //レーンがこちらの通過レーンでなければ、分岐する必要がある
+            if(!passWays.contains(prevCommit.laneNumber)) {
+                branchLanes.add(prevCommit.laneNumber)
+            }
+            //親コミットに自分が含まれていれば、自分のレーンを延長する
+            if(prevCommit.parents.contains(this)) {
+                branchLanes.add(laneNumber)
+            }
+        }
+        //ソートした上で重複を削除する
+        branchLanes.sorted().distinct().toMutableList()
+    }
+
+    //このコミットに来るレーン
+    val mergeFrom : List<Int> by lazy {
+        if(parents.count() > 0) {
+            //親コミットから出るレーンにつながるように線を引く
+            List<Int>(parents.count()) {
+                if (parents[it].branchTo.contains(laneNumber)) {
+                    laneNumber
+                } else {
+                    parents[it].laneNumber
+                }
+            }.sorted().distinct()
+        } else {
+            //親がひとつもない場合(末端)、真下に線を引く(と自然に見える)
+            listOf(laneNumber)
+        }
+    }
 
 //    val entryList: List<DiffEntryModel> by lazy {
 //        val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
