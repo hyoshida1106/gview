@@ -12,10 +12,11 @@ import java.text.DateFormat
 /*
     CommitDiffModel
  */
-class CommitDataModel(private val repo: Repository,
-                      private val commitList: GviewCommitListModel,
-                      private val commit: PlotCommit<PlotLane>,
-                      private val prevCommit: CommitDataModel?) {
+class GviewCommitDataModel(private val repo: Repository,
+                           private val commitList: GviewCommitListModel,
+                           private val commit: PlotCommit<PlotLane>,
+                           val isHead: Boolean,
+                           private val prevCommit: GviewCommitDataModel?) {
 
     // ID
     val id: ObjectId = commit.id
@@ -62,8 +63,8 @@ class CommitDataModel(private val repo: Repository,
     }
 
     //親コミットの一覧を取得する
-    private val parents: List<CommitDataModel> by lazy {
-        val list = mutableListOf<CommitDataModel>()
+    private val parents: List<GviewCommitDataModel> by lazy {
+        val list = mutableListOf<GviewCommitDataModel>()
         (0 until commit.parentCount).forEach {
             val parent = commitList.commitMap[commit.getParent(it).id]
             if(parent != null) list.add(parent)
@@ -74,7 +75,7 @@ class CommitDataModel(private val repo: Repository,
     //このコミットから出るレーン
     val branchTo : List<Int> by lazy {
         val branchLanes = mutableListOf<Int>()
-        //１つ先のコミット情報をチェクする
+        //１つ先のコミット情報をチェックする
         if(prevCommit != null) {
             //このコミットにない通過レーンがあれば、分岐する必要がある
             prevCommit.passWays.filterNot { passWays.contains(it) }.forEach {
@@ -89,6 +90,11 @@ class CommitDataModel(private val repo: Repository,
                 branchLanes.add(laneNumber)
             }
         }
+
+        if(isHead) {
+            branchLanes.add(laneNumber)
+        }
+
         //ソートした上で重複を削除する
         branchLanes.sorted().distinct().toMutableList()
     }

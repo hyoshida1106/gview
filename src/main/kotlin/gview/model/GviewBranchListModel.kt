@@ -10,7 +10,7 @@ import org.eclipse.jgit.lib.BranchTrackingStatus
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
-import javax.swing.text.GlyphView
+
 
 class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
 
@@ -45,6 +45,9 @@ class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
     //更新
     private fun update(repository: Repository) {
 
+        //HEAD IDを更新
+        headIdProperty.value = repository.resolve(Constants.HEAD)
+
         //Gitインスタンスを共用する
         val git = Git(repository)
 
@@ -76,8 +79,5 @@ class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
             }
         }
         localBranchesProperty.value = localBranches
-
-        //HEAD IDを更新
-        headIdProperty.value = repository.resolve(Constants.HEAD)
     }
 }
