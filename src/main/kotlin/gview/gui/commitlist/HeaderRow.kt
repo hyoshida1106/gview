@@ -2,6 +2,7 @@ package gview.gui.commitlist
 
 import gview.model.GviewHeadFilesModel
 import gview.model.commit.GviewCommitDataModel
+import javafx.scene.Node
 import javafx.scene.canvas.Canvas
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
@@ -13,6 +14,8 @@ class HeaderRow(commitList: CommitListCtrl, model: GviewHeadFilesModel, head: Gv
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = HeaderInfoCellData(model)
+
+    override val styleClassName: String = "header-row"
 
     //コミットツリーセル
     inner class HeaderTreeCellData(private val commitList: CommitListCtrl,
@@ -33,20 +36,19 @@ class HeaderRow(commitList: CommitListCtrl, model: GviewHeadFilesModel, head: Gv
             val y = (ye - ys) / 2.0
             val xr = 7.0
             val yr = 7.0
-            gc.fillOval(x - xr, y - yr, xr * 2.0, yr * 2.0)
+            gc.fillRect(x - xr, y - yr, xr * 2.0, yr * 2.0)
+            gc.strokeLine(x, y, x, ye)
         }
     }
 
     //コミット情報セル
-    inner class HeaderInfoCellData(private val model: GviewHeadFilesModel) : CommitListCtrl.CellData() {
-        override fun update(tableCell: CommitListCtrl.Cell) {
+    inner class HeaderInfoCellData(private val model: GviewHeadFilesModel): CommitListCtrl.CellData() {
+        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?>  {
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
             val row1 = createTextLabel("ワークツリー情報 - ", timeStamp)
             val row2 = createTextLabel("ステージ済:", "${model.stagedFiles.size} ファイル")
             val row3 = createTextLabel("ステージ未:", "${model.changedFiles.size} ファイル")
-            tableCell.graphic = VBox(row1, row2, row3)
-            tableCell.text = null
-            tableCell.style = "-fx-padding: 1 0 1 0;"
+            return Pair(VBox(row1, row2, row3), null)
         }
     }
 

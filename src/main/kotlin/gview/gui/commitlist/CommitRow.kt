@@ -1,6 +1,7 @@
 package gview.gui.commitlist
 
 import gview.model.commit.GviewCommitDataModel
+import javafx.scene.Node
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Label
@@ -12,6 +13,8 @@ class CommitRow(commitList: CommitListCtrl, model: GviewCommitDataModel): BaseRo
 
     override val treeCellValue: CommitListCtrl.CellData = CommitTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = CommitInfoCellData(model)
+
+    override val styleClassName: String = "commit-row"
 
     //コミットツリーセル
     inner class CommitTreeCellData(private val commitList: CommitListCtrl,
@@ -107,7 +110,7 @@ class CommitRow(commitList: CommitListCtrl, model: GviewCommitDataModel): BaseRo
     //コミット情報セル
     inner class CommitInfoCellData(private val model: GviewCommitDataModel): CommitListCtrl.CellData() {
 
-        override fun update(tableCell: CommitListCtrl.Cell) {
+        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
             //日付・作者・メッセージ抜粋
             val row1 = createTextLabel("日付: ", model.commitTime)
             val row2 = createTextLabel("作者: ", model.committer)
@@ -116,51 +119,23 @@ class CommitRow(commitList: CommitListCtrl, model: GviewCommitDataModel): BaseRo
             //ローカルブランチ
             model.localBranches.forEach {
                 val label = Label(it.name)
-                label.style = CSS.localBranchStyle
+                label.styleClass.addAll("commit-label", "local-branch-label")
                 row1.children.add(label)
             }
+            //リモートブランチ
             model.remoteBranches.forEach {
                 val label = Label("remote/${it.name}")
-                label.style = CSS.remoteBranchStyle
+                label.styleClass.addAll("commit-label", "remote-branch-label")
                 row1.children.add(label)
             }
-
+            //タグ
             model.tags.forEach {
                 val label = Label(it)
-                label.style = CSS.tagStyle
+                label.styleClass.addAll("commit-label", "remote-branch-label")
                 row1.children.add(label)
             }
 
-            tableCell.graphic = VBox(row1, row2, row3)
-            tableCell.text = null
-
-            tableCell.style = "-fx-padding: 1 0 1 0;"
+            return Pair(VBox(row1, row2, row3), null)
         }
-    }
-
-    object CSS {
-        private val labelStyle = """
-            -fx-font-size: 0.8em;
-            -fx-font-weight: bold;
-            -fx-padding: 0 5 0 5;
-            -fx-background-insets: 0 2 0 0;
-            -fx-border-style: solid;
-            -fx-border-color: rgb(80,80,80);
-            -fx-border-width: 2;
-            -fx-border-radius: 2;
-            -fx-border-insets: 0 2 0 0;  
-        """.trimIndent()
-        //ローカルブランチ
-        val localBranchStyle = labelStyle + """
-            -fx-background-color: rgb(117, 207, 77);
-        """.trimIndent()
-        //リモートブランチ
-        val remoteBranchStyle = labelStyle + """
-            -fx-background-color: rgb(206, 141, 128);
-        """.trimIndent()
-        //タグ
-        val tagStyle = labelStyle + """
-            -fx-background-color: rgb(238, 238, 148);
-        """.trimIndent()
     }
 }

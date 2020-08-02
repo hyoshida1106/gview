@@ -63,21 +63,59 @@
 .CommitListView {
     -fx-padding: 0;
 }
-.CommitListView .column-header-background {     /* ヘッダ高さを固定する */
-    -fx-min-height: 10;
-    -fx-max-height: 10;
+.CommitListView .column-header,
+.CommitListView .column-header-background .filler {     /* ヘッダ高さを固定する */
+    -fx-background-color: -background-color;
     -fx-pref-height: 10;
+}
+.CommitListView .table-cell {
+    -fx-border-width: 0;
+    -fx-padding: 0;
 }
 .CommitListView .table-row-cell {
     -fx-border-style: none;
     -fx-border-width: 0;
     -fx-padding: 0;
 }
+.CommitListView .table-row-cell:selected {       /* 選択時 */
+    -fx-background-color: -selected-color, -fx-background;
+}
 .CommitListView .table-row-cell:odd:filled {    /* 偶数行のバックグラウンド */
     -fx-control-inner-background: rgb(220, 230, 255);
 }
 .CommitListView .table-row-cell:empty {         /* 空行 */
     -fx-background-color: -background-color;
+}
+.CommitListView .header-row {
+    -fx-background-color: #ddeedd;
+}
+.CommitListView .title-string {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 1;
+}
+.CommitListView .message-string {
+    -fx-padding: 1;
+}
+.CommitListView .commit-label {
+    -fx-font-size: 0.8em;
+    -fx-font-weight: bold;
+    -fx-padding: 0 5 0 5;
+    -fx-background-insets: 0 2 0 0;
+    -fx-border-style: solid;
+    -fx-border-color: rgb(80,80,80);
+    -fx-border-width: 2;
+    -fx-border-radius: 2;
+    -fx-border-insets: 0 2 0 0;
+}
+.CommitListView .local-branch-label {        //ローカルブランチ
+    -fx-background-color: rgb(117, 207, 77);
+}
+.CommitListView .remote-branch-label {      //リモートブランチ
+    -fx-background-color: rgb(206, 141, 128);
+}
+.CommitListView .tag-label {                //タグ
+    -fx-background-color: rgb(238, 238, 148);
 }
 
 /* ================================================================

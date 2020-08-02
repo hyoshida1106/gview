@@ -7,9 +7,8 @@ import gview.model.GviewCommitListModel
 import gview.model.GviewHeadFilesModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.fxml.FXML
-import javafx.scene.control.TableCell
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.Node
+import javafx.scene.control.*
 
 class CommitListCtrl: BaseCtrl() {
 
@@ -20,12 +19,13 @@ class CommitListCtrl: BaseCtrl() {
 
     //行データ(インターフェース)
     interface RowData {
+        val styleClassName: String
         val treeCellValue: CellData
         val infoCellValue: CellData
     }
     //カラム単位データの基本クラス
     open class CellData {
-        open fun update(tableCell: Cell) {}
+        open fun update(tableCell: Cell): Pair<Node?, String?> { return Pair(null, null) }
         open fun layout(tableCell: Cell) {}
     }
 
@@ -36,25 +36,13 @@ class CommitListCtrl: BaseCtrl() {
         //カラム情報 - updateItemで受信する
         private var cellData: CellData? = null
 
-        //初期化ではスタイルの設定を行う
-        init {
-            this.style = """
-                -fx-border-style: none;
-                -fx-border-width: 0;
-                -fx-padding: 0;
-            """.trimIndent()
-        }
-
         //データ更新通知
         override fun updateItem(data: CellData?, empty: Boolean) {
             super.updateItem(data, empty)
-            cellData = if(data != null && !empty) data else null
-            if(cellData != null) {
-                cellData!!.update(this)
-            } else {
-                graphic = null
-                text = null
-            }
+            cellData = data
+            val pair = if(data != null && !empty) { data.update(this ) } else { Pair(null, null) }
+            graphic = pair.first
+            text = pair.second
         }
 
         //描画コンポーネント配置通知
@@ -79,12 +67,25 @@ class CommitListCtrl: BaseCtrl() {
     //最大レーン番号 ( = レーン数 - 1 )
     private var maxLaneNumber: Int = 0
 
+    //縦スクロールバー
+    var verticalScrollBar: ScrollBar? = null
+
     //初期化
     fun initialize() {
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.treeCellValue) }
         infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.infoCellValue) }
         treeColumn.setCellFactory { _ -> Cell() }
         infoColumn.setCellFactory { _ -> Cell() }
+
+        /* ヘッダ行のCSS Classを設定するためにRowFactoryを更新する */
+        commitListTable.setRowFactory { _ -> object : TableRow<RowData>() {
+            override fun updateItem(rowData: RowData?, empty: Boolean) {
+                styleClass.setAll("cell", "table-row-cell", rowData?.styleClassName)
+                super.updateItem(rowData, empty)
+            }
+        }}
+
+        //初期状態はinvisible
         commitListTable.isVisible = false
     }
 
@@ -95,16 +96,18 @@ class CommitListCtrl: BaseCtrl() {
         branchList.commits.commitListProperty.addListener { _ ->
             updateCommitList(branchList.headFiles, branchList.commits) }
 
-        //幅変更時のカラム幅調整
+        //テーブル幅変更時のカラム幅調整
         commitListTable.widthProperty().addListener { _ -> adjustLastColumnWidth() }
-
         //スクロールバー表示変更時のカラム幅調整
         getVScrollBar(commitListTable)?.visibleProperty()?.addListener { _ -> adjustLastColumnWidth() }
-
+        //Treeカラム幅変更時のカラム幅調整
         treeColumn.widthProperty().addListener { _ ->
             xPitch = treeColumn.width / ( maxLaneNumber + 2 )
             adjustLastColumnWidth()
         }
+        //縦スクロールバー幅変更時のカラム幅調整
+        verticalScrollBar = getVScrollBar(commitListTable)
+        verticalScrollBar?.widthProperty()?.addListener { _ -> adjustLastColumnWidth() }
    }
 
     private var headerRow : HeaderRow? = null
@@ -135,7 +138,6 @@ class CommitListCtrl: BaseCtrl() {
         maxLaneNumber = commits.commitListProperty.value?.map { it.laneNumber }?.max() ?: 0
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
-        adjustLastColumnWidth()
 
         //リストを可視化
         commitListTable.isVisible = true
@@ -144,9 +146,8 @@ class CommitListCtrl: BaseCtrl() {
     /* 縦スクロールバー表示の有無を確認した上で、カラム幅を決定する */
     private fun adjustLastColumnWidth() {
         infoColumn.prefWidth = commitListTable.width - treeColumn.width
-        val vs = getVScrollBar(commitListTable)
-        if(vs != null && vs.isVisible) {
-            infoColumn.prefWidth -= vs.width
+        if(verticalScrollBar != null && verticalScrollBar!!.isVisible) {
+            infoColumn.prefWidth -= verticalScrollBar!!.width
         }
     }
 }
