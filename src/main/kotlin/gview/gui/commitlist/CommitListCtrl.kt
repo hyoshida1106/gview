@@ -2,10 +2,11 @@ package gview.gui.commitlist
 
 import gview.getCurrentRepository
 import gview.gui.framework.BaseCtrl
-import gview.gui.util.getVScrollBar
+import gview.gui.util.verticalScrollBar
 import gview.model.GviewCommitListModel
 import gview.model.GviewHeadFilesModel
 import javafx.beans.property.ReadOnlyObjectWrapper
+import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
@@ -16,6 +17,10 @@ class CommitListCtrl: BaseCtrl() {
     @FXML private lateinit var commitListTable: TableView<RowData>
     @FXML private lateinit var treeColumn: TableColumn<RowData, CellData>
     @FXML private lateinit var infoColumn: TableColumn<RowData, CellData>
+
+    //選択行
+    val selectedRowProperty = SimpleObjectProperty<RowData>()
+    val selectedRow: RowData? get() { return selectedRowProperty.value }
 
     //行データ(インターフェース)
     interface RowData {
@@ -68,7 +73,7 @@ class CommitListCtrl: BaseCtrl() {
     private var maxLaneNumber: Int = 0
 
     //縦スクロールバー
-    var verticalScrollBar: ScrollBar? = null
+    private var verticalScrollBar: ScrollBar? = null
 
     //初期化
     fun initialize() {
@@ -77,7 +82,7 @@ class CommitListCtrl: BaseCtrl() {
         treeColumn.setCellFactory { _ -> Cell() }
         infoColumn.setCellFactory { _ -> Cell() }
 
-        /* ヘッダ行のCSS Classを設定するためにRowFactoryを更新する */
+        /* 行のCSS Classを設定するためにRowFactoryを更新する */
         commitListTable.setRowFactory { _ -> object : TableRow<RowData>() {
             override fun updateItem(rowData: RowData?, empty: Boolean) {
                 styleClass.setAll("cell", "table-row-cell", rowData?.styleClassName)
@@ -96,22 +101,30 @@ class CommitListCtrl: BaseCtrl() {
         branchList.commits.commitListProperty.addListener { _ ->
             updateCommitList(branchList.headFiles, branchList.commits) }
 
+        //行選択変更時
+        commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            selectedRowProperty.value = newValue
+        }
+
         //テーブル幅変更時のカラム幅調整
         commitListTable.widthProperty().addListener { _ -> adjustLastColumnWidth() }
+
         //スクロールバー表示変更時のカラム幅調整
-        getVScrollBar(commitListTable)?.visibleProperty()?.addListener { _ -> adjustLastColumnWidth() }
+        verticalScrollBar(commitListTable)?.visibleProperty()?.addListener { _ -> adjustLastColumnWidth() }
+
         //Treeカラム幅変更時のカラム幅調整
         treeColumn.widthProperty().addListener { _ ->
             xPitch = treeColumn.width / ( maxLaneNumber + 2 )
             adjustLastColumnWidth()
         }
+
         //縦スクロールバー幅変更時のカラム幅調整
-        verticalScrollBar = getVScrollBar(commitListTable)
+        verticalScrollBar = verticalScrollBar(commitListTable)
         verticalScrollBar?.widthProperty()?.addListener { _ -> adjustLastColumnWidth() }
    }
 
-    private var headerRow : HeaderRow? = null
-    private val commitRows: MutableList<CommitRow> = mutableListOf()
+    private var headerRow : HeaderRowData? = null
+    private val commitRows: MutableList<CommitRowData> = mutableListOf()
 
     //表示更新
     private fun updateCommitList(header: GviewHeadFilesModel, commits:GviewCommitListModel) {
@@ -121,12 +134,12 @@ class CommitListCtrl: BaseCtrl() {
         commitRows.clear()
 
         //ヘッダ情報業を追加
-        headerRow = HeaderRow(this, header, commits.commitMap[header.headerId])
+        headerRow = HeaderRowData(this, header, commits.commitMap[header.headerId])
         commitListTable.items.add(headerRow)
 
         //コミット情報行を追加
         commits.commitListProperty.value?.forEach {
-            val row = CommitRow(this, it)
+            val row = CommitRowData(this, it)
             commitRows.add(row)
             commitListTable.items.add(row)
         }

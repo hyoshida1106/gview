@@ -2,6 +2,8 @@ package gview.gui
 
 import gview.conf.Configuration
 import gview.gui.branchlist.BranchListView
+import gview.gui.commitinfo.CommitInfoCtrl
+import gview.gui.commitinfo.CommitInfoView
 import gview.gui.commitlist.CommitListView
 import gview.gui.framework.BaseCtrl
 import gview.gui.util.CommonDialog
@@ -47,6 +49,7 @@ class MainCtrl : BaseCtrl() {
         //初期化
         branchList.children.add(BranchListView.root)
         commitList.children.add(CommitListView.root)
+        commitInfo.children.add(CommitInfoView.root)
 
         initStatusBar()
         initMenuBar()

@@ -1,15 +1,17 @@
 package gview.gui.commitlist
 
+import gview.gui.util.branchTagLabels
+import gview.gui.util.textMessage
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
-import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Label
 import javafx.scene.layout.*
 import javafx.scene.paint.Paint
 import javafx.scene.shape.ArcType
 
-class CommitRow(commitList: CommitListCtrl, model: GviewCommitDataModel): BaseRow() {
+class CommitRowData(private val commitList: CommitListCtrl,
+                    val model: GviewCommitDataModel): AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = CommitTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = CommitInfoCellData(model)
@@ -112,28 +114,12 @@ class CommitRow(commitList: CommitListCtrl, model: GviewCommitDataModel): BaseRo
 
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
             //日付・作者・メッセージ抜粋
-            val row1 = createTextLabel("日付: ", model.commitTime)
-            val row2 = createTextLabel("作者: ", model.committer)
-            val row3 = createTextLabel("コメント:", model.shortMessage)
+            val row1 = textMessage("日付: ", model.commitTime)
+            val row2 = textMessage("作者: ", model.committer)
+            val row3 = textMessage("コメント:", model.shortMessage)
 
-            //ローカルブランチ
-            model.localBranches.forEach {
-                val label = Label(it.name)
-                label.styleClass.addAll("commit-label", "local-branch-label")
-                row1.children.add(label)
-            }
-            //リモートブランチ
-            model.remoteBranches.forEach {
-                val label = Label("remote/${it.name}")
-                label.styleClass.addAll("commit-label", "remote-branch-label")
-                row1.children.add(label)
-            }
-            //タグ
-            model.tags.forEach {
-                val label = Label(it)
-                label.styleClass.addAll("commit-label", "remote-branch-label")
-                row1.children.add(label)
-            }
+            //タグ・ブランチラベル
+            row1.children.addAll(branchTagLabels(model))
 
             return Pair(VBox(row1, row2, row3), null)
         }

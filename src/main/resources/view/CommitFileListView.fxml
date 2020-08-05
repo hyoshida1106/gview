@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane fx:id="commitFileListPane" dividerPositions="0.5" orientation="HORIZONTAL"
+           xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2"
+           AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
+           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+           stylesheets="@Gview.css" fx:controller="gview.gui.commitinfo.CommitFileListCtrl">
+    <items>
+        <AnchorPane fx:id="commitFileInfo" minWidth="50.0" />
+        <AnchorPane fx:id="commitFileList" />
+    </items>
+</SplitPane>

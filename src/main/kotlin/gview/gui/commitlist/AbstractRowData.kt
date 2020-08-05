@@ -11,7 +11,7 @@ import javafx.scene.paint.Paint
 /*
     コミットリスト行データの共通ベースクラス
  */
-abstract class BaseRow: CommitListCtrl.RowData {
+abstract class AbstractRowData: CommitListCtrl.RowData {
 
     //表示色
     private val colors = arrayOf(
@@ -25,16 +25,5 @@ abstract class BaseRow: CommitListCtrl.RowData {
         gc.fill = p
         gc.stroke = p
         return gc
-    }
-
-    //ラベル付きテキスト表示
-    fun createTextLabel(title:String, message:String): HBox {
-        val titleLabel   = Label(title)
-        titleLabel.styleClass.add("title-string")
-        titleLabel.minWidth = Region.USE_PREF_SIZE
-        val messageLabel = Label(message)
-        messageLabel.styleClass.add("message-string")
-        HBox.setHgrow(titleLabel, Priority.NEVER)
-        return HBox(titleLabel, messageLabel)
     }
 }
