@@ -18,7 +18,6 @@ fun textMessage(title:String, message:String): HBox {
 
 private val titleStringStyle = """
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
     -fx-padding: 1;
 """.trimIndent()
 

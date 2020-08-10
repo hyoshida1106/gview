@@ -31,11 +31,12 @@ class BranchListCtrl: BaseCtrl() {
         //ブランチTreeの初期設定
         branchTree.root = root
         branchTree.isShowRoot = false
-        branchTree.setCellFactory { _ -> BranchTreeCell() }
+        branchTree.setCellFactory { BranchTreeCell() }
         branchTree.selectionModel.clearSelection()
+        branchTree.style = CSS.treeStyle
         //Focusを失った時に選択解除する
-        branchTree.focusedProperty().addListener { _, _, newv ->
-            if(!newv) branchTree.selectionModel.clearSelection() }
+        branchTree.focusedProperty().addListener { _, _, newValue ->
+            if(!newValue) branchTree.selectionModel.clearSelection() }
         //初期状態では不可視
         branchTree.isVisible = false
     }
@@ -54,6 +55,7 @@ class BranchListCtrl: BaseCtrl() {
             super.updateItem(model, empty)
             graphic = if(!empty) { (treeItem as? BranchTreeItem)?.cellImage } else { null }
             text = null
+            style = CSS.cellStyle
             contextMenu = (treeItem as? BranchTreeItem)?.contextMenu
         }
     }
@@ -92,5 +94,16 @@ class BranchListCtrl: BaseCtrl() {
         init {
             isExpanded = true
         }
+    }
+
+    private object CSS {
+        val treeStyle = """
+            -fx-font-family: "Meiryo UI", sans-serif;
+            -fx-background-color: -background-color;
+            -fx-padding: 0;
+        """.trimIndent()
+        val cellStyle = """
+            -fx-padding: 2 0 2 0;
+        """.trimIndent()
     }
 }

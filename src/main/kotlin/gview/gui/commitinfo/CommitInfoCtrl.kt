@@ -15,9 +15,11 @@ class CommitInfoCtrl: BaseCtrl() {
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
 
+    private val commitFileListView = CommitFileListView.root
+    private val commitDiffView = CommitDiffView.root
+
     //初期化
     fun initialize() {
-        commitInfoPane.isVisible = false
     }
 
     //表示完了時にListenerを設定する
@@ -27,8 +29,11 @@ class CommitInfoCtrl: BaseCtrl() {
             when(newValue) {
                 is HeaderRowData -> selectHeaderRowData(newValue)
                 is CommitRowData -> selectCommitRowData(newValue)
+                else -> commitInfoPane.isVisible = false
             }
         }
+
+        //初期状態は非表示
         commitInfoPane.isVisible = false
     }
 
@@ -37,11 +42,11 @@ class CommitInfoCtrl: BaseCtrl() {
     }
 
     private fun selectCommitRowData(data: CommitRowData) {
-        println("Commit Selected $data.id")
-        commitInfoFiles.children.clear()
-        commitInfoFiles.children.add(CommitFileListView.root)
+        commitInfoFiles.children.setAll(commitFileListView)
+        commitInfoDiff.children.setAll(commitDiffView)
         CommitFileListView.controller.update(data.model)
         commitInfoPane.isVisible = true
+        commitDiffView.isVisible = false
     }
 
 }

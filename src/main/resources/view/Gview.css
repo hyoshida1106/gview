@@ -1,93 +1,99 @@
 
 * {
     -foreground-color: rgb( 10, 10, 10);
-    -background-color: rgb(200,200,200);
+    -background-color: rgba(200,200,200, 1.0);
     -split-pane-color: rgb(220,220,220);
-    -selected-color:   rgb(  0,150,200);
+    -selected-color:   rgb(  0,170,220);
 }
 
+.root {
+    -fx-base: rgba(200, 200, 200, 0.5);
+}
+
+/* Check Box */
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:3px;
+}
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+.check-box:selected .box {
+    -fx-background-color: -selected-color;
+}
+
+/* Scroll Bar */
+.scroll-bar {
+    -fx-background-color: -split-pane-color;
+    -fx-padding: 0;
+}
+.scroll-bar:vertical {
+    -fx-pref-width: 12;
+}
+.scroll-bar:horizontal {
+    -fx-pref-height: 12;
+}
+.scroll-bar .track {
+    -fx-background-color: -split-pane-color;
+    -fx-background-insets: 1;
+}
+.scroll-bar .thumb {
+    -fx-background-color: rgb(150,150,150);
+    -fx-background-radius: 0;
+    -fx-background-insets: 1;
+}
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button,
+.scroll-bar .decrement-arrow,
+.scroll-bar .increment-arrow {
+    -fx-padding: 0;
+}
+
+/* Menu */
+.menu-item {
+    -fx-background-color: -background-color;
+}
+
+/* Split Divider */
 .split-pane-divider {
     -fx-border-color: -background-color;
     -fx-background-color: -split-pane-color;
+    -fx-padding: 1;
 }
 
-/* ================================================================
-    Main View
-*/
-/* SplitPaneの移動ハンドルを細くする */
-.MainView .split-pane-divider {
-    -fx-padding: 2;
-}
-/* Status Bar */
-.MainView .StatusBar {
+/* Table View */
+.table-view .column-header,
+.table-view .column-header-background .filler {
     -fx-background-color: -background-color;
-    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
+    -fx-border-color: white;
 }
-.MainView .StatusBar .StatusBarPath {
-    -fx-padding: 1 5 0 5;
+.table-row-cell:selected {
+    -fx-background-color: -selected-color, -fx-background;
 }
-/* Menu Bar */
-.MainView .MenuBar {
+.table-row-cell:odd:filled {
+/*    -fx-control-inner-background: rgb(220, 230, 255); */
+    -fx-control-inner-background: rgb(210, 220, 255);
+}
+.table-row-cell:even:filled {
+    -fx-control-inner-background: white;
+}
+.table-row-cell:empty {
     -fx-background-color: -background-color;
-    -fx-effect: innershadow(three-pass-box, gray, 5, 0.5, 1, 1);
-}
-
-/* ================================================================
-    Branch List
-*/
-.BranchListView {
-    -fx-font-family: "Meiryo UI", sans-serif;
-    -fx-padding: 0;
-}
-/* Cell */
-.BranchListView .cell {
-    -fx-padding: 2 0 2 0;
-    -fx-font-size: 1.05em;
-    -fx-text-fill: black;
-    -fx-background-color: -background-color;
-}
-.BranchListView .cell:selected {
-    -fx-background-color: -selected-color;
-}
-/* CheckBox */
-.BranchListView .check-box {
-    -fx-padding: 0 0 0 2;
-}
-.BranchList .check-box > .box {
-    -fx-padding: 0;
 }
 
 /* ================================================================
     Commit List
 */
-.CommitListView {
-    -fx-padding: 0;
-}
 .CommitListView .column-header,
-.CommitListView .column-header-background .filler {     /* ヘッダ高さを固定する */
-    -fx-background-color: -background-color;
-    -fx-pref-height: 10;
-}
-.CommitListView .table-cell {
-    -fx-border-width: 0;
-    -fx-padding: 0;
-}
-.CommitListView .table-row-cell {
-    -fx-border-style: none;
-    -fx-border-width: 0;
-    -fx-padding: 0;
-}
-.CommitListView .table-row-cell:selected {       /* 選択時 */
-    -fx-background-color: -selected-color, -fx-background;
-}
-.CommitListView .table-row-cell:odd:filled {    /* 偶数行のバックグラウンド */
-    -fx-control-inner-background: rgb(220, 230, 255);
-}
-.CommitListView .table-row-cell:empty {         /* 空行 */
-    -fx-background-color: -background-color;
+.CommitListView .column-header-background .filler {
+    -fx-pref-height: 14;
 }
 .CommitListView .header-row {
     -fx-background-color: #ddeedd;
+}
+.CommitListView .header-row:selected {
+    -fx-background-color: -selected-color, -fx-background;
 }
 
 /* ================================================================

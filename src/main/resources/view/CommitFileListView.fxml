@@ -3,13 +3,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane fx:id="commitFileListPane" dividerPositions="0.5" orientation="HORIZONTAL"
-           xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2"
+<SplitPane fx:id="commitFileListPane" dividerPositions="0.4"
+           xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
            stylesheets="@Gview.css" fx:controller="gview.gui.commitinfo.CommitFileListCtrl">
-    <items>
-        <AnchorPane fx:id="commitFileInfo" minWidth="50.0" />
-        <AnchorPane fx:id="commitFileList" />
-    </items>
+    <BorderPane fx:id="commitFileInfo" minWidth="50.0"/>
+    <TableView fx:id="commitFileList">
+        <columns>
+            <TableColumn fx:id="typeColumn" editable="false" reorderable="false" text="種別"/>
+            <TableColumn fx:id="pathColumn" editable="false" reorderable="false" text="パス"/>
+        </columns>
+    </TableView>
 </SplitPane>

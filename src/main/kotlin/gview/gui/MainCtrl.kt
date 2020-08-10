@@ -63,6 +63,8 @@ class MainCtrl : BaseCtrl() {
 
     //初期化
     private fun initStatusBar() {
+        statusBar.style = CSS.statusBarStyle
+        repositoryPath.style = CSS.repogitoryPathStyle
         //リポジトリのパスを表示
         repositoryPath.textProperty().bind(repository.localPathProperty)
     }
@@ -74,6 +76,7 @@ class MainCtrl : BaseCtrl() {
 
     //初期化
     private fun initMenuBar() {
+        menu.style = CSS.menuBarStyle
     }
 
     /* ================================================================
@@ -203,4 +206,21 @@ class MainCtrl : BaseCtrl() {
         helpAboutMenu.isDisable = true
     }
 
+
+    private object CSS {
+
+        val statusBarStyle = """
+            -fx-background-color: -background-color;
+            -fx-effect: innershadow(three-pass-box, gray, 3, 0.5, 1, 1); 
+        """.trimIndent()
+
+        val menuBarStyle = """
+            -fx-background-color: -background-color;
+            -fx-effect: innershadow(three-pass-box, gray, 3, 0.5, 1, 1); 
+        """.trimIndent()
+
+        val  repogitoryPathStyle = """
+            -fx-padding: 1 5 0 5; 
+        """.trimIndent()
+    }
 }

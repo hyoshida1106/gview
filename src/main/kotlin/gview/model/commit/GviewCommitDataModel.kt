@@ -3,6 +3,7 @@ package gview.model.commit
 import gview.model.GviewCommitListModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
+import gview.model.util.ByteArrayDiffFormatter
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommit
@@ -116,13 +117,14 @@ class GviewCommitDataModel(private val repo: Repository,
         }
     }
 
-//    val entryList: List<DiffEntryModel> by lazy {
-//        val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
-//        val tree2 = commit.tree
-//        val fmt = ByteArrayDiffFormatter(repo.repository)
-//        fmt.scan(tree1, tree2).map { DiffEntryModel(fmt, it) }
-//    }
-//
+    //更新ファイルのリスト
+    val diffEntries: List<GviewGitFileEntryModel> by lazy {
+        val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
+        val tree2 = commit.tree
+        val fmt = ByteArrayDiffFormatter(repo)
+        fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
+    }
+
 //    fun containsTag(tagName: String): Boolean {
 //        for(tag in tags) {
 //            if(tag.matches(tagName))

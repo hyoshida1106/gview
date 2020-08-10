@@ -5,8 +5,8 @@ import gview.gui.util.textMessage
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
-import javafx.scene.control.Label
-import javafx.scene.layout.*
+import javafx.scene.layout.Pane
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
 import javafx.scene.shape.ArcType
 
@@ -115,7 +115,7 @@ class CommitRowData(private val commitList: CommitListCtrl,
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
             //日付・作者・メッセージ抜粋
             val row1 = textMessage("日付: ", model.commitTime)
-            val row2 = textMessage("作者: ", model.committer)
+            val row2 = textMessage("作者: ", model.author)
             val row3 = textMessage("コメント:", model.shortMessage)
 
             //タグ・ブランチラベル

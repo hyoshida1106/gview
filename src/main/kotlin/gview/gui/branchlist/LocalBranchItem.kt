@@ -21,7 +21,14 @@ class LocalBranchItem(val model: GviewLocalBranchModel): BranchListCtrl.BranchTr
     init {
         showInTree.isAllowIndeterminate = false
         showInTree.isSelected = model.selected
+        showInTree.style = CSS.checkBoxStyle
         //チェックボックス選択状態プロパティを接続
         model.selectedProperty.bind(showInTree.selectedProperty())
+    }
+
+    private object CSS {
+        val checkBoxStyle = """
+             -fx-padding: 0 0 0 10;
+        """.trimIndent()
     }
 }

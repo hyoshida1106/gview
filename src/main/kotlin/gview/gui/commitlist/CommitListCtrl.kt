@@ -20,7 +20,6 @@ class CommitListCtrl: BaseCtrl() {
 
     //選択行
     val selectedRowProperty = SimpleObjectProperty<RowData>()
-    val selectedRow: RowData? get() { return selectedRowProperty.value }
 
     //行データ(インターフェース)
     interface RowData {
@@ -40,6 +39,10 @@ class CommitListCtrl: BaseCtrl() {
 
         //カラム情報 - updateItemで受信する
         private var cellData: CellData? = null
+
+        init {
+            this.style = CSS.cellStyle
+        }
 
         //データ更新通知
         override fun updateItem(data: CellData?, empty: Boolean) {
@@ -77,6 +80,8 @@ class CommitListCtrl: BaseCtrl() {
 
     //初期化
     fun initialize() {
+        commitListTable.style = CSS.commitListStyle
+
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.treeCellValue) }
         infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.infoCellValue) }
         treeColumn.setCellFactory { _ -> Cell() }
@@ -109,19 +114,13 @@ class CommitListCtrl: BaseCtrl() {
         //テーブル幅変更時のカラム幅調整
         commitListTable.widthProperty().addListener { _ -> adjustLastColumnWidth() }
 
-        //スクロールバー表示変更時のカラム幅調整
-        verticalScrollBar(commitListTable)?.visibleProperty()?.addListener { _ -> adjustLastColumnWidth() }
-
-        //Treeカラム幅変更時のカラム幅調整
+        //カラム幅変更時のカラム幅調整
         treeColumn.widthProperty().addListener { _ ->
             xPitch = treeColumn.width / ( maxLaneNumber + 2 )
             adjustLastColumnWidth()
         }
-
-        //縦スクロールバー幅変更時のカラム幅調整
-        verticalScrollBar = verticalScrollBar(commitListTable)
-        verticalScrollBar?.widthProperty()?.addListener { _ -> adjustLastColumnWidth() }
-   }
+        infoColumn.widthProperty().addListener { _ -> adjustLastColumnWidth() }
+    }
 
     private var headerRow : HeaderRowData? = null
     private val commitRows: MutableList<CommitRowData> = mutableListOf()
@@ -158,9 +157,34 @@ class CommitListCtrl: BaseCtrl() {
 
     /* 縦スクロールバー表示の有無を確認した上で、カラム幅を決定する */
     private fun adjustLastColumnWidth() {
-        infoColumn.prefWidth = commitListTable.width - treeColumn.width
-        if(verticalScrollBar != null && verticalScrollBar!!.isVisible) {
-            infoColumn.prefWidth -= verticalScrollBar!!.width
+        val left = commitListTable.snappedLeftInset().toInt()
+        val right = commitListTable.snappedRightInset().toInt()
+        var width = commitListTable.width - treeColumn.width - left - right
+
+        //スクロールバー表示変更時のカラム幅調整
+        if(verticalScrollBar == null) {
+            verticalScrollBar = verticalScrollBar(commitListTable)
+            verticalScrollBar?.visibleProperty()?.addListener { _ -> adjustLastColumnWidth() }
+            verticalScrollBar?.widthProperty()?.addListener { _ -> adjustLastColumnWidth() }
         }
+
+        if(verticalScrollBar != null && verticalScrollBar!!.isVisible) {
+            width -= verticalScrollBar!!.width
+        }
+
+        infoColumn.prefWidth = width
+        infoColumn.minWidth  = width
+        infoColumn.maxWidth  = width
+    }
+
+    private object CSS {
+        val cellStyle = """
+            -fx-border-width: 0;
+            -fx-padding: 0;
+        """.trimIndent()
+
+        val commitListStyle = """
+            -fx-padding: 0;
+        """.trimIndent()
     }
 }

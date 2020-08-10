@@ -27,7 +27,7 @@ open class BaseCtrl {
 
     // Observerからコールされる実処理メソッド
     open fun displayCompleted() { }                                 //表示完了
-    open fun updateConfigInfo()  { }                                 //モーダル情報の保存タイミング
+    open fun updateConfigInfo() { }                                 //モーダル情報の保存タイミング
 
     // クラスメソッド/変数
     companion object {

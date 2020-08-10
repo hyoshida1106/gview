@@ -7,7 +7,7 @@
         xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
         stylesheets="@Gview.css" fx:controller="gview.gui.MainCtrl">
    <top>
-      <MenuBar fx:id="menu" BorderPane.alignment="CENTER" styleClass="MenuBar">
+      <MenuBar fx:id="menu" BorderPane.alignment="CENTER">
          <menus>
             <Menu text="ファイル(_F)" fx:id="fileMenu" mnemonicParsing="true"
                   onShowing="#onShowingFileMenu" >
@@ -98,8 +98,8 @@
       </SplitPane>
    </center>
    <bottom>
-      <AnchorPane fx:id="statusBar" styleClass="StatusBar">
-        <Label fx:id="repositoryPath" styleClass="StatusBarPath"/>
+      <AnchorPane fx:id="statusBar">
+        <Label fx:id="repositoryPath" />
       </AnchorPane>
    </bottom>
 </BorderPane>
