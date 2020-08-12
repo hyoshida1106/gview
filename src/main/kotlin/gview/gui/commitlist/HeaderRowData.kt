@@ -11,7 +11,7 @@ import java.text.DateFormat
 import java.util.*
 
 class HeaderRowData(commitList: CommitListCtrl,
-                    model: GviewHeadFilesModel,
+                    val model: GviewHeadFilesModel,
                     head: GviewCommitDataModel?): AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)

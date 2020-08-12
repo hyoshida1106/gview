@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import java.io.File
 
@@ -28,16 +30,25 @@ class GviewRepositoryModel {
     val localPathProperty: StringProperty
     val localPath: String get() { return localPathProperty.value }
 
+    //インデックス未登録/登録済ファイル情報
+    val headFiles: GviewHeadFilesModel
+
+    //HEADのObject ID
+    private val headIdProperty = SimpleObjectProperty<ObjectId?>()
+
     //初期化
     init {
         repositoryProperty = SimpleObjectProperty<Repository>(null)
         localPathProperty  = SimpleStringProperty("")
 
         branchList = GviewBranchListModel(repositoryProperty)
+        headFiles = GviewHeadFilesModel(repositoryProperty, headIdProperty)
 
         repositoryProperty.addListener { _, _, newRepository ->
             //ローカスパスの設定
             localPathProperty.value = newRepository.directory.absolutePath
+            //HEAD IDを更新
+            headIdProperty.value = newRepository.resolve(Constants.HEAD)
         }
     }
 

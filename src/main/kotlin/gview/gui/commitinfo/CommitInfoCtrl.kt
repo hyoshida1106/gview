@@ -5,6 +5,8 @@ import gview.gui.commitlist.CommitListView
 import gview.gui.commitlist.CommitRowData
 import gview.gui.commitlist.HeaderRowData
 import gview.gui.framework.BaseCtrl
+import gview.model.commit.GviewCommitDataModel
+import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
@@ -15,7 +17,10 @@ class CommitInfoCtrl: BaseCtrl() {
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
 
+    val commitDataProperty = SimpleObjectProperty<GviewCommitDataModel?>()
+
     private val commitFileListView = CommitFileListView.root
+    private val headerFileListView = HeaderFileListView.root
     private val commitDiffView = CommitDiffView.root
 
     //初期化
@@ -38,13 +43,17 @@ class CommitInfoCtrl: BaseCtrl() {
     }
 
     private fun selectHeaderRowData(data: HeaderRowData) {
-        println("Header Selected")
+        commitInfoFiles.children.setAll(headerFileListView)
+        commitInfoDiff.children.setAll(commitDiffView)
+        commitDataProperty.value = null
+        commitInfoPane.isVisible = true
+        commitDiffView.isVisible = false
     }
 
     private fun selectCommitRowData(data: CommitRowData) {
         commitInfoFiles.children.setAll(commitFileListView)
         commitInfoDiff.children.setAll(commitDiffView)
-        CommitFileListView.controller.update(data.model)
+        commitDataProperty.value = data.model
         commitInfoPane.isVisible = true
         commitDiffView.isVisible = false
     }

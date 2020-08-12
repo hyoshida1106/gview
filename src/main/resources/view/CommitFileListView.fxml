@@ -11,7 +11,7 @@
     <BorderPane fx:id="commitFileInfo" minWidth="50.0"/>
     <TableView fx:id="commitFileList">
         <columns>
-            <TableColumn fx:id="typeColumn" editable="false" reorderable="false" text="種別"/>
+            <TableColumn fx:id="typeColumn" editable="false" reorderable="false" text="種別" minWidth="50"/>
             <TableColumn fx:id="pathColumn" editable="false" reorderable="false" text="パス"/>
         </columns>
     </TableView>

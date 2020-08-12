@@ -20,22 +20,14 @@ class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
     //リモートブランチリスト
     val remoteBranchesProperty: ObjectProperty<List<GviewRemoteBranchModel>>
 
-    //インデックス未登録/登録済ファイル情報
-    val headFiles: GviewHeadFilesModel
-
     //コミット情報リスト
     val commits: GviewCommitListModel
-
-    //HEADのObject ID
-    private val headIdProperty: ObjectProperty<ObjectId?>
 
     //初期化
     init {
         localBranchesProperty  = SimpleObjectProperty<List<GviewLocalBranchModel >>()
         remoteBranchesProperty = SimpleObjectProperty<List<GviewRemoteBranchModel>>()
-        headIdProperty = SimpleObjectProperty<ObjectId?>()
 
-        headFiles = GviewHeadFilesModel(repositoryProperty, headIdProperty)
         commits = GviewCommitListModel(repositoryProperty, localBranchesProperty, remoteBranchesProperty)
 
         //ブランチ一覧の更新
@@ -44,9 +36,6 @@ class GviewBranchListModel(repositoryProperty: ObjectProperty<Repository>) {
 
     //更新
     private fun update(repository: Repository) {
-
-        //HEAD IDを更新
-        headIdProperty.value = repository.resolve(Constants.HEAD)
 
         //Gitインスタンスを共用する
         val git = Git(repository)

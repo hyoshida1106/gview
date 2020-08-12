@@ -72,14 +72,13 @@
     -fx-background-color: -selected-color, -fx-background;
 }
 .table-row-cell:odd:filled {
-/*    -fx-control-inner-background: rgb(220, 230, 255); */
     -fx-control-inner-background: rgb(210, 220, 255);
 }
 .table-row-cell:even:filled {
     -fx-control-inner-background: white;
 }
 .table-row-cell:empty {
-    -fx-background-color: -background-color;
+    -fx-background-color: -split-pane-color;
 }
 
 /* ================================================================

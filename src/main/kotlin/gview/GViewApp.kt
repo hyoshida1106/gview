@@ -55,7 +55,3 @@ fun main(args: Array<String>) {
     Application.launch(GViewApp::class.java, *args)
 }
 
-//現在のRepositoryインスタンス
-fun getCurrentRepository(): GviewRepositoryModel {
-    return MainView.controller.repository
-}

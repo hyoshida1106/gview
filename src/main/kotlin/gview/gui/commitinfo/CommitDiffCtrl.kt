@@ -17,17 +17,10 @@ class CommitDiffCtrl: BaseCtrl() {
     fun initialize() {
         commitDiffViewPane.isVisible = false
         diffList.style = CSS.diffListStyle
-        diffList.setCellFactory { _ -> DiffCell() }
+        diffList.setCellFactory { DiffCell() }
     }
 
-    //表示完了時にListenerを設定する
-    override fun displayCompleted() {
-        CommitFileListView.controller.selectedCommitEntryProperty.addListener { _, _, newValue ->
-            selectDiffEntry(newValue)
-        }
-    }
-
-    private fun selectDiffEntry(entry: GviewGitFileEntryModel?) {
+    fun selectDiffEntry(entry: GviewGitFileEntryModel?) {
         if(entry != null) {
             diffList.items.setAll(
                 entry.exportDiffText().inputStream().bufferedReader(Charset.forName("utf-8")).readLines())
@@ -42,9 +35,11 @@ class CommitDiffCtrl: BaseCtrl() {
         override fun updateItem(text: String?, empty: Boolean) {
             super.updateItem(text, empty)
             if (text != null && !empty) {
-                if (isAddLine(text)) style = CSS.addLineStyle
-                else if (isDelLine(text)) style = CSS.delLineStyle
-                else style = ""
+                style = when {
+                    isAddLine(text) -> CSS.addLineStyle
+                    isDelLine(text) -> CSS.delLineStyle
+                    else -> ""
+                }
                 setText(text)
             } else {
                 style = ""
@@ -53,11 +48,11 @@ class CommitDiffCtrl: BaseCtrl() {
         }
 
         private fun isAddLine(text: String): Boolean {
-            return (!text.startsWith("+++") && text.startsWith("+"));
+            return (!text.startsWith("+++") && text.startsWith("+"))
         }
 
         private fun isDelLine(text: String): Boolean {
-            return (!text.startsWith("---") && text.startsWith("-"));
+            return (!text.startsWith("---") && text.startsWith("-"))
         }
     }
 
