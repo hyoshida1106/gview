@@ -28,7 +28,7 @@ class LocalBranchItem(val model: GviewLocalBranchModel): BranchListCtrl.BranchTr
 
     private object CSS {
         val checkBoxStyle = """
-             -fx-padding: 0 0 0 10;
+            -fx-padding: 0 0 0 2;
         """.trimIndent()
     }
 }

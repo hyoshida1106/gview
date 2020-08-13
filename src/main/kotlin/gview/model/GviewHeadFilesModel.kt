@@ -29,9 +29,6 @@ class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Reposit
     //ヘッダID
     val headerId: ObjectId? get() { return headIdProperty.value }
 
-    // 対象ファイルがひとつもなければtrueを返す
-    fun isEmpty(): Boolean = stagedFiles.isEmpty() && changedFiles.isEmpty()
-
     //初期化
     init {
         stagedFilesProperty  = SimpleObjectProperty<List<GviewGitFileEntryModel>>()
@@ -54,8 +51,8 @@ class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Reposit
             }
 
         } else {
-            stagedFilesProperty.value = listOf()
-            changedFilesProperty.value = listOf()
+            stagedFilesProperty.value = emptyList()
+            changedFilesProperty.value = emptyList()
         }
     }
 
