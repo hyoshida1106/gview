@@ -1,5 +1,7 @@
 package gview.gui.util
 
+import javafx.geometry.Orientation
+import javafx.scene.Node
 import javafx.scene.control.ScrollBar
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -26,7 +28,7 @@ class TableColumnAdjuster(private val table: TableView<*>, private val adjustCol
         }
 
         if(verticalScrollBar == null) {
-            verticalScrollBar = verticalScrollBar(table)
+            verticalScrollBar = findVerticalScrollBar(table)
             verticalScrollBar?.widthProperty()?.addListener   { _ -> adjustColumnWidth() }
             verticalScrollBar?.visibleProperty()?.addListener { _ -> adjustColumnWidth() }
         }
@@ -38,5 +40,15 @@ class TableColumnAdjuster(private val table: TableView<*>, private val adjustCol
         adjustColumn.prefWidth = width
         adjustColumn.minWidth  = width
         adjustColumn.maxWidth  = width
+    }
+
+    private fun findVerticalScrollBar(node: Node): ScrollBar? {
+        node.lookupAll(".scroll-bar").forEach {
+            var bar:ScrollBar? = it as ScrollBar
+            if(bar != null && bar.orientation == Orientation.VERTICAL) {
+                return bar
+            }
+        }
+        return null
     }
 }

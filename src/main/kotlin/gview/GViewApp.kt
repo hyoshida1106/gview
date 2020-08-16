@@ -2,9 +2,8 @@ package gview
 
 import gview.conf.Configuration
 import gview.gui.MainView
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.IdleMonitor
-import gview.model.GviewRepositoryModel
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
@@ -26,7 +25,7 @@ class GViewApp : Application() {
             mainStage.scene = Scene(MainView.root,
                 Configuration.systemModal.mainWidth,
                 Configuration.systemModal.mainHeight)
-            mainStage.setOnShown { _ -> BaseCtrl.displayCompleted() }
+            mainStage.setOnShown { _ -> GviewBasePaneCtrl.displayCompleted() }
             //IDLE状態モニタ設定
             monitor.register(stage.scene)
             //Main WindowサイズをModal Informationにバインドする
@@ -45,7 +44,7 @@ class GViewApp : Application() {
 
     // 1秒のIDLE状態タイマ
     private val monitor = IdleMonitor(1000) {
-        BaseCtrl.updateConfigInfo()
+        GviewBasePaneCtrl.updateConfigInfo()
         Configuration.saveToFile()
     }
 }

@@ -1,7 +1,8 @@
 package gview.gui.branchlist
 
 import gview.gui.MainView
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePane
+import gview.gui.framework.GviewBasePaneCtrl
 import gview.model.branch.GviewBranchModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
@@ -9,10 +10,11 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 
-/*
-    ブランチ一覧 Control
- */
-class BranchListCtrl: BaseCtrl() {
+object BranchList: GviewBasePane<BranchListCtrl>(
+        "/view/BranchListView.fxml",
+        "BranchList")
+
+class BranchListCtrl: GviewBasePaneCtrl() {
 
     //ブランチ一覧Tree
     @FXML private lateinit var branchTree: TreeView<GviewBranchModel>

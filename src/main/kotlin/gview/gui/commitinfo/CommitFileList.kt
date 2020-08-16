@@ -1,15 +1,13 @@
 package gview.gui.commitinfo
 
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePane
+import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.TableColumnAdjuster
 import gview.gui.util.branchTagLabels
 import gview.gui.util.textMessage
-import gview.gui.util.verticalScrollBar
 import gview.model.commit.GviewCommitDataModel
 import gview.model.commit.GviewGitFileEntryModel
-import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
-import javafx.scene.control.ScrollBar
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.PropertyValueFactory
@@ -18,7 +16,11 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 
-class CommitFileListCtrl: BaseCtrl()  {
+object CommitFileList: GviewBasePane<CommitFileListCtrl>(
+        "/view/CommitFileListView.fxml",
+        "CommitFileList")
+
+class CommitFileListCtrl: GviewBasePaneCtrl()  {
 
     @FXML private lateinit var commitFileInfo: BorderPane
     @FXML private lateinit var commitFileList: TableView<RowData>
@@ -47,10 +49,10 @@ class CommitFileListCtrl: BaseCtrl()  {
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
 
-        CommitInfoView.controller.commitDataProperty.addListener { _, _, newValue -> update(newValue) }
+        CommitInfo.controller.commitDataProperty.addListener { _, _, newValue -> update(newValue) }
 
         commitFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->
-            CommitDiffView.controller.selectDiffEntry(entry?.diffEntry)
+            CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
         }
 
         commitFileListAdjuster.adjustColumnWidth()

@@ -1,10 +1,11 @@
 package gview.gui.commitinfo
 
+import gview.gui.commitlist.CommitList
 import gview.gui.commitlist.CommitListCtrl
-import gview.gui.commitlist.CommitListView
 import gview.gui.commitlist.CommitRowData
 import gview.gui.commitlist.HeaderRowData
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePane
+import gview.gui.framework.GviewBasePaneCtrl
 import gview.model.GviewHeadFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.beans.property.SimpleObjectProperty
@@ -12,18 +13,24 @@ import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 
-class CommitInfoCtrl: BaseCtrl() {
+object CommitInfo: GviewBasePane<CommitInfoCtrl>(
+        "/view/CommitInfoView.fxml",
+        "CommitInfo")
+
+class CommitInfoCtrl: GviewBasePaneCtrl() {
 
     @FXML private lateinit var commitInfoPane: SplitPane
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
 
     val headerDataProperty = SimpleObjectProperty<GviewHeadFilesModel?>()
+    val headerData: GviewHeadFilesModel? get() { return headerDataProperty.value }
+
     val commitDataProperty = SimpleObjectProperty<GviewCommitDataModel?>()
 
-    private val commitFileListView = CommitFileListView.root
-    private val headerFileListView = HeaderFileListView.root
-    private val commitDiffView = CommitDiffView.root
+    private val commitFileListView = CommitFileList.root
+    private val headerFileListView = HeaderFileList.root
+    private val commitDiffView = CommitDiff.root
 
     //初期化
     fun initialize() {
@@ -31,7 +38,7 @@ class CommitInfoCtrl: BaseCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        var commitList: CommitListCtrl = CommitListView.controller
+        var commitList: CommitListCtrl = CommitList.controller
         commitList.selectedRowProperty.addListener { _, _, newValue ->
             when(newValue) {
                 is HeaderRowData -> selectHeaderRowData(newValue)

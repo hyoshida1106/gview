@@ -1,4 +1,4 @@
-package gview.gui.util
+package gview.gui.framework
 
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
@@ -10,7 +10,7 @@ import gview.gui.MainView
     共通ダイアログを生成するユーティリティ
  */
 
-object CommonDialog {
+object GviewCommonDialog {
 
     //JavaのOptionインスタンスをnullableに変換する
     private fun <T> optionToNullable(optionValue: Optional<T>): T? {
@@ -48,7 +48,7 @@ object CommonDialog {
         @param message      表示するメッセージ
      */
     fun createErrorDialog(message: String) {
-        alertAndWait(Alert.AlertType.ERROR, "Error", message)        
+        alertAndWait(Alert.AlertType.ERROR, "Error", message)
     }
 
     /**

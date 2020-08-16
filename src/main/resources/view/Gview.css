@@ -10,6 +10,10 @@
     -fx-base: rgba(200, 200, 200, 0.5);
 }
 
+.dialog-pane {
+    -fx-background-color: -background-color;
+}
+
 /* Check Box */
 .check-box .box {
     -fx-background-color: white;
@@ -82,24 +86,35 @@
     -fx-background-color: -split-pane-color;
 }
 
+/* Dialog */
+.dialog-pane {
+    -fx-background-color: -background-color;
+}
+
+.button {
+    -fx-font-weight: bold;
+    -fx-background-color: -background-color;
+    -fx-effect: dropshadow( three-pass-box , rgba(20,20,20,0.6), 3, 0.0, 0, 1);
+}
+
 /* ================================================================
-    Commit List
+    コミット一覧
 */
-.CommitListView .column-header,
-.CommitListView .column-header-background .filler {
+.CommitList .column-header,
+.CommitList .column-header-background .filler {
     -fx-pref-height: 14;
 }
-.CommitListView .header-row {
+.CommitList .header-row {
     -fx-background-color: #ddeedd;
 }
-.CommitListView .header-row:selected {
+.CommitList .header-row:selected {
     -fx-background-color: -selected-color, -fx-background;
 }
 
 /* ================================================================
     コミット情報
 */
-.CommitInfoView, .CommitFileListView {
+.CommitInfo, .CommitFileList {
     -fx-background-color: -background-color;
 }
 

@@ -1,9 +1,29 @@
 package gview.gui.framework
 
+import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
+
+open class GviewBasePane<Controller>(form: String, className: String)
+    where Controller: GviewBasePaneCtrl
+{
+    val root: Parent                //親インスタンス参照
+    val controller: Controller      //コントローラ参照
+
+    init {
+        //FXMLフォームの読み込み
+        val loader = FXMLLoader(javaClass.getResource(form))
+        root = loader.load()
+        //Style Classの追加
+        root.styleClass.add(className)
+        //コントローラ(FXMLファイルに記載されているもの)を取得して参照を設定
+        controller = loader.getController() as Controller
+    }
+}
+
 /*
     Controllerの基本クラス
  */
-open class BaseCtrl {
+open class GviewBasePaneCtrl {
 
     /*
         継承クラスのインスタンスすべてにObserverインスタンスを所持させることにより、Observerリストを作成する

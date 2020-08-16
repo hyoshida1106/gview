@@ -1,5 +1,5 @@
 package gview.gui
 
-import gview.gui.framework.BaseView
+import gview.gui.framework.GviewBasePane
 
-object MainView: BaseView<MainCtrl>("/view/MainView.fxml", "MainView")
+object MainView: GviewBasePane<MainCtrl>("/view/MainView.fxml", "MainView")

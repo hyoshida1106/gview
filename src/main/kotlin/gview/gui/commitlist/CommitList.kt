@@ -1,7 +1,8 @@
 package gview.gui.commitlist
 
 import gview.gui.MainView
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.framework.GviewBasePane
 import gview.gui.util.TableColumnAdjuster
 import gview.model.GviewCommitListModel
 import gview.model.GviewHeadFilesModel
@@ -9,9 +10,16 @@ import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.Node
-import javafx.scene.control.*
+import javafx.scene.control.TableCell
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableRow
+import javafx.scene.control.TableView
 
-class CommitListCtrl: BaseCtrl() {
+object CommitList: GviewBasePane<CommitListCtrl>(
+        "/view/CommitListView.fxml",
+        "CommitList")
+
+class CommitListCtrl: GviewBasePaneCtrl() {
 
     //FXML内のエレメント選言
     @FXML private lateinit var commitListTable: TableView<RowData>
@@ -124,7 +132,7 @@ class CommitListCtrl: BaseCtrl() {
     }
 
     //表示更新
-    private fun updateCommitList(header: GviewHeadFilesModel, commits:GviewCommitListModel) {
+    private fun updateCommitList(header: GviewHeadFilesModel, commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()

@@ -1,6 +1,7 @@
 package gview.gui.commitinfo
 
-import gview.gui.framework.BaseCtrl
+import gview.gui.framework.GviewBasePane
+import gview.gui.framework.GviewBasePaneCtrl
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.fxml.FXML
 import javafx.scene.control.ListCell
@@ -8,10 +9,16 @@ import javafx.scene.control.ListView
 import javafx.scene.layout.BorderPane
 import java.nio.charset.Charset
 
-class CommitDiffCtrl: BaseCtrl() {
+object CommitDiff: GviewBasePane<CommitDiffCtrl>(
+        "/view/CommitDiffView.fxml",
+        "CommitDiff")
 
-    @FXML private lateinit var commitDiffViewPane: BorderPane
-    @FXML private lateinit var diffList: ListView<String>
+class CommitDiffCtrl: GviewBasePaneCtrl() {
+
+    @FXML
+    private lateinit var commitDiffViewPane: BorderPane
+    @FXML
+    private lateinit var diffList: ListView<String>
 
     //初期化
     fun initialize() {
@@ -23,7 +30,7 @@ class CommitDiffCtrl: BaseCtrl() {
     fun selectDiffEntry(entry: GviewGitFileEntryModel?) {
         if(entry != null) {
             diffList.items.setAll(
-                entry.exportDiffText().inputStream().bufferedReader(Charset.forName("utf-8")).readLines())
+                    entry.exportDiffText().inputStream().bufferedReader(Charset.forName("utf-8")).readLines())
             commitDiffViewPane.isVisible = true
         } else {
             commitDiffViewPane.isVisible = false
@@ -71,5 +78,4 @@ class CommitDiffCtrl: BaseCtrl() {
             -fx-background-color: rgb(180, 180, 255);
         """.trimIndent()
     }
-
 }

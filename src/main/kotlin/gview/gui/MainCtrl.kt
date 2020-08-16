@@ -1,12 +1,11 @@
 package gview.gui
 
 import gview.conf.Configuration
-import gview.gui.branchlist.BranchListView
-import gview.gui.commitinfo.CommitInfoCtrl
-import gview.gui.commitinfo.CommitInfoView
-import gview.gui.commitlist.CommitListView
-import gview.gui.framework.BaseCtrl
-import gview.gui.util.CommonDialog
+import gview.gui.branchlist.BranchList
+import gview.gui.commitinfo.CommitInfo
+import gview.gui.commitlist.CommitList
+import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.framework.GviewCommonDialog
 import gview.model.GviewRepositoryModel
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
@@ -17,7 +16,7 @@ import javafx.stage.Stage
 import kotlin.system.exitProcess
 
 
-class MainCtrl : BaseCtrl() {
+class MainCtrl : GviewBasePaneCtrl() {
 
     @FXML private lateinit var mainSplit:  SplitPane
     @FXML private lateinit var branchList: AnchorPane
@@ -47,9 +46,9 @@ class MainCtrl : BaseCtrl() {
         Configuration.systemModal.mainSplitPosProperty.bind(splitPositionsProperty)
 
         //初期化
-        branchList.children.add(BranchListView.root)
-        commitList.children.add(CommitListView.root)
-        commitInfo.children.add(CommitInfoView.root)
+        branchList.children.add(BranchList.root)
+        commitList.children.add(CommitList.root)
+        commitInfo.children.add(CommitInfo.root)
 
         initStatusBar()
         initMenuBar()
@@ -100,7 +99,7 @@ class MainCtrl : BaseCtrl() {
             try {
                 repository.openExist(dir.path)
             } catch(e: Exception) {
-                CommonDialog.createErrorDialog(e)
+                GviewCommonDialog.createErrorDialog(e)
             }
         }
     }
@@ -117,7 +116,7 @@ class MainCtrl : BaseCtrl() {
 
     @FXML
     private fun onMenuQuit() {
-        if(CommonDialog.createConfirmDialog("アプリケーションを終了しますか？")) {
+        if(GviewCommonDialog.createConfirmDialog("アプリケーションを終了しますか？")) {
             exitProcess(0)
         }
     }
@@ -179,7 +178,7 @@ class MainCtrl : BaseCtrl() {
 
     @FXML
     private fun onCommitTagSearch() {
-        val tagName = CommonDialog.createSimpleTextDialog("タグ検索", "検索するタグ")
+        val tagName = GviewCommonDialog.createSimpleTextDialog("タグ検索", "検索するタグ")
         if(tagName != null) {
             //タグ検索(tagName)
         }
@@ -187,7 +186,7 @@ class MainCtrl : BaseCtrl() {
 
     @FXML
     private fun onCommitCommentSearch() {
-        val comment = CommonDialog.createSimpleTextDialog("コメント検索", "検索する文字列")
+        val comment = GviewCommonDialog.createSimpleTextDialog("コメント検索", "検索する文字列")
         if(comment != null) {
             //コメント検索(comment)
         }
