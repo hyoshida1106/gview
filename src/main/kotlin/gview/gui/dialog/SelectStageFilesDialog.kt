@@ -7,26 +7,27 @@ import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
-import javafx.scene.control.*
+import javafx.scene.control.ButtonType
+import javafx.scene.control.CheckBox
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
 
-class SelectCommitFilesDialog: GviewDialog<SelectCommitFilesDialogCtrl>(
-        "コミットするファイルを選択し、メッセージを入力してください",
-        "/view/SelectCommitFilesDialogView.fxml",
+class SelectStageFilesDialog: GviewDialog<SelectStageFilesDialogCtrl>(
+        "ステージするファイルを選択してください",
+        "/view/SelectStageFilesDialogView.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
     val selectedFiles: List<GviewGitFileEntryModel> get() = controller.selectedFiles
 }
 
-class SelectCommitFilesDialogCtrl : GviewDialogController() {
+class SelectStageFilesDialogCtrl : GviewDialogController() {
 
     @FXML private lateinit var selAllCheckBox: CheckBox
     @FXML private lateinit var fileList: TableView<RowData>
     @FXML private lateinit var fileTypeColumn: TableColumn<RowData, String>
     @FXML private lateinit var filePathColumn: TableColumn<RowData, String>
     @FXML private lateinit var fileCheckColumn: TableColumn<RowData, Boolean>
-    @FXML private lateinit var commitMessageLabel: Label
-    @FXML private lateinit var commitMessageText: TextArea
 
     class RowData(val diffEntry: GviewGitFileEntryModel) {
         val type: String = diffEntry.typeName
@@ -50,10 +51,8 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
         fileTypeColumn.style = CSS.fileTypeStyle
         filePathColumn.style = CSS.filePathStyle
         fileCheckColumn.style = CSS.fileCheckStyle
-        commitMessageLabel.style = CSS.commitMessageLabelStyle
-        commitMessageText.style = CSS.commitMessageTextStyle
 
-        val files = MainWindow.controller.repository.headerFiles.stagedFiles
+        val files = MainWindow.controller.repository.headerFiles.changedFiles
         if (files != null) {
             fileList.items.addAll(files.map { RowData(it) })
         }
@@ -80,11 +79,6 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
         """.trimIndent()
         val fileCheckStyle = """
             -fx-alignment: CENTER;
-        """.trimIndent()
-        val commitMessageLabelStyle = """
-            -fx-padding: 10 5 0 5;
-        """.trimIndent()
-        val commitMessageTextStyle = """ 
         """.trimIndent()
     }
 }

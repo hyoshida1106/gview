@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.3.72"
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
+    kotlin("plugin.serialization") version "1.4.0"
     id("org.openjfx.javafxplugin") version "0.0.8"
 }
 
@@ -15,8 +15,8 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     // Use the Kotlin JDK standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.3.72")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0" )
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc" )
     // JGit
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.6.0.201912101111-r")
     // Ikonli

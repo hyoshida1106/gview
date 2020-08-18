@@ -48,8 +48,8 @@ class HeaderRowData(commitList: CommitListCtrl,
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?>  {
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
             val row1 = textMessage("ワークツリー情報 - ", timeStamp)
-            val row2 = textMessage("ステージ済:", "${model.stagedFiles.size} ファイル")
-            val row3 = textMessage("ステージ未:", "${model.changedFiles.size} ファイル")
+            val row2 = textMessage("ステージ済:", "${model.stagedFiles?.size?:0 } ファイル")
+            val row3 = textMessage("ステージ未:", "${model.changedFiles?.size?:0} ファイル")
             return Pair(VBox(row1, row2, row3), null)
         }
     }

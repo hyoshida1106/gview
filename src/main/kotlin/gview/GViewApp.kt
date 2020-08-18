@@ -1,7 +1,7 @@
 package gview
 
 import gview.conf.Configuration
-import gview.gui.MainView
+import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.IdleMonitor
 import javafx.application.Application
@@ -10,7 +10,7 @@ import javafx.stage.Stage
 import kotlin.system.exitProcess
 
 /*
-    Main Class
+    Application Main Class
  */
 class GViewApp : Application() {
 
@@ -22,7 +22,7 @@ class GViewApp : Application() {
             //Main Windowsのセットアップ
             mainStage = stage
             mainStage.title = "G/View"
-            mainStage.scene = Scene(MainView.root,
+            mainStage.scene = Scene(MainWindow.root,
                 Configuration.systemModal.mainWidth,
                 Configuration.systemModal.mainHeight)
             mainStage.setOnShown { _ -> GviewBasePaneCtrl.displayCompleted() }

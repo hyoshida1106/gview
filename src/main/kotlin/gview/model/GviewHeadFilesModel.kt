@@ -15,31 +15,29 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Repository>,
+class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Repository?>,
                           private val headIdProperty: ObjectProperty<ObjectId?>) {
 
     //ステージングされているファイルを保持するリスト
-    val stagedFilesProperty: ObjectProperty<List<GviewGitFileEntryModel>>
-    val stagedFiles: List<GviewGitFileEntryModel> get() { return stagedFilesProperty.value }
+    val stagedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>?>(null)
+    val stagedFiles: List<GviewGitFileEntryModel>? get() { return stagedFilesProperty.value }
 
     //ワーキングツリー上のインデックス未登録ファイルを保持するリスト
-    val changedFilesProperty: ObjectProperty<List<GviewGitFileEntryModel>>
-    val changedFiles: List<GviewGitFileEntryModel> get() { return changedFilesProperty.value }
+    val changedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>?>()
+    val changedFiles: List<GviewGitFileEntryModel>? get() { return changedFilesProperty.value }
 
     //ヘッダID
     val headerId: ObjectId? get() { return headIdProperty.value }
 
     //初期化
     init {
-        stagedFilesProperty  = SimpleObjectProperty<List<GviewGitFileEntryModel>>()
-        changedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>>()
         headIdProperty.addListener { _, _, newId -> update(newId) }
     }
 
     //データ更新
     private fun update(head: ObjectId?) {
         if(head != null) {
-            val repository = repositoryProperty.value
+            val repository = repositoryProperty.value!!
             val cache = repository.lockDirCache()
             try {
                 val iterator = DirCacheIterator(cache)

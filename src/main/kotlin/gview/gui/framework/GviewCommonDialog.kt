@@ -4,7 +4,7 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TextInputDialog
 import java.util.Optional
-import gview.gui.MainView
+import gview.gui.main.MainWindow
 
 /*
     共通ダイアログを生成するユーティリティ
@@ -26,7 +26,7 @@ object GviewCommonDialog {
      */
     private fun alertAndWait(alertType: Alert.AlertType, title: String, message: String?): ButtonType? {
         val alert = Alert(alertType)
-        alert.initOwner(MainView.root.scene.window)
+        alert.initOwner(MainWindow.root.scene.window)
         alert.title = title
         alert.headerText = null
         alert.contentText = message
@@ -72,7 +72,7 @@ object GviewCommonDialog {
 
     fun createSimpleTextDialog(message: String, title: String?, header: String? = null): String? {
         val dialog = TextInputDialog()
-        dialog.initOwner(MainView.root.scene.window)
+        dialog.initOwner(MainWindow.root.scene.window)
         dialog.title = title
         dialog.headerText = header
         dialog.contentText = message

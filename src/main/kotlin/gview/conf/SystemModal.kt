@@ -5,7 +5,9 @@ import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonElement
 
 /*
     システムモーダル情報
@@ -18,7 +20,7 @@ class SystemModal {
     }
 
     //シリアル変換に使用するJSONインスタンス
-    private val json = Json(JsonConfiguration.Stable.copy(unquotedPrint = false))
+    private val json = Json { }
 
     //最大化フラグ(Boolean)
     val maximumProperty: SimpleBooleanProperty
@@ -94,8 +96,8 @@ class SystemModal {
         //シリアライズ
         fun serialize(json: Json) {
             //JSON変換してファイル書き込み
-            val serialData = json.stringify(StorageData.serializer(), this)
-            writeToFile(modalInfoFilePath, serialData)
+            val serialData = json.encodeToJsonElement(StorageData.serializer(), this)
+            writeToFile(modalInfoFilePath, serialData.toString())
         }
 
         //デシリアライズするクラスメソッド
@@ -104,7 +106,7 @@ class SystemModal {
                 //ファイルから読み取ったデータをJSONとして解析
                 val str = readFromFile(modalInfoFilePath)
                 return if(str != null) {
-                    json.parse(StorageData.serializer(), str).copy()
+                    json.decodeFromString<StorageData>(StorageData.serializer(), str)
                 } else {
                     StorageData(false, 700.0, 1300.0, doubleArrayOf(0.2,0.5))
                 }

@@ -16,7 +16,7 @@ import java.io.File
 class GviewRepositoryModel {
 
     //JGitリポジトリ
-    private val repositoryProperty: ObjectProperty<Repository>
+    private val repositoryProperty = SimpleObjectProperty<Repository>()
     private val repository: Repository? get() { return repositoryProperty.value }
 
     //ブランチ一覧(ローカル/リモート)
@@ -24,31 +24,27 @@ class GviewRepositoryModel {
 
     //現在のブランチ名称
     val branchName: String? get() { return repository?.branch }
-    val fullBranch: String? get() { return repository?.fullBranch }
 
     //リポジトリのローカスパス
-    val localPathProperty: StringProperty
+    val localPathProperty = SimpleStringProperty()
     val localPath: String get() { return localPathProperty.value }
 
     //インデックス未登録/登録済ファイル情報
-    val headFiles: GviewHeadFilesModel
+    val headerFiles: GviewHeadFilesModel
 
     //HEADのObject ID
     private val headIdProperty = SimpleObjectProperty<ObjectId?>()
 
     //初期化
     init {
-        repositoryProperty = SimpleObjectProperty<Repository>(null)
-        localPathProperty  = SimpleStringProperty("")
-
-        branchList = GviewBranchListModel(repositoryProperty)
-        headFiles = GviewHeadFilesModel(repositoryProperty, headIdProperty)
+        branchList  = GviewBranchListModel(repositoryProperty)
+        headerFiles = GviewHeadFilesModel(repositoryProperty, headIdProperty)
 
         repositoryProperty.addListener { _, _, newRepository ->
             //ローカスパスの設定
-            localPathProperty.value = newRepository.directory.absolutePath
+            localPathProperty.value = newRepository?.directory?.absolutePath
             //HEAD IDを更新
-            headIdProperty.value = newRepository.resolve(Constants.HEAD)
+            headIdProperty.value = newRepository?.resolve(Constants.HEAD)
         }
     }
 

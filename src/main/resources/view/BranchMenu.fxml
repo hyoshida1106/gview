@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<Menu xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:id="branchMenu" text="ブランチ(_B)"
+      fx:controller="gview.gui.main.BranchMenuCtrl" onShowing="#onShowingMenu">
+
+    <MenuItem text="チェックアウト(_C)" fx:id="branchCheckoutMenu">
+        <graphic>
+            <FontIcon iconLiteral="mdi-folder-star"/>
+        </graphic>
+    </MenuItem>
+    <MenuItem text="プッシュ(_P)" fx:id="branchPushMenu" accelerator="Shortcut+Shift+P">
+        <graphic>
+            <FontIcon iconLiteral="mdi-folder-upload"/>
+        </graphic>
+    </MenuItem>
+    <MenuItem text="プル(_L)" fx:id="branchPullMenu" accelerator="Shortcut+Shift+L">
+        <graphic>
+            <FontIcon iconLiteral="mdi-folder-download"/>
+        </graphic>
+    </MenuItem>
+    <SeparatorMenuItem/>
+    <MenuItem text="名称変更(_R)..." fx:id="branchRenameMenu">
+        <graphic>
+            <FontIcon iconLiteral="mdi-folder-move"/>
+        </graphic>
+    </MenuItem>
+    <MenuItem text="削除(_D)" fx:id="branchRemoveMenu">
+        <graphic>
+            <FontIcon iconLiteral="mdi-folder-remove"/>
+        </graphic>
+    </MenuItem>
+</Menu>

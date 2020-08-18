@@ -1,8 +1,8 @@
 package gview.gui.dialog
 
-import gview.gui.commitinfo.CommitInfo
 import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
+import gview.gui.main.MainWindow
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleBooleanProperty
@@ -52,7 +52,7 @@ class SelectUnStageFilesDialogCtrl : GviewDialogController() {
         filePathColumn.style = CSS.filePathStyle
         fileCheckColumn.style = CSS.fileCheckStyle
 
-        val files = CommitInfo.controller.headerData?.stagedFiles
+        val files = MainWindow.controller.repository.headerFiles.stagedFiles
         if (files != null) {
             fileList.items.addAll(files.map { RowData(it) })
         }

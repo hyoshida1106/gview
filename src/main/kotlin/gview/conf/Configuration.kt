@@ -1,6 +1,6 @@
 package gview.conf
 
-import kotlinx.io.ByteArrayOutputStream
+import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileWriter

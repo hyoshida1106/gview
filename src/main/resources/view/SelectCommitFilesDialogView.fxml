@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:id="commitInfo" stylesheets="@Gview.css" fx:controller="gview.gui.dialog.SelectCommitFilesDialogCtrl">
+      stylesheets="@Gview.css" fx:controller="gview.gui.dialog.SelectCommitFilesDialogCtrl">
     <TableView fx:id="fileList" editable="true" prefWidth="400" prefHeight="200">
         <columns>
             <TableColumn fx:id="fileTypeColumn" editable="false" reorderable="false" text="種別" minWidth="50"/>

@@ -1,15 +1,13 @@
 package gview.gui.commitinfo
 
-import gview.gui.dialog.SelectCommitFilesDialog
-import gview.gui.dialog.SelectUnStageFilesDialog
-import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.framework.GviewBasePane
+import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.main.WorkTreeMenu
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.control.ButtonType
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.PropertyValueFactory
@@ -52,11 +50,11 @@ class HeaderFileListCtrl: GviewBasePaneCtrl() {
 
     //初期化
     fun initialize() {
-        stagedFileTypeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
-        stagedFilePathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
+        stagedFileTypeColumn.cellValueFactory = PropertyValueFactory("type")
+        stagedFilePathColumn.cellValueFactory = PropertyValueFactory("path")
 
-        changedFileTypeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
-        changedFilePathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
+        changedFileTypeColumn.cellValueFactory = PropertyValueFactory("type")
+        changedFilePathColumn.cellValueFactory = PropertyValueFactory("path")
 
         stagedFileTopBox.style = CSS.topBoxStyle
         stagedFileList.style = CSS.fileListStyle
@@ -77,19 +75,9 @@ class HeaderFileListCtrl: GviewBasePaneCtrl() {
         unStageButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
         commitButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
 
-        commitButton.setOnAction {
-            val dialog = SelectCommitFilesDialog()
-            if(dialog.showDialog() == ButtonType.OK) {
-                println("${dialog.selectedFiles}")
-            }
-        }
-
-        unStageButton.setOnAction {
-            val dialog = SelectUnStageFilesDialog()
-            if(dialog.showDialog() == ButtonType.OK) {
-                println("${dialog.selectedFiles}")
-            }
-        }
+        commitButton.setOnAction { WorkTreeMenu.command.onCommitMenu() }
+        unStageButton.setOnAction { WorkTreeMenu.command.onUnStageMenu() }
+        stageButton.setOnAction { WorkTreeMenu.command.onStageMenu() }
     }
 
     //表示完了時にListenerを設定する

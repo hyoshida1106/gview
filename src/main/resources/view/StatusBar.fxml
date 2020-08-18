@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            fx:id="statusBar" fx:controller="gview.gui.main.StatusBarCtrl">
+    <children>
+        <Label fx:id="repositoryPath" />
+    </children>
+</HBox>

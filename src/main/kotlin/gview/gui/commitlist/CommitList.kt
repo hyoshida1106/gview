@@ -1,6 +1,6 @@
 package gview.gui.commitlist
 
-import gview.gui.MainView
+import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.framework.GviewBasePane
 import gview.gui.util.TableColumnAdjuster
@@ -112,10 +112,10 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //データ更新時の再表示
-        val repository = MainView.controller.repository
+        val repository = MainWindow.controller.repository
         val branchList = repository.branchList
         branchList.commits.commitListProperty.addListener { _ ->
-            updateCommitList(repository.headFiles, branchList.commits) }
+            updateCommitList(repository.headerFiles, branchList.commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -150,7 +150,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        maxLaneNumber = commits.commitListProperty.value?.map { it.laneNumber }?.max() ?: 0
+        maxLaneNumber = commits.commitListProperty.value?.map { it.laneNumber }?.maxOrNull() ?: 0
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 
