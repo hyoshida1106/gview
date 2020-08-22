@@ -10,9 +10,8 @@ import javafx.scene.layout.VBox
 import java.text.DateFormat
 import java.util.*
 
-class HeaderRowData(commitList: CommitListCtrl,
-                    val model: GviewHeadFilesModel,
-                    head: GviewCommitDataModel?): AbstractRowData() {
+class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, head: GviewCommitDataModel?)
+    : AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = HeaderInfoCellData(model)

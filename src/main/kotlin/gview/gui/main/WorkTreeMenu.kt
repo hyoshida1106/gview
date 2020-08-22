@@ -4,6 +4,7 @@ import gview.gui.dialog.SelectCommitFilesDialog
 import gview.gui.dialog.SelectStageFilesDialog
 import gview.gui.dialog.SelectUnStageFilesDialog
 import gview.gui.framework.GviewBaseMenu
+import gview.model.GviewRepositoryModel
 import javafx.fxml.FXML
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
@@ -19,7 +20,7 @@ class WorkTreeMenuCtrl {
     @FXML private lateinit var workTreeCommitMenu: MenuItem
 
     @FXML private fun onShowingMenu() {
-        val headerData = MainWindow.controller.repository.headerFiles
+        val headerData = GviewRepositoryModel.currentRepository.headerFiles
         val stagedFileNumber = headerData.stagedFiles?.size?:0
         val changedFileNumber = headerData.changedFiles?.size?:0
         workTreeStageMenu.isDisable = changedFileNumber == 0

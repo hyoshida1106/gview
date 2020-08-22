@@ -4,6 +4,7 @@ import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
 import gview.gui.main.MainWindow
 import gview.gui.util.TableColumnAdjuster
+import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -53,7 +54,7 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
         commitMessageLabel.style = CSS.commitMessageLabelStyle
         commitMessageText.style = CSS.commitMessageTextStyle
 
-        val files = MainWindow.controller.repository.headerFiles.stagedFiles
+        val files =  GviewRepositoryModel.currentRepository.headerFiles.stagedFiles
         if (files != null) {
             fileList.items.addAll(files.map { RowData(it) })
         }

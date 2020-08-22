@@ -6,6 +6,7 @@ import gview.gui.framework.GviewBasePane
 import gview.gui.util.TableColumnAdjuster
 import gview.model.GviewCommitListModel
 import gview.model.GviewHeadFilesModel
+import gview.model.GviewRepositoryModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
@@ -14,6 +15,7 @@ import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
+import org.eclipse.jgit.lib.ObjectId
 
 object CommitList: GviewBasePane<CommitListCtrl>(
         "/view/CommitListView.fxml",
@@ -112,10 +114,11 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //データ更新時の再表示
-        val repository = MainWindow.controller.repository
+        val repository = GviewRepositoryModel.currentRepository
+        val headerId   = repository.headerId
         val branchList = repository.branchList
         branchList.commits.commitListProperty.addListener { _ ->
-            updateCommitList(repository.headerFiles, branchList.commits) }
+            updateCommitList(repository.headerFiles, headerId, branchList.commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -132,13 +135,14 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     }
 
     //表示更新
-    private fun updateCommitList(header: GviewHeadFilesModel, commits: GviewCommitListModel) {
+    private fun updateCommitList(header: GviewHeadFilesModel, headerId: ObjectId?, commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()
 
         //ヘッダ情報業を追加
-        val headerRow = HeaderRowData(this, header, commits.commitMap[header.headerId])
+        val commitData = if(headerId != null) commits.commitMap[headerId] else null
+        val headerRow = HeaderRowData(this, header, commitData)
         commitListTable.items.add(headerRow)
 
         //コミット情報行を追加

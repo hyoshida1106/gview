@@ -4,6 +4,7 @@ import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
 import gview.gui.main.MainWindow
 import gview.gui.util.TableColumnAdjuster
+import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -52,7 +53,7 @@ class SelectStageFilesDialogCtrl : GviewDialogController() {
         filePathColumn.style = CSS.filePathStyle
         fileCheckColumn.style = CSS.fileCheckStyle
 
-        val files = MainWindow.controller.repository.headerFiles.changedFiles
+        val files = GviewRepositoryModel.currentRepository.headerFiles.changedFiles
         if (files != null) {
             fileList.items.addAll(files.map { RowData(it) })
         }

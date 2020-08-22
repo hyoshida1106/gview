@@ -2,7 +2,6 @@ package gview.model
 
 import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
-import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.dircache.DirCacheIterator
 import org.eclipse.jgit.lib.ObjectId
@@ -15,8 +14,7 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Repository?>,
-                          private val headIdProperty: ObjectProperty<ObjectId?>) {
+class GviewHeadFilesModel() {
 
     //ステージングされているファイルを保持するリスト
     val stagedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>?>(null)
@@ -26,28 +24,18 @@ class GviewHeadFilesModel(private val repositoryProperty: ObjectProperty<Reposit
     val changedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>?>()
     val changedFiles: List<GviewGitFileEntryModel>? get() { return changedFilesProperty.value }
 
-    //ヘッダID
-    val headerId: ObjectId? get() { return headIdProperty.value }
-
-    //初期化
-    init {
-        headIdProperty.addListener { _, _, newId -> update(newId) }
-    }
-
     //データ更新
-    private fun update(head: ObjectId?) {
-        if(head != null) {
-            val repository = repositoryProperty.value!!
+    fun update(repository: Repository?, headerId: ObjectId?) {
+        if(repository != null && headerId != null) {
             val cache = repository.lockDirCache()
             try {
                 val iterator = DirCacheIterator(cache)
                 val formatter = ByteArrayDiffFormatter(repository)
-                stagedFilesProperty.value = getStagedFiles(repository, formatter, iterator, head)
+                stagedFilesProperty.value = getStagedFiles(repository, formatter, iterator, headerId)
                 changedFilesProperty.value = getChangedFiles(repository, formatter, iterator)
             } finally {
                 cache.unlock()
             }
-
         } else {
             stagedFilesProperty.value = emptyList()
             changedFilesProperty.value = emptyList()

@@ -2,6 +2,7 @@ package gview.gui.main
 
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
+import gview.model.GviewRepositoryModel
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
@@ -23,7 +24,7 @@ class StatusBarCtrl : GviewBasePaneCtrl() {
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //リポジトリのパスを表示
-        repositoryPath.textProperty().bind(MainWindow.controller.repository.localPathProperty)
+        repositoryPath.textProperty().bind(GviewRepositoryModel.currentRepository.localRepositoryPathProperty)
     }
 
     private object CSS {

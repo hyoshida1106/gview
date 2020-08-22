@@ -25,9 +25,6 @@ class MainWindowCtrl : GviewBasePaneCtrl() {
     @FXML private lateinit var commitInfo: AnchorPane
     @FXML private lateinit var statusBar: AnchorPane
 
-    //リポジトリ
-    val repository = GviewRepositoryModel()
-
     //SplitPaneのDivider位置を保持するProperty
     private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()
     private val splitPositions: DoubleArray get() { return splitPositionsProperty.value }

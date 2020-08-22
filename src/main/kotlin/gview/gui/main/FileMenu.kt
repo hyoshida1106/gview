@@ -1,7 +1,9 @@
 package gview.gui.main
 
+import gview.GViewApp
 import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
+import gview.model.GviewRepositoryModel
 import javafx.fxml.FXML
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
@@ -27,7 +29,7 @@ class FileMenuCtrl {
         val dir = chooser.showDialog(MainWindow.root.scene.window as? Stage?)
         if(dir != null) {
             try {
-                MainWindow.controller.repository.openExist(dir.path)
+                GviewRepositoryModel.currentRepository.openExist(dir.path)
             } catch(e: Exception) {
                 GviewCommonDialog.createErrorDialog(e)
             }
@@ -41,7 +43,7 @@ class FileMenuCtrl {
         val dir = chooser.showDialog(MainWindow.root.scene.window as? Stage?)
         if(dir != null) {
             try {
-                MainWindow.controller.repository.createNew(dir.absolutePath)
+                GviewRepositoryModel.currentRepository.createNew(dir.absolutePath)
             } catch(e: Exception) {
                 GviewCommonDialog.createErrorDialog(e)
             }
