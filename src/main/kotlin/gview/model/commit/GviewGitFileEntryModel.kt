@@ -12,7 +12,7 @@ class GviewGitFileEntryModel(private val formatter: ByteArrayDiffFormatter, priv
     enum class ModifiedType { ADD, COPY, DELETE, MODIFY, RENAME, UNKNOWN }
 
     //更新状態を取得する
-    private val type: ModifiedType = when (entry.changeType) {
+    val type: ModifiedType = when (entry.changeType) {
         DiffEntry.ChangeType.ADD    -> ModifiedType.ADD
         DiffEntry.ChangeType.COPY   -> ModifiedType.COPY
         DiffEntry.ChangeType.DELETE -> ModifiedType.DELETE
@@ -34,6 +34,7 @@ class GviewGitFileEntryModel(private val formatter: ByteArrayDiffFormatter, priv
     //ファイルのパス、削除時は削除前のパスを返す
     val path: String = if(type == ModifiedType.DELETE) entry.oldPath else entry.newPath
 
+    //DIFFテキストを取得する
     fun exportDiffText(): ByteArray {
         return formatter.getText(entry)
     }

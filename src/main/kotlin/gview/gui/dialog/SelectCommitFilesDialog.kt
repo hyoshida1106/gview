@@ -17,6 +17,7 @@ class SelectCommitFilesDialog: GviewDialog<SelectCommitFilesDialogCtrl>(
         "/view/SelectCommitFilesDialogView.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
     val selectedFiles: List<GviewGitFileEntryModel> get() = controller.selectedFiles
+    val message:String get() = controller.message
 }
 
 class SelectCommitFilesDialogCtrl : GviewDialogController() {
@@ -60,7 +61,7 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
         }
 
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->
-            fileList.items.forEach { it.check.value= newValue }
+            fileList.items.forEach { it.check.value = newValue }
         }
 
         fileListAdjuster = TableColumnAdjuster(fileList, filePathColumn)
@@ -69,6 +70,9 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
     //選択されたファイル一覧
     val selectedFiles: List<GviewGitFileEntryModel> get() =
         fileList.items.filter { it.check.value }.map { it.diffEntry }
+
+    //メッセージ
+    val message: String = commitMessageText.text
 
     //CSSスタイル定義
     private object CSS {

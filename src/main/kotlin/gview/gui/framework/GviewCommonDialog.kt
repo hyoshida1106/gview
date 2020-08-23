@@ -38,8 +38,8 @@ object GviewCommonDialog {
 
         @param e            例外インスタンス
      */
-    fun createErrorDialog(e: Exception) {
-        alertAndWait(Alert.AlertType.ERROR, "Exception", e.message)
+    fun errorDialog(e: Exception) {
+        alertAndWait(Alert.AlertType.ERROR, "エラー", e.message)
     }
 
     /**
@@ -47,8 +47,8 @@ object GviewCommonDialog {
 
         @param message      表示するメッセージ
      */
-    fun createErrorDialog(message: String) {
-        alertAndWait(Alert.AlertType.ERROR, "Error", message)
+    fun errorDialog(message: String) {
+        alertAndWait(Alert.AlertType.ERROR, "エラー", message)
     }
 
     /**
@@ -57,9 +57,12 @@ object GviewCommonDialog {
         @param message      表示するメッセージ
         @return             OKならばtrue
      */
+    fun confirmationDialog(message: String): Boolean {
+        return alertAndWait(Alert.AlertType.CONFIRMATION, "確認", message) == ButtonType.OK
+    }
 
-    fun createConfirmDialog(message: String): Boolean {
-        return alertAndWait(Alert.AlertType.CONFIRMATION, "Confirmation", message) == ButtonType.OK
+    fun informationDialog(message: String) {
+        alertAndWait(Alert.AlertType.INFORMATION, "通知", message)
     }
 
     /**
@@ -69,7 +72,6 @@ object GviewCommonDialog {
         @param header       ヘッダメッセージ
         @return             入力文字列またはnull
      */
-
     fun createSimpleTextDialog(message: String, title: String?, header: String? = null): String? {
         val dialog = TextInputDialog()
         dialog.initOwner(MainWindow.root.scene.window)

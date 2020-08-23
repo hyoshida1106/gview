@@ -16,9 +16,8 @@ import java.text.DateFormat
 class GviewCommitDataModel(private val repo: Repository,
                            private val commitList: GviewCommitListModel,
                            private val commit: PlotCommit<PlotLane>,
-                           val isHead: Boolean,
+                           private val isHead: Boolean,
                            private val prevCommit: GviewCommitDataModel?) {
-
     // ID
     val id: ObjectId = commit.id
 
@@ -92,6 +91,7 @@ class GviewCommitDataModel(private val repo: Repository,
             }
         }
 
+        //コミットがHEADの場合、HEADERへのラインを引いておく
         if(isHead) {
             branchLanes.add(laneNumber)
         }
@@ -125,17 +125,11 @@ class GviewCommitDataModel(private val repo: Repository,
         fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
     }
 
-//    fun containsTag(tagName: String): Boolean {
-//        for(tag in tags) {
-//            if(tag.matches(tagName))
-//                return true
-//        }
-//        return false
-//    }
+    //タグ検索
+    fun containsTag(tagName: String): Boolean = tags.contains(tagName)
 
-//    fun containsInComment(comment: String): Boolean {
-//        return fullMessage.contains(comment)
-//    }
+    //コメント検索
+    fun containsInComment(comment: String): Boolean = fullMessage.contains(comment)
 
 //    private fun timeToString(time: Date): String {
 //        return DateFormat.getDateTimeInstance().format(time)

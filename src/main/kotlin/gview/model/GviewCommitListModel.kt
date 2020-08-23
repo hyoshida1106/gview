@@ -29,12 +29,14 @@ class GviewCommitListModel() {
     //Commit一覧表示サイズ(暫定)
     private val commitSize = 1000
 
+    //現在のリポジトリ、リモートブランチ、ローカルブランチ
     private var repository: Repository? = null
     private var remoteBranches = listOf<GviewRemoteBranchModel>()
     private var localBranches = listOf<GviewLocalBranchModel>()
 
-    //ローカルブランチのチェックボックス変更時の処理
-    fun update(newRepository: Repository?, newRemoteBranches: List<GviewRemoteBranchModel>,
+    //リポジトリ変更時の処理
+    fun update(newRepository: Repository?,
+               newRemoteBranches: List<GviewRemoteBranchModel>,
                newLocalBranches: List<GviewLocalBranchModel> ) {
         repository = newRepository
         remoteBranches = newRemoteBranches
@@ -42,12 +44,14 @@ class GviewCommitListModel() {
         refresh()
     }
 
+    //ローカルブランチのチェックボックス変更時の処理
     private fun refresh() {
 
         if (repository != null) {
+            val repo = repository!!
 
             //PlotCommitListインスタンスを生成
-            val plotWalk = PlotWalk(repository)
+            val plotWalk = PlotWalk(repo)
             localBranches.forEach {
                 if (it.selected) {
                     plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId))
@@ -59,13 +63,13 @@ class GviewCommitListModel() {
             plotCommitList.fillTo(this.commitSize)
 
             //HEAD IDを取得
-            val headId = repository!!.resolve(Constants.HEAD)
+            val headId = repo.resolve(Constants.HEAD)
 
             //Commitモデルに変換
             val commitList = mutableListOf<GviewCommitDataModel>()
             var prev: GviewCommitDataModel? = null
             plotCommitList.forEach {
-                val commit = GviewCommitDataModel(repository!!, this, it, it.id == headId, prev)
+                val commit = GviewCommitDataModel(repo, this, it, it.id == headId, prev)
                 commitList.add(commit)
                 prev = commit
             }
@@ -81,8 +85,8 @@ class GviewCommitListModel() {
             remoteBranches.forEach { commitMap[it.ref.objectId]?.remoteBranches?.add(it) }
 
             //コミット情報にタグを設定
-            val revWalk = RevWalk(repository)
-            Git(repository).tagList().call().forEach {
+            val revWalk = RevWalk(repo)
+            Git(repo).tagList().call().forEach {
                 val tagName = Repository.shortenRefName(it.name)
                 when (val obj = revWalk.parseAny(it.objectId)) {
                     is RevTag -> commitMap[obj.getObject().id]?.tags?.add(tagName)

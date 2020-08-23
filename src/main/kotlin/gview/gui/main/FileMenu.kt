@@ -1,6 +1,5 @@
 package gview.gui.main
 
-import gview.GViewApp
 import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
 import gview.model.GviewRepositoryModel
@@ -31,7 +30,7 @@ class FileMenuCtrl {
             try {
                 GviewRepositoryModel.currentRepository.openExist(dir.path)
             } catch(e: Exception) {
-                GviewCommonDialog.createErrorDialog(e)
+                GviewCommonDialog.errorDialog(e)
             }
         }
     }
@@ -45,14 +44,14 @@ class FileMenuCtrl {
             try {
                 GviewRepositoryModel.currentRepository.createNew(dir.absolutePath)
             } catch(e: Exception) {
-                GviewCommonDialog.createErrorDialog(e)
+                GviewCommonDialog.errorDialog(e)
             }
         }
     }
 
     //終了確認
     private fun checkQuit() {
-        if(GviewCommonDialog.createConfirmDialog("アプリケーションを終了しますか？")) {
+        if(GviewCommonDialog.confirmationDialog("アプリケーションを終了しますか？")) {
             exitProcess(0)
         }
     }

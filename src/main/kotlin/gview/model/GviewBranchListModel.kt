@@ -20,14 +20,6 @@ class GviewBranchListModel() {
     //コミット情報リスト
     val commits = GviewCommitListModel()
 
-    //初期化
-    init {
-//        commits = GviewCommitListModel(repositoryProperty, localBranchesProperty, remoteBranchesProperty)
-//
-//        //ブランチ一覧の更新
-//        repositoryProperty.addListener { _, _, newRepository -> update(newRepository) }
-    }
-
     //更新
     fun update(repository: Repository?) {
 
