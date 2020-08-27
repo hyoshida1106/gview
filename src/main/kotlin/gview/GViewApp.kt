@@ -1,6 +1,6 @@
 package gview
 
-import gview.conf.Configuration
+import gview.conf.SystemModal
 import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.IdleMonitor
@@ -23,13 +23,13 @@ class GViewApp : Application() {
             mainStage = stage
             mainStage.title = "G/View"
             mainStage.scene = Scene(MainWindow.root,
-                Configuration.systemModal.mainWidth,
-                Configuration.systemModal.mainHeight)
+                SystemModal.mainWidthProperty.value,
+                SystemModal.mainHeightProperty.value)
             mainStage.setOnShown { _ -> GviewBasePaneCtrl.displayCompleted() }
             //IDLE状態モニタ設定
             monitor.register(stage.scene)
             //Main WindowサイズをModal Informationにバインドする
-            with(Configuration.systemModal) {
+            with(SystemModal) {
                 mainHeightProperty.bind(mainStage.heightProperty())
                 mainWidthProperty.bind(mainStage.widthProperty())
                 maximumProperty.bind(mainStage.fullScreenProperty())
@@ -45,7 +45,7 @@ class GViewApp : Application() {
     // 1秒のIDLE状態タイマ
     private val monitor = IdleMonitor(1000) {
         GviewBasePaneCtrl.updateConfigInfo()
-        Configuration.saveToFile()
+        SystemModal.saveToFile()
     }
 }
 

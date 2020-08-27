@@ -4,49 +4,33 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonBuilder
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonElement
 
 /*
     システムモーダル情報
  */
-class SystemModal {
-
-    companion object {
-        //保存ファイルパス
-        private const val modalInfoFilePath = "./ModalInfo.json"
-    }
-
-    //シリアル変換に使用するJSONインスタンス
-    private val json = Json { }
+object SystemModal: SerializableData("./ModalInfo.json") {
 
     //最大化フラグ(Boolean)
     val maximumProperty: SimpleBooleanProperty
-    val maximum: Boolean get() { return maximumProperty.value }
 
     //メインウィンドウ高さ
     val mainHeightProperty: SimpleDoubleProperty
-    val mainHeight: Double get() { return mainHeightProperty.value }
 
     //メインウィンドウ幅
     val mainWidthProperty: SimpleDoubleProperty
-    val mainWidth: Double get() { return mainWidthProperty.value }
 
     //メインウィンドウ分割位置
     val mainSplitPosProperty: SimpleObjectProperty<DoubleArray>
-    val mainSplitPos: DoubleArray get() { return mainSplitPosProperty.value }
 
     //保存データ
-    private val data: StorageData
-    var lastHashCode: Int                   //保存データハッシュコード
+    private val data: StorageData                   //保存データインスタンス
+    private var lastHashCode: Int                   //保存データハッシュコード
 
     //初期化
     init {
-        //ファイルから保存データを取得、または初期値設定
-        data = StorageData.deserialize(json)
-        lastHashCode = data.hashCode()      //取得データのハッシュコード
+        //ファイルから読み取ったデータをJSONとして解析
+        data = readFromFile()
+        lastHashCode = data.hashCode()
 
         //取得した値で各プロパティを初期化
         maximumProperty = SimpleBooleanProperty(data.maximum)
@@ -60,12 +44,19 @@ class SystemModal {
         mainWidthProperty.addListener { _, _, newValue -> data.mainWidth = newValue.toDouble() }
     }
 
+    //ファイルから取得
+    private fun readFromFile(): StorageData {
+        //ファイルから取得できなければ既定値を設定
+        return baseDeserialize(StorageData.serializer())
+                ?: StorageData(false, 800.0, 1200.0, doubleArrayOf(0.15, 0.4))
+    }
+
     //ファイルへ保存
-    fun serialize( ) {
+    fun saveToFile() {
         //ハッシュコードが変化している場合のみ更新する
         if(lastHashCode != data.hashCode()) {
-            data.serialize(json)
             lastHashCode = data.hashCode()
+            baseSerialize(StorageData.serializer(), data)
         }
     }
 
@@ -91,26 +82,6 @@ class SystemModal {
         override fun equals(other: Any?): Boolean {
             //使用していないので暫定実装
             return super.equals(other)
-        }
-
-        //シリアライズ
-        fun serialize(json: Json) {
-            //JSON変換してファイル書き込み
-            val serialData = json.encodeToJsonElement(StorageData.serializer(), this)
-            writeToFile(modalInfoFilePath, serialData.toString())
-        }
-
-        //デシリアライズするクラスメソッド
-        companion object Factory {
-            fun deserialize(json: Json): StorageData {
-                //ファイルから読み取ったデータをJSONとして解析
-                val str = readFromFile(modalInfoFilePath)
-                return if(str != null) {
-                    json.decodeFromString<StorageData>(StorageData.serializer(), str)
-                } else {
-                    StorageData(false, 700.0, 1300.0, doubleArrayOf(0.2,0.5))
-                }
-            }
         }
     }
 }

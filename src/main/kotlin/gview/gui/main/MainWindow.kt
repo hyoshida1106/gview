@@ -1,12 +1,11 @@
 package gview.gui.main
 
-import gview.conf.Configuration
+import gview.conf.SystemModal
 import gview.gui.branchlist.BranchList
 import gview.gui.commitinfo.CommitInfo
 import gview.gui.commitlist.CommitList
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.model.GviewRepositoryModel
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
@@ -32,7 +31,7 @@ class MainWindowCtrl : GviewBasePaneCtrl() {
     //初期化処理
     fun initialize() {
         //Dividerの初期設定
-        splitPositionsProperty.value = Configuration.systemModal.mainSplitPosProperty.value
+        splitPositionsProperty.value = SystemModal.mainSplitPosProperty.value
         mainSplit.setDividerPositions(splitPositions[0], splitPositions[1])
 
         //Divider移動時にsplitPositionPropertyを更新する
@@ -42,7 +41,7 @@ class MainWindowCtrl : GviewBasePaneCtrl() {
             -> splitPositions[1] = value.toDouble() }
 
         //Configuration情報にsplitPositionsPropertyをbind
-        Configuration.systemModal.mainSplitPosProperty.bind(splitPositionsProperty)
+        SystemModal.mainSplitPosProperty.bind(splitPositionsProperty)
 
         //初期化
         branchList.children.add(BranchList.root)
