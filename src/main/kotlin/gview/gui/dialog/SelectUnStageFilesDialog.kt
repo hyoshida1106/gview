@@ -2,7 +2,6 @@ package gview.gui.dialog
 
 import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
-import gview.gui.main.MainWindow
 import gview.gui.util.TableColumnAdjuster
 import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
@@ -17,7 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory
 
 class SelectUnStageFilesDialog: GviewDialog<SelectUnStageFilesDialogCtrl>(
         "アンステージするファイルを選択してください",
-        "/view/SelectUnStageFilesDialogView.fxml",
+        "/dialog/SelectUnStageFilesDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
     val selectedFiles: List<GviewGitFileEntryModel> get() = controller.selectedFiles
 }

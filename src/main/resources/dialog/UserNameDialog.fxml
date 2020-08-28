@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:id="pane" fx:controller="gview.gui.dialog.UserNameDialogCtrl" hgap="20" vgap="20"
+          stylesheets="@/Gview.css" prefHeight="200.0" prefWidth="400.0">
+    <Label text="ユーザ名:" GridPane.halignment="RIGHT"
+           GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="1" />
+    <Label text="メールアドレス:" GridPane.halignment="RIGHT"
+           GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="1" />
+    <TextField fx:id="userName" prefColumnCount="16"
+           GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="1" />
+    <TextField fx:id="mailAddr" prefColumnCount="16"
+           GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="1" />
+</GridPane>

@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 /*
     システムモーダル情報
  */
-object SystemModal: SerializableData("./ModalInfo.json") {
+object SystemModal: SerializableData("ModalInfo.json") {
 
     //最大化フラグ(Boolean)
     val maximumProperty: SimpleBooleanProperty
@@ -47,8 +47,7 @@ object SystemModal: SerializableData("./ModalInfo.json") {
     //ファイルから取得
     private fun readFromFile(): StorageData {
         //ファイルから取得できなければ既定値を設定
-        return baseDeserialize(StorageData.serializer())
-                ?: StorageData(false, 800.0, 1200.0, doubleArrayOf(0.15, 0.4))
+        return deserialize(StorageData.serializer()) ?: StorageData()
     }
 
     //ファイルへ保存
@@ -56,7 +55,7 @@ object SystemModal: SerializableData("./ModalInfo.json") {
         //ハッシュコードが変化している場合のみ更新する
         if(lastHashCode != data.hashCode()) {
             lastHashCode = data.hashCode()
-            baseSerialize(StorageData.serializer(), data)
+            serialize(StorageData.serializer(), data)
         }
     }
 
@@ -67,7 +66,10 @@ object SystemModal: SerializableData("./ModalInfo.json") {
     data class StorageData(var maximum: Boolean,
                            var mainHeight: Double,
                            var mainWidth: Double,
-                           var mainSplitPos: DoubleArray){
+                           var mainSplitPos: DoubleArray
+    ){
+        //デフォルト値
+        constructor( ): this(false, 800.0, 1200.0, doubleArrayOf(0.15, 0.4))
 
         //ハッシュ値の算出
         override fun hashCode(): Int {

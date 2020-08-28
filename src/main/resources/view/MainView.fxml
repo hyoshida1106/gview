@@ -5,18 +5,16 @@
 
 <BorderPane
         xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
-        stylesheets="@Gview.css" fx:controller="gview.gui.main.MainWindowCtrl">
+        stylesheets="@/Gview.css" fx:controller="gview.gui.main.MainWindowCtrl">
    <top>
       <AnchorPane fx:id="menuBar" />
    </top>
    <center>
-      <SplitPane fx:id="mainSplit" dividerPositions="0.2, 0.5" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane fx:id="branchList" SplitPane.resizableWithParent="false" />
-          <AnchorPane fx:id="commitList" SplitPane.resizableWithParent="false" />
-          <AnchorPane fx:id="commitInfo" />
-        </items>
-      </SplitPane>
+       <SplitPane fx:id="mainSplit" dividerPositions="0.2, 0.5" BorderPane.alignment="CENTER">
+           <AnchorPane fx:id="branchList" SplitPane.resizableWithParent="false"/>
+           <AnchorPane fx:id="commitList" SplitPane.resizableWithParent="false"/>
+           <AnchorPane fx:id="commitInfo"/>
+       </SplitPane>
    </center>
    <bottom>
       <AnchorPane fx:id="statusBar" />

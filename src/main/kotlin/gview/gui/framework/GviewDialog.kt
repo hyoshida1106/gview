@@ -16,7 +16,7 @@ open class GviewDialog<Controller>(title: String, form: String, vararg buttons: 
         dialogPane.content = loader.load()
         controller = loader.getController() as Controller
 
-        dialogPane.stylesheets.add(javaClass.getResource("/view/Gview.css").toExternalForm())
+        dialogPane.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())
     }
 
     fun showDialog(): ButtonType? {

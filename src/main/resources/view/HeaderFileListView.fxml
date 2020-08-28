@@ -6,12 +6,12 @@
            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-           stylesheets="@Gview.css" fx:controller="gview.gui.commitinfo.HeaderFileListCtrl">
+           stylesheets="@/Gview.css" fx:controller="gview.gui.commitinfo.HeaderFileListCtrl">
     <AnchorPane>
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <AnchorPane fx:id="stagedFileTopBox">
-                <Label fx:id="stagedFileLabel" AnchorPane.leftAnchor="0.0" text="ステージ" />
+                <Label AnchorPane.leftAnchor="0.0" text="ステージ" />
             </AnchorPane>
             <TableView fx:id="stagedFileList" editable="true">
                 <columns>
@@ -29,7 +29,7 @@
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <AnchorPane fx:id="changedFileTopBox">
-                <Label fx:id="changedFileLabel" AnchorPane.leftAnchor="0.0" text="更新"/>
+                <Label AnchorPane.leftAnchor="0.0" text="更新"/>
             </AnchorPane>
             <TableView fx:id="changedFileList" editable="true">
                 <columns>

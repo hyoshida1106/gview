@@ -2,7 +2,6 @@ package gview.gui.dialog
 
 import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
-import gview.gui.main.MainWindow
 import gview.gui.util.TableColumnAdjuster
 import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
@@ -14,7 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory
 
 class SelectCommitFilesDialog: GviewDialog<SelectCommitFilesDialogCtrl>(
         "コミットするファイルを選択し、メッセージを入力してください",
-        "/view/SelectCommitFilesDialogView.fxml",
+        "/dialog/SelectCommitFilesDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
     val selectedFiles: List<GviewGitFileEntryModel> get() = controller.selectedFiles
     val message:String get() = controller.message
@@ -72,7 +71,7 @@ class SelectCommitFilesDialogCtrl : GviewDialogController() {
         fileList.items.filter { it.check.value }.map { it.diffEntry }
 
     //メッセージ
-    val message: String = commitMessageText.text
+    val message: String get() = commitMessageText.text
 
     //CSSスタイル定義
     private object CSS {

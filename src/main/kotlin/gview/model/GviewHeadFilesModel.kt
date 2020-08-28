@@ -1,11 +1,13 @@
 package gview.model
 
+import gview.conf.ConfigUserInfo
 import gview.gui.framework.GviewCommonDialog
 import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.dircache.DirCacheIterator
+import org.eclipse.jgit.lib.Config
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
@@ -127,5 +129,15 @@ class GviewHeadFilesModel() {
 
     //コミット
     fun commitFiles(files: List<GviewGitFileEntryModel>, message:String) {
+        if(files.isNotEmpty()) {
+            val commit = Git(GviewRepositoryModel.currentRepository.jgitRepository)
+                    .commit()
+                    .setCommitter(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)
+                    .setMessage(message)
+            files.forEach { commit.setOnly(it.path) }
+            commit.call()
+            GviewCommonDialog.informationDialog("${files.size} ファイルをコミットしました")
+            refresh()
+        }
     }
 }
