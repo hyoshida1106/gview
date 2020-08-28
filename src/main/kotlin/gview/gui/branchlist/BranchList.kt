@@ -45,7 +45,7 @@ class BranchListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        val branchList = GviewRepositoryModel.currentRepository.branchList
+        val branchList = GviewRepositoryModel.currentRepository.branches
         //リポジトリ内のLocal/Remoteブランチ情報更新時に再描画する
         branchList.localBranchesProperty .addListener { _, _, newVal -> updateLocalBranches (newVal) }
         branchList.remoteBranchesProperty.addListener { _, _, newVal -> updateRemoteBranches(newVal) }

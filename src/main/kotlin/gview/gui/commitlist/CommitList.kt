@@ -1,6 +1,5 @@
 package gview.gui.commitlist
 
-import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.framework.GviewBasePane
 import gview.gui.util.TableColumnAdjuster
@@ -116,7 +115,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
         val headerId   = repository.headerId
-        val branchList = repository.branchList
+        val branchList = repository.branches
         branchList.commits.commitListProperty.addListener { _ ->
             updateCommitList(repository.headerFiles, headerId, branchList.commits) }
 

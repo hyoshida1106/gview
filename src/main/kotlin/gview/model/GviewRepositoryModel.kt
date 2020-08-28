@@ -22,7 +22,7 @@ class GviewRepositoryModel {
     val headerFiles = GviewHeadFilesModel()
 
     //ブランチ一覧(ローカル/リモート)
-    val branchList = GviewBranchListModel()
+    val branches = GviewBranchListModel()
 
     //JGitリポジトリ
     var jgitRepository: Repository? = null
@@ -69,7 +69,12 @@ class GviewRepositoryModel {
         localRepositoryPathProperty.value = newRepository?.directory?.absolutePath
         headerId = newRepository?.resolve(Constants.HEAD)
 
-        branchList.update(newRepository)
+        branches.update(newRepository)
         headerFiles.update(newRepository, headerId)
+    }
+
+    //
+    fun refreshCommitList() {
+        branches.commits.refresh()
     }
 }

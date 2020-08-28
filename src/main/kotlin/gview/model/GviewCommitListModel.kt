@@ -45,7 +45,7 @@ class GviewCommitListModel() {
     }
 
     //ローカルブランチのチェックボックス変更時の処理
-    private fun refresh() {
+    fun refresh() {
 
         if (repository != null) {
             val repo = repository!!

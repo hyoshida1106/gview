@@ -137,7 +137,7 @@ class GviewHeadFilesModel() {
             files.forEach { commit.setOnly(it.path) }
             commit.call()
             GviewCommonDialog.informationDialog("${files.size} ファイルをコミットしました")
-            refresh()
+            GviewRepositoryModel.currentRepository.refreshCommitList()
         }
     }
 }
