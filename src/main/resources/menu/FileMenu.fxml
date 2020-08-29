@@ -5,7 +5,7 @@
 
 <Menu xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:id="fileMenu" text="ファイル(_F)"
-      fx:controller="gview.gui.main.FileMenuCtrl" onShowing="#onShowingMenu">
+      fx:controller="gview.gui.menu.FileMenuCtrl" onShowing="#onShowingMenu">
     <MenuItem text="リポジトリを開く(_O)..." fx:id="fileOpenMenu"
               accelerator="Shortcut+O" onAction="#onMenuOpenRepository">
         <graphic>

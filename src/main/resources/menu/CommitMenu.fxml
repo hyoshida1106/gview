@@ -5,7 +5,7 @@
 
 <Menu xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:id="commitMenu" text="コミット(_C)"
-      fx:controller="gview.gui.main.CommitMenuCtrl" onShowing="#onShowingMenu">
+      fx:controller="gview.gui.menu.CommitMenuCtrl" onShowing="#onShowingMenu">
     <MenuItem text="タグ検索(_F)..." fx:id="commitTagSearchMenu">
     </MenuItem>
     <MenuItem text="コメント検索(_S)..." fx:id="commitCommentSearchMenu" accelerator="Shortcut+Shift+F">

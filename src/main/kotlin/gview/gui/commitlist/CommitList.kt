@@ -114,10 +114,8 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     override fun displayCompleted() {
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
-        val headerId   = repository.headerId
-        val branchList = repository.branches
-        branchList.commits.commitListProperty.addListener { _ ->
-            updateCommitList(repository.headerFiles, headerId, branchList.commits) }
+        repository.branches.commits.commitListProperty.addListener { _ ->
+            updateCommitList(repository.headerFiles, repository.headerId, repository.branches.commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->

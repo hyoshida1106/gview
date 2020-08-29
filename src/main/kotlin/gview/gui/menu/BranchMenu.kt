@@ -1,11 +1,11 @@
-package gview.gui.main
+package gview.gui.menu
 
 import gview.gui.framework.GviewBaseMenu
 import javafx.fxml.FXML
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 
-object BranchMenu: GviewBaseMenu<BranchMenuCtrl>("/view/BranchMenu.fxml")
+object BranchMenu: GviewBaseMenu<BranchMenuCtrl>("/menu/BranchMenu.fxml")
 
 class BranchMenuCtrl {
 

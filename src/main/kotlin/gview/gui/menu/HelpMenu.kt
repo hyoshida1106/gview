@@ -1,11 +1,11 @@
-package gview.gui.main
+package gview.gui.menu
 
 import gview.gui.framework.GviewBaseMenu
 import javafx.fxml.FXML
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 
-object HelpMenu: GviewBaseMenu<HelpMenuCtrl>("/view/HelpMenu.fxml")
+object HelpMenu: GviewBaseMenu<HelpMenuCtrl>("/menu/HelpMenu.fxml")
 
 class HelpMenuCtrl {
 

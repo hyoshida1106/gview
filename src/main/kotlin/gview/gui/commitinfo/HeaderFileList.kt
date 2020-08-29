@@ -2,7 +2,7 @@ package gview.gui.commitinfo
 
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.gui.main.WorkTreeMenu
+import gview.gui.menu.WorkTreeMenu
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty

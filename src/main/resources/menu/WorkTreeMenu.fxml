@@ -5,7 +5,7 @@
 
 <Menu xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:id="workTreeMenu" text="ワークツリー(_W)"
-      fx:controller="gview.gui.main.WorkTreeMenuCtrl" onShowing="#onShowingMenu">
+      fx:controller="gview.gui.menu.WorkTreeMenuCtrl" onShowing="#onShowingMenu">
     <MenuItem text="ステージ(_S)..." fx:id="workTreeStageMenu" accelerator="Shortcut+S"
               onAction="#onStageMenu">
         <graphic><FontIcon iconLiteral="mdi-arrow-up-bold-circle-outline"/></graphic>

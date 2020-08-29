@@ -1,4 +1,4 @@
-package gview.gui.main
+package gview.gui.menu
 
 import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
@@ -6,7 +6,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuItem
 
-object CommitMenu: GviewBaseMenu<CommitMenuCtrl>("/view/CommitMenu.fxml")
+object CommitMenu: GviewBaseMenu<CommitMenuCtrl>("/menu/CommitMenu.fxml")
 
 class CommitMenuCtrl {
 

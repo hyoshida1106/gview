@@ -7,7 +7,6 @@ import gview.model.util.ByteArrayDiffFormatter
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.dircache.DirCacheIterator
-import org.eclipse.jgit.lib.Config
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
@@ -19,7 +18,7 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewHeadFilesModel() {
+class GviewHeadFilesModel {
 
     //ステージングされているファイルを保持するリスト
     val stagedFilesProperty = SimpleObjectProperty<List<GviewGitFileEntryModel>?>(null)
@@ -137,7 +136,7 @@ class GviewHeadFilesModel() {
             files.forEach { commit.setOnly(it.path) }
             commit.call()
             GviewCommonDialog.informationDialog("${files.size} ファイルをコミットしました")
-            GviewRepositoryModel.currentRepository.refreshCommitList()
+            GviewRepositoryModel.currentRepository.refresh()
         }
     }
 }

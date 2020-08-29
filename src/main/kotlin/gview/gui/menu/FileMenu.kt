@@ -1,14 +1,15 @@
-package gview.gui.main
+package gview.gui.menu
 
 import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
+import gview.gui.main.MainWindow
 import gview.model.GviewRepositoryModel
 import javafx.fxml.FXML
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import kotlin.system.exitProcess
 
-object FileMenu: GviewBaseMenu<FileMenuCtrl>("/view/FileMenu.fxml")
+object FileMenu: GviewBaseMenu<FileMenuCtrl>("/menu/FileMenu.fxml")
 
 class FileMenuCtrl {
 

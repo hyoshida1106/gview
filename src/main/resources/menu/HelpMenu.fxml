@@ -5,7 +5,7 @@
 
 <Menu xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:id="helpMenu" text="ヘルプ(_H)"
-      fx:controller="gview.gui.main.HelpMenuCtrl" onShowing="#onShowingMenu">
+      fx:controller="gview.gui.menu.HelpMenuCtrl" onShowing="#onShowingMenu">
 
     <MenuItem text="ヘルプ..." fx:id="helpHelpMenu" accelerator="Shortcut+H">
         <graphic><FontIcon iconLiteral="mdi-help-circle-outline"/></graphic>

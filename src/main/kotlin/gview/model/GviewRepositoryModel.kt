@@ -65,16 +65,20 @@ class GviewRepositoryModel {
     //リポジトリインスタンスの更新
     private fun updateRepository(newRepository: Repository?) {
         jgitRepository = newRepository
-
-        localRepositoryPathProperty.value = newRepository?.directory?.absolutePath
-        headerId = newRepository?.resolve(Constants.HEAD)
-
-        branches.update(newRepository)
-        headerFiles.update(newRepository, headerId)
+        refresh()
     }
 
-    //
-    fun refreshCommitList() {
-        branches.commits.refresh()
+    //表示更新
+    fun refresh() {
+        val repository = jgitRepository
+        if(repository != null) {
+            localRepositoryPathProperty.value = repository.directory.absolutePath
+            headerId = repository.resolve(Constants.HEAD)
+        } else {
+            localRepositoryPathProperty.value = ""
+            headerId = null
+        }
+        branches.update(repository)
+        headerFiles.update(repository, headerId)
     }
 }

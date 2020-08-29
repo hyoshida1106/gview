@@ -2,14 +2,9 @@ package gview.gui.main
 
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.gui.framework.GviewCommonDialog
+import gview.gui.menu.*
 import javafx.fxml.FXML
-import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar as JavaFxMenuBar
-import javafx.scene.control.MenuItem
-import javafx.stage.DirectoryChooser
-import javafx.stage.Stage
-import kotlin.system.exitProcess
 
 object MenuBar: GviewBasePane<MenuBarCtrl>(
         "/view/MenuBar.fxml",

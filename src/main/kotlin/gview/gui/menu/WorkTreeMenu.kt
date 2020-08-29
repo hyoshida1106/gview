@@ -1,4 +1,4 @@
-package gview.gui.main
+package gview.gui.menu
 
 import gview.conf.ConfigUserInfo
 import gview.gui.dialog.SelectCommitFilesDialog
@@ -12,7 +12,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.ButtonType
 import javafx.scene.control.MenuItem
 
-object WorkTreeMenu: GviewBaseMenu<WorkTreeMenuCtrl>("/view/WorkTreeMenu.fxml")
+object WorkTreeMenu: GviewBaseMenu<WorkTreeMenuCtrl>("/menu/WorkTreeMenu.fxml")
 
 class WorkTreeMenuCtrl {
 

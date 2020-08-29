@@ -93,9 +93,7 @@ class BranchListCtrl: GviewBasePaneCtrl() {
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
         override fun isLeaf(): Boolean = false
-        init {
-            isExpanded = true
-        }
+        init { isExpanded = true }
     }
 
     private object CSS {
