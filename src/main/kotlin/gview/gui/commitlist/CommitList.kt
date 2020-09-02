@@ -91,18 +91,20 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     fun initialize() {
         commitListTable.style = CSS.commitListStyle
 
-        treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.treeCellValue) }
-        infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper<CellData>(row.value.infoCellValue) }
-        treeColumn.setCellFactory { _ -> Cell() }
-        infoColumn.setCellFactory { _ -> Cell() }
+        treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.treeCellValue) }
+        infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.infoCellValue) }
+        treeColumn.setCellFactory { Cell() }
+        infoColumn.setCellFactory { Cell() }
 
         /* 行のCSS Classを設定するためにRowFactoryを更新する */
-        commitListTable.setRowFactory { _ -> object : TableRow<RowData>() {
-            override fun updateItem(rowData: RowData?, empty: Boolean) {
-                styleClass.setAll("cell", "table-row-cell", rowData?.styleClassName)
-                super.updateItem(rowData, empty)
+        commitListTable.setRowFactory {
+            object : TableRow<RowData>() {
+                override fun updateItem(rowData: RowData?, empty: Boolean) {
+                    styleClass.setAll("cell", "table-row-cell", rowData?.styleClassName)
+                    super.updateItem(rowData, empty)
+                }
             }
-        }}
+        }
 
         commitListAdjuster = TableColumnAdjuster(commitListTable, infoColumn)
 
@@ -115,7 +117,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
         repository.branches.commits.commitListProperty.addListener { _ ->
-            updateCommitList(repository.headerFiles, repository.headerId, repository.branches.commits) }
+            update(repository.headerFiles, repository.headerId, repository.branches.commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -132,7 +134,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     }
 
     //表示更新
-    private fun updateCommitList(header: GviewHeadFilesModel, headerId: ObjectId?, commits: GviewCommitListModel) {
+    private fun update(header: GviewHeadFilesModel, headerId: ObjectId?, commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()
@@ -154,6 +156,9 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         maxLaneNumber = commits.commitListProperty.value?.map { it.laneNumber }?.maxOrNull() ?: 0
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
+
+        //戦闘のコミットまたはヘッダを選択する
+        commitListTable.selectionModel.select(if(commitListTable.items.size <= 1) 0 else 1)
 
         //リストを可視化
         commitListTable.isVisible = true

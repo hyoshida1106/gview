@@ -5,77 +5,107 @@ import gview.gui.dialog.SelectCommitFilesDialog
 import gview.gui.dialog.SelectStageFilesDialog
 import gview.gui.dialog.SelectUnStageFilesDialog
 import gview.gui.dialog.UserNameDialog
-import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
+import gview.gui.framework.GviewMenuItem
 import gview.model.GviewRepositoryModel
-import javafx.fxml.FXML
+import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
-import javafx.scene.control.MenuItem
+import javafx.scene.control.Menu
+import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 
-object WorkTreeMenu: GviewBaseMenu<WorkTreeMenuCtrl>("/menu/WorkTreeMenu.fxml")
+class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
-class WorkTreeMenuCtrl {
+    private val stageMenu = GviewMenuItem(
+            text = "ステージ(_S)...",
+            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-arrow-up-bold-circle-outline"
+    ) { onStageMenu() }
 
-    @FXML private lateinit var workTreeStageMenu: MenuItem
-    @FXML private lateinit var workTreeUnStageMenu: MenuItem
-    @FXML private lateinit var workTreeCommitMenu: MenuItem
+    private val unstageMenu = GviewMenuItem(
+            text = "アンステージ(_U)...",
+            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            iconLiteral = "mdi-arrow-down-bold-circle-outline"
+    ) { onUnStageMenu() }
 
-    @FXML private fun onShowingMenu() {
+    private val commitMenu = GviewMenuItem(
+            text = "コミット(_C)...",
+            accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-checkbox-marked-circle-outline"
+    ) { onCommitMenu() }
+
+    init {
+        items.setAll(
+                stageMenu,
+                unstageMenu,
+                SeparatorMenuItem(),
+                commitMenu
+        )
+        onShowing = EventHandler { onShowingMenu() }
+    }
+
+    private fun onShowingMenu() {
         val headerData = GviewRepositoryModel.currentRepository.headerFiles
         val stagedFileNumber = headerData.stagedFiles?.size?:0
         val changedFileNumber = headerData.changedFiles?.size?:0
-        workTreeStageMenu.isDisable = changedFileNumber == 0
-        workTreeUnStageMenu.isDisable = stagedFileNumber == 0
-        workTreeCommitMenu.isDisable = stagedFileNumber == 0
+        stageMenu.isDisable = changedFileNumber == 0
+        unstageMenu.isDisable = stagedFileNumber == 0
+        commitMenu.isDisable = stagedFileNumber == 0
     }
 
-    @FXML fun onStageMenu() {
-        val dialog = SelectStageFilesDialog()
-        if(dialog.showDialog() == ButtonType.OK) {
-            try {
-                val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                headerData.stageFiles(dialog.selectedFiles)
-            } catch(e: Exception) {
-                GviewCommonDialog.errorDialog(e)
+    companion object {
+
+        fun onStageMenu() {
+            val dialog = SelectStageFilesDialog()
+            if (dialog.showDialog() == ButtonType.OK) {
+                try {
+                    val headerData = GviewRepositoryModel.currentRepository.headerFiles
+                    headerData.stageFiles(dialog.selectedFiles)
+                } catch (e: Exception) {
+                    GviewCommonDialog.errorDialog(e)
+                }
             }
         }
-    }
 
-    @FXML fun onUnStageMenu() {
-        val dialog = SelectUnStageFilesDialog()
-        if(dialog.showDialog() != ButtonType.OK) {
-            try {
-                val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                headerData.unStageFiles(dialog.selectedFiles)
-            } catch(e: Exception) {
-                GviewCommonDialog.errorDialog(e)
+        fun onUnStageMenu() {
+            val dialog = SelectUnStageFilesDialog()
+            if (dialog.showDialog() != ButtonType.OK) {
+                try {
+                    val headerData = GviewRepositoryModel.currentRepository.headerFiles
+                    headerData.unStageFiles(dialog.selectedFiles)
+                } catch (e: Exception) {
+                    GviewCommonDialog.errorDialog(e)
+                }
             }
         }
-    }
 
-    @FXML fun onCommitMenu() {
-        //ユーザ名とメールアドレスが未入力ならば入力する
-        while (ConfigUserInfo.userName.isEmpty() || ConfigUserInfo.mailAddr.isEmpty()) {
-            val dialog = UserNameDialog(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)
-            if(dialog.showDialog() != ButtonType.OK) {
+        fun onCommitMenu() {
+            //ユーザ名とメールアドレスが未入力ならば入力する
+            while (ConfigUserInfo.userName.isEmpty() || ConfigUserInfo.mailAddr.isEmpty()) {
+                val dialog = UserNameDialog(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)
+                if (dialog.showDialog() != ButtonType.OK) {
+                    return
+                }
+                ConfigUserInfo.userName = dialog.userName
+                ConfigUserInfo.mailAddr = dialog.mailAddr
+                ConfigUserInfo.saveToFile()
+            }
+            //対象ファイルを選択する
+            val dialog = SelectCommitFilesDialog()
+            if (dialog.showDialog() != ButtonType.OK) {
                 return
             }
-            ConfigUserInfo.userName = dialog.userName
-            ConfigUserInfo.mailAddr = dialog.mailAddr
-            ConfigUserInfo.saveToFile()
-        }
-        //対象ファイルを選択する
-        val dialog = SelectCommitFilesDialog()
-        if (dialog.showDialog() != ButtonType.OK) {
-            return
-        }
-        //コミットを実行する
-        try {
-            val headerData = GviewRepositoryModel.currentRepository.headerFiles
-            headerData.commitFiles(dialog.selectedFiles, dialog.message)
-        } catch (e: Exception) {
-            GviewCommonDialog.errorDialog(e)
+            //コミットを実行する
+            try {
+                val headerData = GviewRepositoryModel.currentRepository.headerFiles
+                headerData.commitFiles(dialog.selectedFiles, dialog.message)
+            } catch (e: Exception) {
+                GviewCommonDialog.errorDialog(e)
+            }
         }
     }
+
 }
 

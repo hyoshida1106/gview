@@ -1,44 +1,96 @@
 package gview.gui.menu
 
-import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
-import javafx.fxml.FXML
+import gview.gui.framework.GviewMenuItem
+import javafx.event.EventHandler
 import javafx.scene.control.Menu
-import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 
-object CommitMenu: GviewBaseMenu<CommitMenuCtrl>("/menu/CommitMenu.fxml")
+class CommitMenu: Menu("コミット(_C)") {
 
-class CommitMenuCtrl {
+    private val tagSearchMenu = GviewMenuItem(
+            text= "タグを検索(_F)...",
+            accelerator = KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN)
+    ) { onTagSearch() }
 
-    @FXML private lateinit var commitMenu: Menu
-    @FXML private lateinit var commitTagSearchMenu: MenuItem
-    @FXML private lateinit var commitCommentSearchMenu: MenuItem
-    @FXML private lateinit var commitCreateBranchMenu: MenuItem
-    @FXML private lateinit var commitMergeMenu: MenuItem
-    @FXML private lateinit var commitCherryPickMenu: MenuItem
-    @FXML private lateinit var commitCreateTagMenu: MenuItem
-    @FXML private lateinit var commitRemoveTagMenu: MenuItem
+    private val commentSearchMenu = GviewMenuItem(
+            text = "コメントを検索(_S)...",
+            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN)
+    ) { onCommentSearch() }
 
-    @FXML private fun onShowingMenu() {
-        commitCreateBranchMenu.isDisable = true
-        commitMergeMenu.isDisable = true
-        commitCherryPickMenu.isDisable = true
-        commitCreateTagMenu.isDisable = true
-        commitRemoveTagMenu.isDisable = true
+    private val branchMenu = GviewMenuItem(
+            text = "ブランチ...",
+            accelerator = KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-source-branch"
+    ) { onBranch() }
+
+    private val mergeMenu = GviewMenuItem(
+            text = "マージ...",
+            accelerator = KeyCodeCombination(KeyCode.M, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-source-merge"
+    ) { onMerge() }
+
+    private val cherryPickMenu = GviewMenuItem(
+            text = "チェリーピック...",
+            accelerator = KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-source-pull"
+    ) { onCherryPick() }
+
+    private val newTagMenu = GviewMenuItem(
+            text = "タグを作成..."
+    ) { onNewTag() }
+
+    private val removeTagMenu = GviewMenuItem(
+            text = "タグを削除..."
+    ) { onRemoveTag() }
+
+    init {
+        items.setAll(
+                tagSearchMenu,
+                commentSearchMenu,
+                SeparatorMenuItem(),
+                branchMenu,
+                mergeMenu,
+                cherryPickMenu,
+                SeparatorMenuItem(),
+                newTagMenu,
+                removeTagMenu
+        )
+        onShowing = EventHandler { onShowingMenu() }
     }
 
-    @FXML private fun onCommitTagSearch() {
+    private fun onShowingMenu() {
+    }
+
+    private fun onTagSearch() {
         val tagName = GviewCommonDialog.createSimpleTextDialog("タグ検索", "検索するタグ")
         if(tagName != null) {
             //タグ検索(tagName)
         }
     }
 
-    @FXML private fun onCommitCommentSearch() {
+    private fun onCommentSearch() {
         val comment = GviewCommonDialog.createSimpleTextDialog("コメント検索", "検索する文字列")
         if(comment != null) {
             //コメント検索(comment)
         }
     }
 
+    private fun onBranch() {
+    }
+
+    private fun onMerge() {
+    }
+
+    private fun onCherryPick() {
+    }
+
+    private fun onNewTag() {
+    }
+
+    private fun onRemoveTag() {
+    }
 }

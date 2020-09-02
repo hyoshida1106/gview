@@ -59,7 +59,9 @@
 .menu-item {
     -fx-background-color: -background-color;
 }
-
+.menu-item:focused {
+     -fx-background-color: -selected-color;
+}
 /* Split Divider */
 .split-pane-divider {
     -fx-border-color: -background-color;
@@ -68,6 +70,9 @@
 }
 
 /* Table View */
+.table-view {
+    -fx-selection-bar-non-focused: derive(-fx-selection-bar, 50%);
+}
 .table-view .column-header,
 .table-view .column-header-background .filler {
     -fx-background-color: -background-color;

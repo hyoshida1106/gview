@@ -75,9 +75,9 @@ class HeaderFileListCtrl: GviewBasePaneCtrl() {
         unStageButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
         commitButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
 
-        commitButton.setOnAction { WorkTreeMenu.command.onCommitMenu() }
-        unStageButton.setOnAction { WorkTreeMenu.command.onUnStageMenu() }
-        stageButton.setOnAction { WorkTreeMenu.command.onStageMenu() }
+        commitButton.setOnAction { WorkTreeMenu.onCommitMenu() }
+        unStageButton.setOnAction { WorkTreeMenu.onUnStageMenu() }
+        stageButton.setOnAction { WorkTreeMenu.onStageMenu() }
     }
 
     //表示完了時にListenerを設定する

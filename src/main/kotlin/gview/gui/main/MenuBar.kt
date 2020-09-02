@@ -18,11 +18,11 @@ class MenuBarCtrl : GviewBasePaneCtrl() {
     fun initialize() {
         menuBar.style = CSS.menuBarStyle
         menuBar.menus.addAll(
-            FileMenu.menu,
-            BranchMenu.menu,
-            WorkTreeMenu.menu,
-            CommitMenu.menu,
-            HelpMenu.menu
+            FileMenu(),
+            BranchMenu(),
+            WorkTreeMenu(),
+            CommitMenu(),
+            HelpMenu()
         )
     }
 

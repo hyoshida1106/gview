@@ -11,7 +11,7 @@
             <TableColumn fx:id="filePathColumn" editable="false" reorderable="false" text="パス"/>
             <TableColumn fx:id="fileCheckColumn" reorderable="false" minWidth="30" maxWidth="30">
                 <graphic>
-                    <CheckBox fx:id="selAllCheckBox" />
+                    <CheckBox fx:id="selAllCheckBox" selected="true" />
                 </graphic>
             </TableColumn>
         </columns>

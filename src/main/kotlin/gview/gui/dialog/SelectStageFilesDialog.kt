@@ -32,7 +32,7 @@ class SelectStageFilesDialogCtrl : GviewDialogController() {
     class RowData(val diffEntry: GviewGitFileEntryModel) {
         val type: String = diffEntry.typeName
         val path: String = diffEntry.path
-        val check = SimpleBooleanProperty(false)
+        val check = SimpleBooleanProperty(true)
     }
 
     /* テーブルのカラム幅を調整する処理クラス */

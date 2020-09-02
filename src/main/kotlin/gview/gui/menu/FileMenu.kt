@@ -1,29 +1,53 @@
 package gview.gui.menu
 
-import gview.gui.framework.GviewBaseMenu
 import gview.gui.framework.GviewCommonDialog
+import gview.gui.framework.GviewMenuItem
 import gview.gui.main.MainWindow
 import gview.model.GviewRepositoryModel
-import javafx.fxml.FXML
+import javafx.event.EventHandler
+import javafx.scene.control.Menu
+import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import kotlin.system.exitProcess
 
-object FileMenu: GviewBaseMenu<FileMenuCtrl>("/menu/FileMenu.fxml")
+class FileMenu: Menu("ファイル(_F)") {
 
-class FileMenuCtrl {
+    private val openMenu = GviewMenuItem(
+            text= "リポジトリを開く(_O)...",
+            accelerator = KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-folder"
+    ) { onOpenRepository() }
 
-    //メニュー関数
-    @FXML private fun onMenuOpenRepository() = openRepository()
-    @FXML private fun onMenuCreateNewRepository() = createRepository()
-    @FXML private fun onMenuQuit() = checkQuit()
+    private val createMenu = GviewMenuItem(
+            text = "新規リポジトリ(_N)...",
+            accelerator = KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN),
+            iconLiteral = "mdi-folder-plus"
+    ) { onCreateRepository() }
+
+    private val quitMenu = GviewMenuItem(
+            text = "終了(_X)"
+    ) { onQuit() }
+
+    init {
+        items.setAll(
+                openMenu,
+                createMenu,
+                SeparatorMenuItem(),
+                quitMenu
+        )
+        onShowing = EventHandler { onShowingMenu() }
+    }
 
     //"File"メニュー表示
-    @FXML private fun onShowingMenu() {
+    private fun onShowingMenu() {
     }
 
     //既存リポジトリを開く
-    private fun openRepository() {
+    private fun onOpenRepository() {
         val chooser = DirectoryChooser()
         chooser.title = "リポジトリを開く"
         val dir = chooser.showDialog(MainWindow.root.scene.window as? Stage?)
@@ -37,7 +61,7 @@ class FileMenuCtrl {
     }
 
     //リポジトリ新規作成
-    private fun createRepository() {
+    private fun onCreateRepository() {
         val chooser = DirectoryChooser()
         chooser.title = "リポジトリ新規作成"
         val dir = chooser.showDialog(MainWindow.root.scene.window as? Stage?)
@@ -51,7 +75,7 @@ class FileMenuCtrl {
     }
 
     //終了確認
-    private fun checkQuit() {
+    private fun onQuit() {
         if(GviewCommonDialog.confirmationDialog("アプリケーションを終了しますか？")) {
             exitProcess(0)
         }

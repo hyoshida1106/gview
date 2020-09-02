@@ -1,20 +1,38 @@
 package gview.gui.menu
 
-import gview.gui.framework.GviewBaseMenu
-import javafx.fxml.FXML
+import gview.gui.framework.GviewMenuItem
+import javafx.event.EventHandler
 import javafx.scene.control.Menu
-import javafx.scene.control.MenuItem
 
-object HelpMenu: GviewBaseMenu<HelpMenuCtrl>("/menu/HelpMenu.fxml")
 
-class HelpMenuCtrl {
+class HelpMenu: Menu("ヘルプ(_H)") {
 
-    @FXML private lateinit var helpMenu: Menu
-    @FXML private lateinit var helpHelpMenu: MenuItem
-    @FXML private lateinit var helpAboutMenu: MenuItem
+    private val helpMenuItem = GviewMenuItem(
+            text = "ヘルプ...",
+            iconLiteral = "mdi-help-circle-outline"
+    ) { onHelp() }
 
-    @FXML private fun onShowingMenu() {
-        helpHelpMenu.isDisable = true
-        helpAboutMenu.isDisable = true
+    private val aboutMenuItem = GviewMenuItem(
+            text = "プログラムについて..."
+    ) { onAbout() }
+
+    init {
+        items.setAll(
+            helpMenuItem,
+            aboutMenuItem
+        )
+        onShowing = EventHandler { onMyShowing() }
+    }
+
+    private fun onMyShowing() {
+        aboutMenuItem.isDisable = true
+    }
+
+    private fun onHelp() {
+        println("Help")
+    }
+
+    private fun onAbout() {
+        println("About")
     }
 }

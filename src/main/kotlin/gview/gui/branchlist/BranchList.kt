@@ -55,10 +55,12 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     private class BranchTreeCell: TreeCell<GviewBranchModel>() {
         override fun updateItem(model: GviewBranchModel?, empty: Boolean) {
             super.updateItem(model, empty)
-            graphic = if(!empty) { (treeItem as? BranchTreeItem)?.cellImage } else { null }
-            text = null
-            style = CSS.cellStyle
-            contextMenu = (treeItem as? BranchTreeItem)?.contextMenu
+            if(model != null && !empty) {
+                graphic = (treeItem as? BranchTreeItem)?.cellImage
+                text = null
+                style = CSS.cellStyle
+                contextMenu = (treeItem as? BranchTreeItem)?.contextMenu
+            }
         }
     }
 

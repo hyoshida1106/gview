@@ -1,29 +1,71 @@
 package gview.gui.menu
 
-import gview.gui.framework.GviewBaseMenu
-import javafx.fxml.FXML
+import gview.gui.framework.GviewMenuItem
+import javafx.event.EventHandler
 import javafx.scene.control.Menu
-import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.input.KeyCombination
 
-object BranchMenu: GviewBaseMenu<BranchMenuCtrl>("/menu/BranchMenu.fxml")
+class BranchMenu: Menu("ブランチ(_B)") {
 
-class BranchMenuCtrl {
+    private val checkoutMenu = GviewMenuItem(
+            text= "チェックアウト(_C)",
+            iconLiteral = "mdi-folder-star"
+    ) { onCheckOut() }
 
-    @FXML private lateinit var branchMenu: Menu
-    @FXML private lateinit var branchCheckoutMenu: MenuItem
-    @FXML private lateinit var branchPushMenu: MenuItem
-    @FXML private lateinit var branchPullMenu: MenuItem
-    @FXML private lateinit var branchRenameMenu: MenuItem
-    @FXML private lateinit var branchRemoveMenu: MenuItem
+    private val pushMenu = GviewMenuItem(
+            text= "プッシュ(_P)",
+            accelerator = KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            iconLiteral = "mdi-folder-upload"
+    ) { onPush() }
 
-    //メニュー表示
-    @FXML private fun onShowingMenu() {
-        branchCheckoutMenu.isDisable = true
-        branchPushMenu.isDisable = true
-        branchPullMenu.isDisable = true
-        branchRenameMenu.isDisable = true
-        branchRemoveMenu.isDisable = true
+    private val pullMenu = GviewMenuItem(
+            text = "プル(_L)",
+            accelerator = KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            iconLiteral = "mdi-folder-download"
+    ) { onPull() }
+
+    private val renameMenu = GviewMenuItem(
+            text = "名称変更(_R)...",
+            iconLiteral = "mdi-folder-move"
+    ) { onRename() }
+
+    private val removeMenu = GviewMenuItem(
+            text = "削除(_D)",
+            iconLiteral = "mdi-folder-remove"
+    ) { onRemove() }
+
+    init {
+        items.setAll(
+                checkoutMenu,
+                pushMenu,
+                pullMenu,
+                SeparatorMenuItem(),
+                renameMenu,
+                removeMenu
+        )
+        onShowing = EventHandler { onShowingMenu() }
     }
 
+    //メニュー表示
+    private fun onShowingMenu() {
+    }
+
+    private fun onCheckOut() {
+    }
+
+    private fun onPush() {
+    }
+
+    private fun onPull() {
+    }
+
+    private fun onRename() {
+    }
+
+    private fun onRemove() {
+    }
 }
 
