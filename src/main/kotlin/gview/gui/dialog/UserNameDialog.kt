@@ -25,8 +25,6 @@ class UserNameDialog(userName: String, mailAddr: String)
     init {
         controller.userNameProperty.bindBidirectional(userNameProperty)
         controller.mailAddrProperty.bindBidirectional(mailAddrProperty)
-        userNameProperty.value = userName
-        mailAddrProperty.value = mailAddr
     }
 }
 
@@ -36,14 +34,11 @@ class UserNameDialogCtrl : GviewDialogController() {
     @FXML private lateinit var userName: TextField
     @FXML private lateinit var mailAddr: TextField
 
-    lateinit var userNameProperty: StringProperty
-    lateinit var mailAddrProperty: StringProperty
+    val userNameProperty: StringProperty get() = userName.textProperty()
+    val mailAddrProperty: StringProperty get() = mailAddr.textProperty()
 
     //初期化
     override fun initialize() {
-        userNameProperty = userName.textProperty()
-        mailAddrProperty = mailAddr.textProperty()
-
         pane.style = CSS.paneStyle
     }
 

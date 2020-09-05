@@ -3,8 +3,10 @@ package gview
 import gview.conf.SystemModal
 import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.menu.FileMenu
 import gview.gui.util.IdleMonitor
 import javafx.application.Application
+import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.stage.Stage
 import kotlin.system.exitProcess
@@ -25,17 +27,31 @@ class GViewApp : Application() {
             mainStage.scene = Scene(MainWindow.root,
                 SystemModal.mainWidthProperty.value,
                 SystemModal.mainHeightProperty.value)
-            mainStage.setOnShown { _ -> GviewBasePaneCtrl.displayCompleted() }
+
+            //表示完了イベントを各Paneに通知する
+            mainStage.onShown = EventHandler {
+                GviewBasePaneCtrl.displayCompleted()
+            }
+
+            //Windowが閉じられる場合の終了確認
+            mainStage.onCloseRequest = EventHandler {
+                FileMenu.doCheckQuit()
+                it.consume()
+            }
+
             //IDLE状態モニタ設定
             monitor.register(stage.scene)
+
             //Main WindowサイズをModal Informationにバインドする
             with(SystemModal) {
                 mainHeightProperty.bind(mainStage.heightProperty())
                 mainWidthProperty.bind(mainStage.widthProperty())
                 maximumProperty.bind(mainStage.fullScreenProperty())
             }
+
             //Main Window表示
             stage.show()
+
         } catch(e: java.lang.Exception) {
             e.printStackTrace()
             exitProcess(-1)

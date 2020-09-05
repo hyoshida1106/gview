@@ -22,19 +22,19 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             text = "ステージ(_S)...",
             accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-arrow-up-bold-circle-outline"
-    ) { onStageMenu() }
+    ) { doStageCommand() }
 
     private val unstageMenu = GviewMenuItem(
             text = "アンステージ(_U)...",
             accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
             iconLiteral = "mdi-arrow-down-bold-circle-outline"
-    ) { onUnStageMenu() }
+    ) { doUnStageCommand() }
 
     private val commitMenu = GviewMenuItem(
             text = "コミット(_C)...",
             accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-checkbox-marked-circle-outline"
-    ) { onCommitMenu() }
+    ) { doCommitCommand() }
 
     init {
         items.setAll(
@@ -57,7 +57,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
     companion object {
 
-        fun onStageMenu() {
+        fun doStageCommand() {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
@@ -69,7 +69,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             }
         }
 
-        fun onUnStageMenu() {
+        fun doUnStageCommand() {
             val dialog = SelectUnStageFilesDialog()
             if (dialog.showDialog() != ButtonType.OK) {
                 try {
@@ -81,7 +81,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             }
         }
 
-        fun onCommitMenu() {
+        fun doCommitCommand() {
             //ユーザ名とメールアドレスが未入力ならば入力する
             while (ConfigUserInfo.userName.isEmpty() || ConfigUserInfo.mailAddr.isEmpty()) {
                 val dialog = UserNameDialog(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)

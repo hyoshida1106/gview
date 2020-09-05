@@ -1,6 +1,10 @@
 package gview.gui.menu
 
+import gview.gui.branchlist.BranchList
 import gview.gui.framework.GviewMenuItem
+import gview.model.branch.GviewBranchModel
+import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GviewRemoteBranchModel
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
@@ -51,6 +55,12 @@ class BranchMenu: Menu("ブランチ(_B)") {
 
     //メニュー表示
     private fun onShowingMenu() {
+        val selectedBranch: GviewBranchModel? = BranchList.controller.selectedBranch
+        checkoutMenu.isDisable = selectedBranch !is GviewRemoteBranchModel
+        pushMenu.isDisable = selectedBranch !is GviewLocalBranchModel
+        pullMenu.isDisable = selectedBranch !is GviewLocalBranchModel
+        renameMenu.isDisable = selectedBranch == null
+        removeMenu.isDisable = selectedBranch == null
     }
 
     private fun onCheckOut() {
@@ -67,5 +77,10 @@ class BranchMenu: Menu("ブランチ(_B)") {
 
     private fun onRemove() {
     }
+
+    companion object {
+
+    }
+
 }
 

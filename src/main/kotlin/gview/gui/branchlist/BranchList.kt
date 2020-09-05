@@ -29,7 +29,7 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     fun initialize() {
         //Root Treeを作成
         val root = RootItem("Branch Root" )
-        root.children.addAll(localTreeRoot, remoteTreeRoot)
+        root.children.setAll(localTreeRoot, remoteTreeRoot)
         //ブランチTreeの初期設定
         branchTree.root = root
         branchTree.isShowRoot = false
@@ -51,16 +51,24 @@ class BranchListCtrl: GviewBasePaneCtrl() {
         branchList.remoteBranchesProperty.addListener { _, _, newVal -> updateRemoteBranches(newVal) }
     }
 
+    val selectedBranch: GviewBranchModel? get() {
+        val item = branchTree.selectionModel.selectedItem
+        return item?.value
+    }
+
     //BranchTreeに描画するTreeCellクラス
     private class BranchTreeCell: TreeCell<GviewBranchModel>() {
         override fun updateItem(model: GviewBranchModel?, empty: Boolean) {
             super.updateItem(model, empty)
-            if(model != null && !empty) {
+            if(!empty) {
                 graphic = (treeItem as? BranchTreeItem)?.cellImage
-                text = null
-                style = CSS.cellStyle
                 contextMenu = (treeItem as? BranchTreeItem)?.contextMenu
+            } else {
+                graphic = null
+                contextMenu = null
             }
+            text = null
+            style = CSS.cellStyle
         }
     }
 

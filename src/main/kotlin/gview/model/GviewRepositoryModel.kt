@@ -1,5 +1,6 @@
 package gview.model
 
+import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Constants
@@ -52,20 +53,22 @@ class GviewRepositoryModel {
     }
 
     //リモートリポジトリのクローン
-    fun clone(dir : String, remote : String, bare : Boolean = false) {
+    fun clone(dir: String, remote: String, bare: Boolean = false) {
         updateRepository(Git
-            .cloneRepository()
-            .setURI(remote)
-            .setDirectory(File(dir))
-            .setBare(bare)
-            .call()
-            .repository)
+                .cloneRepository()
+                .setURI(remote)
+                .setDirectory(File(dir))
+                .setBare(bare)
+                .call()
+                .repository)
     }
 
     //リポジトリインスタンスの更新
     private fun updateRepository(newRepository: Repository?) {
-        jgitRepository = newRepository
-        refresh()
+        Platform.runLater {
+            jgitRepository = newRepository
+            refresh()
+        }
     }
 
     //表示更新

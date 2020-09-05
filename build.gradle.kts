@@ -24,6 +24,8 @@ dependencies {
     implementation( "org.kordamp.ikonli:ikonli-materialdesign-pack:11.4.0")
     // SLF4J/Log4J
     implementation("org.slf4j:slf4j-log4j12:1.7.30")
+
+    implementation("org.controlsfx:controlsfx:11.0.2")
 }
 
 // JavaFX PlugIn
