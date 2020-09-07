@@ -1,5 +1,6 @@
 package gview.model.branch
 
+import gview.model.GviewBranchListModel
 import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.Repository
@@ -7,7 +8,7 @@ import org.eclipse.jgit.lib.Repository
 /*
     ローカルブランチ
  */
-class GviewLocalBranchModel(val ref: Ref): GviewBranchModel {
+class GviewLocalBranchModel(val branchList: GviewBranchListModel, val ref: Ref): GviewBranchModel {
     //表示名
     override val name: String = Repository.shortenRefName(ref.name)
     //パス

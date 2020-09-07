@@ -3,6 +3,7 @@ package gview
 import gview.conf.SystemModal
 import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.framework.GviewCommonDialog
 import gview.gui.menu.FileMenu
 import gview.gui.util.IdleMonitor
 import javafx.application.Application
@@ -35,7 +36,9 @@ class GViewApp : Application() {
 
             //Windowが閉じられる場合の終了確認
             mainStage.onCloseRequest = EventHandler {
-                FileMenu.doCheckQuit()
+                if(GviewCommonDialog.confirmationDialog("アプリケーションを終了しますか？")) {
+                    exitProcess(0)
+                }
                 it.consume()
             }
 

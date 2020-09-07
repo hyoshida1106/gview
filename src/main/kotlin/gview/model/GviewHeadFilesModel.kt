@@ -6,8 +6,10 @@ import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.dircache.DirCache
 import org.eclipse.jgit.dircache.DirCacheIterator
 import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.lib.FileMode
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
@@ -45,14 +47,15 @@ class GviewHeadFilesModel {
             val repo = repository!!
             val hid  = headerId!!
 
-            val cache = repo.lockDirCache()
+            var cache:DirCache? = null
             try {
+                cache = repo.lockDirCache()
                 val iterator = DirCacheIterator(cache)
                 val formatter = ByteArrayDiffFormatter(repo)
                 stagedFilesProperty.value = getStagedFiles(repo, formatter, iterator, hid)
                 changedFilesProperty.value = getChangedFiles(repo, formatter, iterator)
             } finally {
-                cache.unlock()
+                cache?.unlock()
             }
         } else {
             stagedFilesProperty.value = emptyList()
@@ -66,8 +69,10 @@ class GviewHeadFilesModel {
                                cacheIterator: DirCacheIterator,
                                head: ObjectId): List<GviewGitFileEntryModel> {
         cacheIterator.reset()
-        return formatter.scan(toTreeIterator(repository, head), cacheIterator).map {
-            GviewGitFileEntryModel(formatter, it) }
+        //SubModuleは当面無視する
+        return formatter.scan(toTreeIterator(repository, head), cacheIterator)
+                .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
+                .map { GviewGitFileEntryModel(formatter, it) }
     }
 
     //修正済ファイル一覧を取得する
@@ -75,8 +80,10 @@ class GviewHeadFilesModel {
                                 formatter: ByteArrayDiffFormatter,
                                 cacheIterator: DirCacheIterator): List<GviewGitFileEntryModel> {
         cacheIterator.reset()
-        return formatter.scan(cacheIterator, FileTreeIterator(repository)).map {
-            GviewGitFileEntryModel(formatter, it) }
+        //SubModuleは当面無視する
+        return formatter.scan(cacheIterator, FileTreeIterator(repository))
+                .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
+                .map { GviewGitFileEntryModel(formatter, it) }
     }
 
     // ファイルイテレータを取得する内部メソッド

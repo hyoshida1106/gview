@@ -1,5 +1,8 @@
 package gview.gui.framework
 
+import javafx.beans.property.BooleanProperty
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
@@ -16,7 +19,21 @@ open class GviewDialog<Controller>(title: String, form: String, vararg buttons: 
         dialogPane.content = loader.load()
         controller = loader.getController() as Controller
 
+        //StyleSheetを登録
         dialogPane.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())
+
+        // "X"で閉じないようにする
+        dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }
+    }
+
+    fun addButtonHandler(buttonType: ButtonType,
+                         disable: BooleanProperty?,
+                         handler: EventHandler<ActionEvent>? ) {
+        val button = dialogPane.lookupButton(buttonType)
+        if(button != null) {
+            if (disable != null) { button.disableProperty().bind(disable) }
+            if (handler != null) { button.addEventFilter(ActionEvent.ACTION, handler) }
+        }
     }
 
     fun showDialog(): ButtonType? {

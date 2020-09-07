@@ -16,10 +16,11 @@ import javafx.scene.control.*
 import javafx.scene.layout.GridPane
 import javafx.stage.DirectoryChooser
 import org.controlsfx.control.MaskerPane
+import java.io.File
 
-class OpenRepositoryDialog(path: String): GviewDialog<OpenRepositoryDialogCtrl> (
-        "オープンするリポジトリのパスを指定してください",
-        "/dialog/OpenRepositoryDialog.fxml",
+class CreateRepositoryDialog(path: String): GviewDialog<CreateRepositoryDialogCtrl> (
+        "リポジトリを生成するパスを指定してください",
+        "/dialog/CreateRepositoryDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
 
     init {
@@ -29,7 +30,7 @@ class OpenRepositoryDialog(path: String): GviewDialog<OpenRepositoryDialogCtrl> 
     }
 }
 
-class OpenRepositoryDialogCtrl : GviewDialogController() {
+class CreateRepositoryDialogCtrl : GviewDialogController() {
 
     @FXML private lateinit var pane: GridPane
     @FXML private lateinit var directoryPath: TextField
@@ -59,26 +60,28 @@ class OpenRepositoryDialogCtrl : GviewDialogController() {
     }
 
     //OK押下時の処理
-    fun onOk(dialog: GviewDialog<OpenRepositoryDialogCtrl>, event:ActionEvent) {
+    fun onOk(dialog: GviewDialog<CreateRepositoryDialogCtrl>, event:ActionEvent) {
         val path = directoryPath.text
-        try {
-            btnOkDisable.unbind()
-            btnOkDisable.value = true
-            btnCancelDisable.value = true
-            dialog.dialogPane.cursor = Cursor.WAIT
-            val r = object: Task<Int>() {
-                override fun call(): Int {
-                    GviewRepositoryModel.currentRepository.openExist(path)
+
+        btnOkDisable.unbind()
+        btnOkDisable.value = true
+        btnCancelDisable.value = true
+        dialog.dialogPane.cursor = Cursor.WAIT
+        val r = object: Task<Int>() {
+            override fun call(): Int {
+                try {
+                    GviewRepositoryModel.currentRepository.createNew(File(path).absolutePath)
+                } catch (e: Exception) {
+                    Platform.runLater { GviewCommonDialog.errorDialog(e) }
+                } finally {
                     Platform.runLater { dialog.close() }
-                    return 0
                 }
+                return 0
             }
-            maskerPane.visibleProperty().bind(r.runningProperty())
-            Thread(r).start()
-        } catch (e: Exception) {
-            GviewCommonDialog.errorDialog(e)
-            dialog.close()
         }
+        maskerPane.visibleProperty().bind(r.runningProperty())
+        Thread(r).start()
+
         event.consume()
     }
 

@@ -17,26 +17,23 @@ import javafx.scene.layout.GridPane
 import javafx.stage.DirectoryChooser
 import org.controlsfx.control.MaskerPane
 
-class CloneRepositoryDialog(remotePath: String, localPath: String) : GviewDialog<CloneRepositoryDialogCtrl> (
-        "取得するリポジトリのパス/URLと、作成するリポジトリのパスを指定してください",
-        "/dialog/CloneRepositoryDialog.fxml",
+class OpenRepositoryDialog(path: String): GviewDialog<OpenRepositoryDialogCtrl> (
+        "オープンするリポジトリのパスを指定してください",
+        "/dialog/OpenRepositoryDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
 
     init {
-        controller.setInitialPath(remotePath, localPath)
+        controller.setInitialPath(path)
         addButtonHandler(ButtonType.OK, controller.btnOkDisable) { controller.onOk(this, it) }
         addButtonHandler(ButtonType.CANCEL, controller.btnCancelDisable, null)
     }
 }
 
-class CloneRepositoryDialogCtrl : GviewDialogController() {
+class OpenRepositoryDialogCtrl : GviewDialogController() {
 
     @FXML private lateinit var pane: GridPane
-    @FXML private lateinit var remoteRepositoryPath: TextField
-    @FXML private lateinit var localDirectoryPath: TextField
-    @FXML private lateinit var remoteRepositorySel: Button
-    @FXML private lateinit var localDirectorySel: Button
-    @FXML private lateinit var bareRepository: CheckBox
+    @FXML private lateinit var directoryPath: TextField
+    @FXML private lateinit var directorySel: Button
     @FXML private lateinit var maskerPane: MaskerPane
 
     val btnOkDisable = SimpleBooleanProperty(false)
@@ -46,53 +43,43 @@ class CloneRepositoryDialogCtrl : GviewDialogController() {
     override fun initialize() {
         pane.style = CSS.paneStyle
 
-        //ファイル設定(リモート)
-        remoteRepositorySel.onAction = EventHandler {
-            val chooser = DirectoryChooser()
-            chooser.title = "リモートリポジトリ"
-            val dir = chooser.showDialog((it.target as Node).scene.window)
-            if (dir != null) { remoteRepositoryPath.text = dir.absolutePath }
-        }
-
         //ファイル設定(ローカル)
-        localDirectorySel.onAction = EventHandler {
+        directorySel.onAction = EventHandler {
             val chooser = DirectoryChooser()
-            chooser.title = "ローカルディレクトリ"
+            chooser.title = "ディレクトリ"
             val dir = chooser.showDialog((it.target as Node).scene.window)
-            if (dir != null) { localDirectoryPath.text = dir.absolutePath }
+            if (dir != null) { directoryPath.text = dir.absolutePath }
         }
 
-        btnOkDisable.bind(remoteRepositoryPath.textProperty().isEmpty.or(localDirectoryPath.textProperty().isEmpty))
+        btnOkDisable.bind(directoryPath.textProperty().isEmpty)
     }
 
-    fun setInitialPath(remotePath: String, localPath: String) {
-        remoteRepositoryPath.text = remotePath
-        localDirectoryPath.text = localPath
+    fun setInitialPath(path: String) {
+        directoryPath.text = path
     }
 
     //OK押下時の処理
-    fun onOk(dialog: GviewDialog<CloneRepositoryDialogCtrl>, event:ActionEvent) {
-        val remotePath = remoteRepositoryPath.text
-        val localPath = localDirectoryPath.text
-        val bareRepo = bareRepository.isSelected
-        try {
-            btnOkDisable.unbind()
-            btnOkDisable.value = true
-            btnCancelDisable.value = true
-            dialog.dialogPane.cursor = Cursor.WAIT
-            val r = object: Task<Int>() {
-                override fun call(): Int {
-                    GviewRepositoryModel.currentRepository.clone(localPath, remotePath, bareRepo)
+    fun onOk(dialog: GviewDialog<OpenRepositoryDialogCtrl>, event:ActionEvent) {
+        val path = directoryPath.text
+        btnOkDisable.unbind()
+        btnOkDisable.value = true
+        btnCancelDisable.value = true
+        dialog.dialogPane.cursor = Cursor.WAIT
+        val r = object: Task<Int>() {
+            override fun call(): Int {
+                try {
+                    GviewRepositoryModel.currentRepository.openExist(path)
+                } catch(e: Exception) {
+                    Platform.runLater { GviewCommonDialog.errorDialog(e) }
+                } finally {
                     Platform.runLater { dialog.close() }
-                    return 0
                 }
+                return 0
             }
-            maskerPane.visibleProperty().bind(r.runningProperty())
-            Thread(r).start()
-        } catch (e: Exception) {
-            GviewCommonDialog.errorDialog(e)
-            dialog.close()
         }
+        maskerPane.visibleProperty().bind(r.runningProperty())
+        Thread(r).start()
+
         event.consume()
     }
 

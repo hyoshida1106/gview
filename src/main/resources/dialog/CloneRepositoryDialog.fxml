@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import org.controlsfx.control.MaskerPane?>
+
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="gview.gui.dialog.CloneRepositoryDialogCtrl"
            stylesheets="@/Gview.css" prefHeight="150.0" prefWidth="640.0">
