@@ -4,12 +4,13 @@ import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.lib.Repository
 import java.io.ByteArrayOutputStream
+import java.io.Closeable
 
 /*
     diff出力をByteArrayとして取得可能なDiff Formatter
  */
 class ByteArrayDiffFormatter(repository: Repository,
-                             private val output: ByteArrayOutputStream): DiffFormatter(output) {
+                             private val output: ByteArrayOutputStream): DiffFormatter(output), Closeable {
 
     //出力先ByteArrayインスタンスを内部生成するコンストラクタ
     constructor(repo:Repository) : this(repo, ByteArrayOutputStream())

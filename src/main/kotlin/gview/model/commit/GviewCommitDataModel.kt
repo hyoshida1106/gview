@@ -121,8 +121,9 @@ class GviewCommitDataModel(private val repo: Repository,
     val diffEntries: List<GviewGitFileEntryModel> by lazy {
         val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
         val tree2 = commit.tree
-        val fmt = ByteArrayDiffFormatter(repo)
-        fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
+        ByteArrayDiffFormatter(repo).use() { fmt ->
+            fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
+        }
     }
 
     //タグ検索
@@ -130,8 +131,4 @@ class GviewCommitDataModel(private val repo: Repository,
 
     //コメント検索
     fun containsInComment(comment: String): Boolean = fullMessage.contains(comment)
-
-//    private fun timeToString(time: Date): String {
-//        return DateFormat.getDateTimeInstance().format(time)
-//    }
 }

@@ -6,10 +6,12 @@ import gview.gui.commitinfo.CommitInfo
 import gview.gui.commitlist.CommitList
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
+import org.controlsfx.control.MaskerPane
 
 object MainWindow: GviewBasePane<MainWindowCtrl>(
         "/view/MainView.fxml",
@@ -23,6 +25,9 @@ class MainWindowCtrl : GviewBasePaneCtrl() {
     @FXML private lateinit var commitList: AnchorPane
     @FXML private lateinit var commitInfo: AnchorPane
     @FXML private lateinit var statusBar: AnchorPane
+    @FXML private lateinit var masker: MaskerPane
+
+    val maskerVisibility: BooleanProperty get() = masker.visibleProperty()
 
     //SplitPaneのDivider位置を保持するProperty
     private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()

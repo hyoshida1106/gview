@@ -51,9 +51,10 @@ class GviewHeadFilesModel {
             try {
                 cache = repo.lockDirCache()
                 val iterator = DirCacheIterator(cache)
-                val formatter = ByteArrayDiffFormatter(repo)
-                stagedFilesProperty.value = getStagedFiles(repo, formatter, iterator, hid)
-                changedFilesProperty.value = getChangedFiles(repo, formatter, iterator)
+                ByteArrayDiffFormatter(repo).use() { formatter ->
+                    stagedFilesProperty.value = getStagedFiles(repo, formatter, iterator, hid)
+                    changedFilesProperty.value = getChangedFiles(repo, formatter, iterator)
+                }
             } finally {
                 cache?.unlock()
             }

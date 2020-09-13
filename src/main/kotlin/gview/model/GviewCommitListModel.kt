@@ -1,9 +1,13 @@
 package gview.model
 
+import gview.gui.main.MainWindow
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
 import gview.model.commit.GviewCommitDataModel
+import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
+import javafx.concurrent.Task
+import javafx.scene.Cursor
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
@@ -41,26 +45,24 @@ class GviewCommitListModel() {
         repository = newRepository
         remoteBranches = newRemoteBranches
         localBranches = newLocalBranches
+        //ローカルブランチの選択が変更された場合のリスナを設定
+        localBranches.forEach { it.selectedProperty.addListener { _ -> refresh() } }
         refresh()
     }
 
-    //ローカルブランチのチェックボックス変更時の処理
-    fun refresh() {
-
+    //表示更新
+    private fun refresh() {
         if (repository != null) {
             val repo = repository!!
 
             //PlotCommitListインスタンスを生成
             val plotWalk = PlotWalk(repo)
-            localBranches.forEach {
-                if (it.selected) {
-                    plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId))
-                }
-                it.selectedProperty.addListener { _ -> refresh() }
-            }
+            localBranches.filter { it.selected }
+                    .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
             plotCommitList.clear()
             plotCommitList.source(plotWalk)
             plotCommitList.fillTo(this.commitSize)
+            plotWalk.close()
 
             //HEAD IDを取得
             val headId = repo.resolve(Constants.HEAD)
@@ -93,15 +95,16 @@ class GviewCommitListModel() {
                     is RevCommit -> commitMap[obj.id]?.tags?.add(tagName)
                 }
             }
+            revWalk.close()
 
             //プロパティを更新
             commitListProperty.value = commitList
 
         } else {
             //所持値を初期化
-            commitListProperty.value = listOf()
             plotCommitList.clear()
             commitMap.clear()
+            commitListProperty.value = listOf()
         }
     }
 }
