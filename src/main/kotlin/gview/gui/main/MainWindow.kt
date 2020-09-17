@@ -6,9 +6,13 @@ import gview.gui.commitinfo.CommitInfo
 import gview.gui.commitlist.CommitList
 import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.framework.GviewCommonDialog
+import javafx.application.Platform
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.concurrent.Task
 import javafx.fxml.FXML
+import javafx.scene.Cursor
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 import org.controlsfx.control.MaskerPane
@@ -17,7 +21,7 @@ object MainWindow: GviewBasePane<MainWindowCtrl>(
         "/view/MainView.fxml",
         "MainWindow")
 
-class MainWindowCtrl : GviewBasePaneCtrl() {
+class MainWindowCtrl: GviewBasePaneCtrl() {
 
     @FXML private lateinit var mainSplit: SplitPane
     @FXML private lateinit var menuBar: AnchorPane
@@ -54,6 +58,21 @@ class MainWindowCtrl : GviewBasePaneCtrl() {
         commitInfo.children.add(CommitInfo.root)
         menuBar.children.add(MenuBar.root)
         statusBar.children.add(StatusBar.root)
+    }
+
+    //「実行中」を表示して処理を行う
+    fun runTask(proc: () -> Unit) {
+        val scene = MainWindow.root.scene
+        scene.cursor = Cursor.WAIT
+        val task = object: Task<Unit>() {
+            override fun call() {
+                try { proc() }
+                catch(e: Exception) { Platform.runLater { GviewCommonDialog.errorDialog(e) } }
+                finally { Platform.runLater { scene.cursor = Cursor.DEFAULT } }
+            }
+        }
+        masker.visibleProperty().bind(task.runningProperty())
+        Thread(task).start()
     }
 
 }

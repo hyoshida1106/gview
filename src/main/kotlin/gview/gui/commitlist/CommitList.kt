@@ -67,6 +67,10 @@ class CommitListCtrl: GviewBasePaneCtrl() {
             super.layoutChildren()
             cellData?.layout(this)
         }
+
+        private fun refresh() {
+            updateTableRow(tableRow)
+        }
     }
 
     companion object {

@@ -52,6 +52,7 @@ class GviewCommitListModel() {
 
     //表示更新
     private fun refresh() {
+        val commitList = mutableListOf<GviewCommitDataModel>()
         if (repository != null) {
             val repo = repository!!
 
@@ -68,7 +69,6 @@ class GviewCommitListModel() {
             val headId = repo.resolve(Constants.HEAD)
 
             //Commitモデルに変換
-            val commitList = mutableListOf<GviewCommitDataModel>()
             var prev: GviewCommitDataModel? = null
             plotCommitList.forEach {
                 val commit = GviewCommitDataModel(repo, this, it, it.id == headId, prev)
@@ -97,14 +97,13 @@ class GviewCommitListModel() {
             }
             revWalk.close()
 
-            //プロパティを更新
-            commitListProperty.value = commitList
-
         } else {
             //所持値を初期化
             plotCommitList.clear()
             commitMap.clear()
-            commitListProperty.value = listOf()
         }
+
+        //プロパティを更新
+        Platform.runLater { commitListProperty.value = commitList }
     }
 }

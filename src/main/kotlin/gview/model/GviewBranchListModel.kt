@@ -2,6 +2,7 @@ package gview.model
 
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
+import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.Git
@@ -25,8 +26,8 @@ class GviewBranchListModel() {
     private var repository: Repository? = null
 
     //更新
-    fun update(repository: Repository?) {
-        this.repository = repository
+    fun update(newRepository: Repository?) {
+        repository = newRepository
         refresh()
     }
 
@@ -65,13 +66,15 @@ class GviewBranchListModel() {
             }
         }
 
-        remoteBranchesProperty.value = remoteBranches
-        localBranchesProperty.value = localBranches
         commits.update(repository, remoteBranches, localBranches)
+
+        Platform.runLater {
+            remoteBranchesProperty.value = remoteBranches
+            localBranchesProperty.value = localBranches
+        }
     }
 
     fun checkoutRemoteBranch(model: GviewRemoteBranchModel) {
-        println("checkout ${model.name} ${model.path} ${repository?.shortenRemoteBranchName(model.path)}")
         Git(repository).checkout()
                 .setName(model.name)
                 .setStartPoint(model.path)

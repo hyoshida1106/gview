@@ -61,8 +61,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                    headerData.stageFiles(dialog.selectedFiles)
+                    GviewRepositoryModel.currentRepository.headerFiles.stageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     GviewCommonDialog.errorDialog(e)
                 }
@@ -71,10 +70,9 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
         fun doUnStageCommand() {
             val dialog = SelectUnStageFilesDialog()
-            if (dialog.showDialog() != ButtonType.OK) {
+            if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                    headerData.unStageFiles(dialog.selectedFiles)
+                    GviewRepositoryModel.currentRepository.headerFiles.unStageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     GviewCommonDialog.errorDialog(e)
                 }

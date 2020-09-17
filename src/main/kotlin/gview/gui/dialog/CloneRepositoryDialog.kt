@@ -1,31 +1,32 @@
 package gview.gui.dialog
 
-import gview.gui.framework.GviewCommonDialog
 import gview.gui.framework.GviewDialog
 import gview.gui.framework.GviewDialogController
-import gview.model.GviewRepositoryModel
-import javafx.application.Platform
+import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.concurrent.Task
-import javafx.event.ActionEvent
+import javafx.beans.property.StringProperty
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.scene.Cursor
 import javafx.scene.Node
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.ButtonType
+import javafx.scene.control.CheckBox
+import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 import javafx.stage.DirectoryChooser
-import org.controlsfx.control.MaskerPane
 
 class CloneRepositoryDialog(remotePath: String, localPath: String) : GviewDialog<CloneRepositoryDialogCtrl> (
         "取得するリポジトリのパス/URLと、作成するリポジトリのパスを指定してください",
         "/dialog/CloneRepositoryDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
 
+    val remotePath: String get() = controller.remoteRepositoryPathProperty.value
+    val localPath: String get() = controller.localDirectoryPathProperty.value
+    val bareRepo: Boolean get() = controller.bareRepositoryProperty.value
+
     init {
         controller.setInitialPath(remotePath, localPath)
-        addButtonHandler(ButtonType.OK, controller.btnOkDisable) { controller.onOk(this, it) }
-        addButtonHandler(ButtonType.CANCEL, controller.btnCancelDisable, null)
+        addButtonHandler(ButtonType.OK, controller.btnOkDisable)
     }
 }
 
@@ -37,14 +38,19 @@ class CloneRepositoryDialogCtrl : GviewDialogController() {
     @FXML private lateinit var remoteRepositorySel: Button
     @FXML private lateinit var localDirectorySel: Button
     @FXML private lateinit var bareRepository: CheckBox
-    @FXML private lateinit var maskerPane: MaskerPane
 
+    lateinit var remoteRepositoryPathProperty: StringProperty
+    lateinit var localDirectoryPathProperty: StringProperty
+    lateinit var bareRepositoryProperty: BooleanProperty
     val btnOkDisable = SimpleBooleanProperty(false)
-    val btnCancelDisable = SimpleBooleanProperty(false)
 
     //初期化
     override fun initialize() {
         pane.style = CSS.paneStyle
+
+        remoteRepositoryPathProperty = remoteRepositoryPath.textProperty()
+        localDirectoryPathProperty = localDirectoryPath.textProperty()
+        bareRepositoryProperty = bareRepository.selectedProperty()
 
         //ファイル設定(リモート)
         remoteRepositorySel.onAction = EventHandler {
@@ -68,33 +74,6 @@ class CloneRepositoryDialogCtrl : GviewDialogController() {
     fun setInitialPath(remotePath: String, localPath: String) {
         remoteRepositoryPath.text = remotePath
         localDirectoryPath.text = localPath
-    }
-
-    //OK押下時の処理
-    fun onOk(dialog: GviewDialog<CloneRepositoryDialogCtrl>, event:ActionEvent) {
-        val remotePath = remoteRepositoryPath.text
-        val localPath = localDirectoryPath.text
-        val bareRepo = bareRepository.isSelected
-        btnOkDisable.unbind()
-        btnOkDisable.value = true
-        btnCancelDisable.value = true
-        dialog.dialogPane.cursor = Cursor.WAIT
-        val r = object: Task<Int>() {
-            override fun call(): Int {
-                try {
-                    GviewRepositoryModel.currentRepository.clone(localPath, remotePath, bareRepo)
-                } catch (e: Exception) {
-                    GviewCommonDialog.errorDialog(e)
-                } finally {
-                    Platform.runLater { dialog.close() }
-                }
-                return 0
-            }
-        }
-        maskerPane.visibleProperty().bind(r.runningProperty())
-        Thread(r).start()
-
-        event.consume()
     }
 
     object CSS {

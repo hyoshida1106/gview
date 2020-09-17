@@ -4,6 +4,7 @@ import gview.conf.ConfigUserInfo
 import gview.gui.framework.GviewCommonDialog
 import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
+import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.dircache.DirCache
@@ -43,6 +44,9 @@ class GviewHeadFilesModel {
 
     //ヘッダ情報を更新
     private fun refresh() {
+        var stagedFiles:  List<GviewGitFileEntryModel> = emptyList()
+        var changedFiles: List<GviewGitFileEntryModel> = emptyList()
+
         if(repository != null && headerId != null) {
             val repo = repository!!
             val hid  = headerId!!
@@ -52,15 +56,17 @@ class GviewHeadFilesModel {
                 cache = repo.lockDirCache()
                 val iterator = DirCacheIterator(cache)
                 ByteArrayDiffFormatter(repo).use() { formatter ->
-                    stagedFilesProperty.value = getStagedFiles(repo, formatter, iterator, hid)
-                    changedFilesProperty.value = getChangedFiles(repo, formatter, iterator)
+                    stagedFiles = getStagedFiles(repo, formatter, iterator, hid)
+                    changedFiles = getChangedFiles(repo, formatter, iterator)
                 }
             } finally {
                 cache?.unlock()
             }
-        } else {
-            stagedFilesProperty.value = emptyList()
-            changedFilesProperty.value = emptyList()
+        }
+        //プロパティを更新
+        Platform.runLater {
+            stagedFilesProperty.value  = stagedFiles
+            changedFilesProperty.value = changedFiles
         }
     }
 
@@ -92,6 +98,7 @@ class GviewHeadFilesModel {
         val parser = CanonicalTreeParser()
         val revWalk = RevWalk(repository)
         parser.reset(repository.newObjectReader(), revWalk.parseTree(id).id)
+        revWalk.close()
         return parser
     }
 

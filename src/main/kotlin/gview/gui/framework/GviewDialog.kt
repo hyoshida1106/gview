@@ -26,9 +26,8 @@ open class GviewDialog<Controller>(title: String, form: String, vararg buttons: 
         dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }
     }
 
-    fun addButtonHandler(buttonType: ButtonType,
-                         disable: BooleanProperty?,
-                         handler: EventHandler<ActionEvent>? ) {
+    fun addButtonHandler(buttonType: ButtonType, disable: BooleanProperty?,
+                         handler: EventHandler<ActionEvent>? = null) {
         val button = dialogPane.lookupButton(buttonType)
         if(button != null) {
             if (disable != null) { button.disableProperty().bind(disable) }
