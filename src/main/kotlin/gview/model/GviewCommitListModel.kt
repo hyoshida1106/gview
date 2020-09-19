@@ -1,15 +1,8 @@
 package gview.model
 
-import gview.gui.main.MainWindow
-import gview.model.branch.GviewLocalBranchModel
-import gview.model.branch.GviewRemoteBranchModel
 import gview.model.commit.GviewCommitDataModel
-import javafx.application.Platform
-import javafx.beans.property.SimpleObjectProperty
-import javafx.concurrent.Task
-import javafx.scene.Cursor
+import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommitList
@@ -19,10 +12,10 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
 import org.eclipse.jgit.revwalk.RevWalk
 
-class GviewCommitListModel() {
+class GviewCommitListModel(private val repository: GviewRepositoryModel): ModelObservable<GviewCommitListModel>() {
 
     //Commit情報のリスト
-    val commitListProperty = SimpleObjectProperty<List<GviewCommitDataModel>>()
+    val commitList = mutableListOf<GviewCommitDataModel>()
 
     //Commit情報のリスト(内部形式)
     val plotCommitList = PlotCommitList<PlotLane>()
@@ -33,32 +26,23 @@ class GviewCommitListModel() {
     //Commit一覧表示サイズ(暫定)
     private val commitSize = 1000
 
-    //現在のリポジトリ、リモートブランチ、ローカルブランチ
-    private var repository: Repository? = null
-    private var remoteBranches = listOf<GviewRemoteBranchModel>()
-    private var localBranches = listOf<GviewLocalBranchModel>()
-
     //リポジトリ変更時の処理
-    fun update(newRepository: Repository?,
-               newRemoteBranches: List<GviewRemoteBranchModel>,
-               newLocalBranches: List<GviewLocalBranchModel> ) {
-        repository = newRepository
-        remoteBranches = newRemoteBranches
-        localBranches = newLocalBranches
+    fun update() {
         //ローカルブランチの選択が変更された場合のリスナを設定
-        localBranches.forEach { it.selectedProperty.addListener { _ -> refresh() } }
+        repository.branches.localBranches.forEach { it.addListener { refresh() } }
         refresh()
     }
 
     //表示更新
     private fun refresh() {
-        val commitList = mutableListOf<GviewCommitDataModel>()
-        if (repository != null) {
-            val repo = repository!!
+        commitList.clear()
+        if (repository.jgitRepository != null) {
+            val repo = repository.jgitRepository!!
 
             //PlotCommitListインスタンスを生成
             val plotWalk = PlotWalk(repo)
-            localBranches.filter { it.selected }
+            repository.branches.localBranches
+                    .filter { it.selected }
                     .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
             plotCommitList.clear()
             plotCommitList.source(plotWalk)
@@ -66,7 +50,7 @@ class GviewCommitListModel() {
             plotWalk.close()
 
             //HEAD IDを取得
-            val headId = repo.resolve(Constants.HEAD)
+            val headId = repository.headerFiles.headerId
 
             //Commitモデルに変換
             var prev: GviewCommitDataModel? = null
@@ -81,10 +65,10 @@ class GviewCommitListModel() {
             commitList.forEach { commitMap[it.id] = it }
 
             //コミット情報からローカルブランチへのリンクを設定
-            localBranches.forEach { commitMap[it.ref.objectId]?.localBranches?.add(it) }
+            repository.branches.localBranches.forEach { commitMap[it.ref.objectId]?.localBranches?.add(it) }
 
             //コミット情報からリモートブランチへのリンクを設定
-            remoteBranches.forEach { commitMap[it.ref.objectId]?.remoteBranches?.add(it) }
+            repository.branches.remoteBranches.forEach { commitMap[it.ref.objectId]?.remoteBranches?.add(it) }
 
             //コミット情報にタグを設定
             val revWalk = RevWalk(repo)
@@ -103,7 +87,6 @@ class GviewCommitListModel() {
             commitMap.clear()
         }
 
-        //プロパティを更新
-        Platform.runLater { commitListProperty.value = commitList }
+        fireCallback(this)
     }
 }

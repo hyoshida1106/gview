@@ -4,6 +4,7 @@ import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.menu.WorkTreeMenu
 import gview.gui.util.TableColumnAdjuster
+import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
@@ -82,16 +83,9 @@ class HeaderFileListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        CommitInfo.controller.headerDataProperty.addListener { _, _, newValue ->
-            if(newValue != null) {
-                updateStagedFiles(newValue.stagedFiles)
-                updateChangedFiles(newValue.changedFiles)
-                newValue.stagedFilesProperty.addListener { _, _, newVal -> updateStagedFiles(newVal) }
-                newValue.changedFilesProperty.addListener { _, _, newVal -> updateChangedFiles(newVal) }
-            } else {
-                stagedFileList.selectionModel.clearSelection()
-                changedFileList.selectionModel.clearSelection()
-            }
+        GviewRepositoryModel.currentRepository.headerFiles.addListener {
+            updateStagedFiles(it.stagedFiles)
+            updateChangedFiles(it.changedFiles)
         }
 
         stagedFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->

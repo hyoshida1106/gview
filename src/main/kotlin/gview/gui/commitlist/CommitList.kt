@@ -14,7 +14,6 @@ import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
-import org.eclipse.jgit.lib.ObjectId
 
 object CommitList: GviewBasePane<CommitListCtrl>(
         "/view/CommitListView.fxml",
@@ -67,10 +66,6 @@ class CommitListCtrl: GviewBasePaneCtrl() {
             super.layoutChildren()
             cellData?.layout(this)
         }
-
-        private fun refresh() {
-            updateTableRow(tableRow)
-        }
     }
 
     companion object {
@@ -120,8 +115,12 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     override fun displayCompleted() {
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
-        repository.branches.commits.commitListProperty.addListener { _ ->
-            update(repository.headerFiles, repository.headerId, repository.branches.commits) }
+        val headers = repository.headerFiles
+        val commits = repository.branches.commits
+
+        //コミット情報、ヘッダ情報が更新されたら再描画
+        commits.addListener { update(headers, commits) }
+        headers.addListener { update(headers, commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -138,18 +137,19 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     }
 
     //表示更新
-    private fun update(header: GviewHeadFilesModel, headerId: ObjectId?, commits: GviewCommitListModel) {
+    private fun update(header: GviewHeadFilesModel, commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()
 
         //ヘッダ情報業を追加
+        val headerId = header.headerId
         val commitData = if(headerId != null) commits.commitMap[headerId] else null
         val headerRow = HeaderRowData(this, header, commitData)
         commitListTable.items.add(headerRow)
 
         //コミット情報行を追加
-        commits.commitListProperty.value?.forEach {
+        commits.commitList.forEach {
             commitListTable.items.add(CommitRowData(this, it))
         }
 
@@ -157,7 +157,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        maxLaneNumber = commits.commitListProperty.value?.map { it.laneNumber }?.maxOrNull() ?: 0
+        maxLaneNumber = commits.commitList.map { it.laneNumber }.maxOrNull() ?: 0
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 

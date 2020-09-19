@@ -24,7 +24,9 @@ class StatusBarCtrl : GviewBasePaneCtrl() {
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //リポジトリのパスを表示
-        repositoryPath.textProperty().bind(GviewRepositoryModel.currentRepository.localRepositoryPathProperty)
+        GviewRepositoryModel.currentRepository.addListener {
+            repositoryPath.text = GviewRepositoryModel.currentRepository.jgitRepository?.directory?.absolutePath
+        }
     }
 
     private object CSS {

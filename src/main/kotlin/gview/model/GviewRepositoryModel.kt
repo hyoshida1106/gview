@@ -1,15 +1,14 @@
 package gview.model
 
-import javafx.application.Platform
-import javafx.beans.property.SimpleStringProperty
+import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.lib.*
+import org.eclipse.jgit.lib.Repository
 import java.io.File
 
 /*
     RepositoryModel
  */
-class GviewRepositoryModel {
+class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
 
     //リポジトリインスタンス
     //現状は１つのみ
@@ -18,19 +17,13 @@ class GviewRepositoryModel {
     }
 
     //インデックス未登録/登録済ファイル情報
-    val headerFiles = GviewHeadFilesModel()
+    val headerFiles = GviewHeadFilesModel(this)
 
     //ブランチ一覧(ローカル/リモート)
-    val branches = GviewBranchListModel()
+    val branches = GviewBranchListModel(this)
 
     //JGitリポジトリ
     var jgitRepository: Repository? = null
-
-    //HEADのObject ID
-    var headerId: ObjectId? = null
-
-    //リポジトリのローカスパス
-    val localRepositoryPathProperty = SimpleStringProperty()
 
     //リポジトリ新規作成
     fun createNew(dir : String, bare : Boolean = false) {
@@ -63,23 +56,9 @@ class GviewRepositoryModel {
 
     //リポジトリインスタンスの更新
     private fun updateRepository(newRepository: Repository?) {
-        Platform.runLater {
-            jgitRepository = newRepository
-            refresh()
-        }
-    }
-
-    //表示更新
-    fun refresh() {
-        val repository = jgitRepository
-        if(repository != null) {
-            localRepositoryPathProperty.value = repository.directory.absolutePath
-            headerId = repository.resolve(Constants.HEAD)
-        } else {
-            localRepositoryPathProperty.value = ""
-            headerId = null
-        }
-        branches.update(repository)
-        headerFiles.update(repository, headerId)
+        jgitRepository = newRepository
+        branches.update()
+        headerFiles.update()
+        fireCallback(this)
     }
 }

@@ -2,52 +2,48 @@ package gview.model
 
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
-import javafx.application.Platform
-import javafx.beans.property.SimpleObjectProperty
+import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ListBranchCommand
 import org.eclipse.jgit.lib.BranchTrackingStatus
-import org.eclipse.jgit.lib.Repository
-import java.lang.Exception
 
 
-class GviewBranchListModel() {
+class GviewBranchListModel(private val repository: GviewRepositoryModel): ModelObservable<GviewBranchListModel>() {
 
     //ローカルブランチリスト
-    val localBranchesProperty = SimpleObjectProperty<List<GviewLocalBranchModel>>()
+    var localBranches = mutableListOf<GviewLocalBranchModel>()
 
     //リモートブランチリスト
-    val remoteBranchesProperty = SimpleObjectProperty<List<GviewRemoteBranchModel>>()
+    var remoteBranches = mutableListOf<GviewRemoteBranchModel>()
 
     //コミット情報リスト
-    val commits = GviewCommitListModel()
+    val commits = GviewCommitListModel(repository)
 
-    private var repository: Repository? = null
+    //現在チェックアウトされているブランチ名
+    var currentBranch: String? = null
 
     //更新
-    fun update(newRepository: Repository?) {
-        repository = newRepository
-        refresh()
-    }
+    fun update() {
+        localBranches.clear()
+        remoteBranches.clear()
 
-    private fun refresh() {
-        var localBranches = mutableListOf<GviewLocalBranchModel>()
-        var remoteBranches = mutableListOf<GviewRemoteBranchModel>()
-
-        if(repository != null) {
+        if(repository.jgitRepository != null) {
 
             //Gitインスタンスを共用する
-            val git = Git(repository)
+            val git = Git(repository.jgitRepository)
 
             //リモートブランチの一覧を取得
             //後でローカルブランチと紐付けるためのマップも同時に作成する
             val remoteBranchMap = mutableMapOf<String, GviewRemoteBranchModel>()
             git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call().forEach {
-                val remoteBranch = GviewRemoteBranchModel(this, it, repository!!)
+                val remoteBranch = GviewRemoteBranchModel(this, it, repository.jgitRepository!!)
                 remoteBranches.add(remoteBranch)
                 remoteBranchMap[remoteBranch.path] = remoteBranch
             }
+
+            //現在チェックアウトされているブランチ名
+            currentBranch = repository.jgitRepository!!.branch
 
             //ローカルブランチの一覧を取得
             git.branchList().call().forEach {
@@ -55,7 +51,7 @@ class GviewBranchListModel() {
                 val localBranch = GviewLocalBranchModel(this, it)
                 localBranches.add(localBranch)
                 //リモートブランチが存在する場合、双方向参照を設定する
-                val trackingStatus = BranchTrackingStatus.of(repository, localBranch.path)
+                val trackingStatus = BranchTrackingStatus.of(repository.jgitRepository, localBranch.path)
                 if (trackingStatus != null) {
                     val remoteBranch = remoteBranchMap[trackingStatus.remoteTrackingBranch]
                     if (remoteBranch != null) {
@@ -66,21 +62,18 @@ class GviewBranchListModel() {
             }
         }
 
-        commits.update(repository, remoteBranches, localBranches)
+        commits.update()
 
-        Platform.runLater {
-            remoteBranchesProperty.value = remoteBranches
-            localBranchesProperty.value = localBranches
-        }
+        fireCallback(this)
     }
 
     fun checkoutRemoteBranch(model: GviewRemoteBranchModel) {
-        Git(repository).checkout()
+        Git(repository.jgitRepository).checkout()
                 .setName(model.name)
                 .setStartPoint(model.path)
                 .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
                 .setCreateBranch(true)
                 .call()
-        refresh()
+        update()
     }
 }

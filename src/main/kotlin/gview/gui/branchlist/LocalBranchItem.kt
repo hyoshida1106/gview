@@ -19,14 +19,20 @@ class LocalBranchItem(val model: GviewLocalBranchModel): BranchListCtrl.BranchTr
 
     //初期化
     init {
+        if(model.isCurrentRepository) {
+            branchName.style = CSS.currentBranchLabelStyle
+        }
         showInTree.isAllowIndeterminate = false
         showInTree.isSelected = model.selected
         showInTree.style = CSS.checkBoxStyle
         //チェックボックス選択状態プロパティを接続
-        model.selectedProperty.bind(showInTree.selectedProperty())
+        showInTree.selectedProperty().addListener { _, _, select -> model.selected = select }
     }
 
     private object CSS {
+        val currentBranchLabelStyle = """
+            -fx-font-weight: bold;
+        """.trimIndent()
         val checkBoxStyle = """
             -fx-padding: 0 0 0 2;
         """.trimIndent()
