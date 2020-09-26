@@ -14,18 +14,13 @@
     -fx-background-color: -background-color;
 }
 
-/* Check Box */
-.check-box .box {
-    -fx-background-color: white;
-    -fx-border-color:grey;
-    -fx-border-radius:3px;
-    -fx-padding: 1px;
-}
-.check-box:selected .mark {
-    -fx-background-color: white;
-}
-.check-box:selected .box {
+/* Radio Button */
+.radio-button:selected .dot {
     -fx-background-color: -selected-color;
+    -fx-background-insets: 0;
+}
+.radio-button:selected .radio {
+    -fx-border-width: 0;
 }
 
 /* Scroll Bar */

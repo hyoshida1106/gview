@@ -67,6 +67,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel): ModelO
         fireCallback(this)
     }
 
+    //リモートブランチをローカルへチェックアウトする
     fun checkoutRemoteBranch(model: GviewRemoteBranchModel) {
         Git(repository.jgitRepository).checkout()
                 .setName(model.name)
@@ -74,6 +75,14 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel): ModelO
                 .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
                 .setCreateBranch(true)
                 .call()
+        update()
+    }
+
+    fun checkoutLocalBranch(model: GviewLocalBranchModel) {
+        Git(repository.jgitRepository).checkout()
+                .setName(model.name)
+                .call()
+        repository.headerFiles.update()
         update()
     }
 }

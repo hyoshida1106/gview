@@ -24,13 +24,9 @@ class GviewLocalBranchModel(val branchList: GviewBranchListModel, val ref: Ref):
     var isCurrentRepository: Boolean = (branchList.currentBranch == name)
 
     //表示対象フラグ
-    private var selectedValue: Boolean = true
-    var selected: Boolean
-        get() {
-            return selectedValue
-        }
-        set(it) {
-            selectedValue = it
-            fireCallback(this)
+    var selected = isCurrentRepository
+        set(value) {
+            field = value
+            if(value) fireCallback(this)
         }
 }

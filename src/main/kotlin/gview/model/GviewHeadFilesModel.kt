@@ -126,7 +126,6 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
         if(files.isNotEmpty()) {
             val commit = Git(repository.jgitRepository)
                     .commit()
-                    .setCommitter(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)
                     .setMessage(message)
             files.forEach { commit.setOnly(it.path) }
             commit.call()

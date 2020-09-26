@@ -41,6 +41,8 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
         updateRepository(Git
             .open(File(dir))
             .repository)
+        val config = jgitRepository?.config
+        println("${config?.sections}")
     }
 
     //リモートリポジトリのクローン
@@ -57,8 +59,8 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     //リポジトリインスタンスの更新
     private fun updateRepository(newRepository: Repository?) {
         jgitRepository = newRepository
-        branches.update()
         headerFiles.update()
+        branches.update()
         fireCallback(this)
     }
 }

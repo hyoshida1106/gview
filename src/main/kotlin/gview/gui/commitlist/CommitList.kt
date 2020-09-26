@@ -70,7 +70,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
 
     companion object {
         //レーンピッチの既定値
-        private const val defaultXPitch = 12.0
+        private const val defaultXPitch = 15.0
     }
 
     //レーン数からツリーカラムの幅を求める
@@ -143,10 +143,12 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         commitListTable.items.clear()
 
         //ヘッダ情報業を追加
-        val headerId = header.headerId
-        val commitData = if(headerId != null) commits.commitMap[headerId] else null
-        val headerRow = HeaderRowData(this, header, commitData)
-        commitListTable.items.add(headerRow)
+        if(header.headerId != null) {
+            val commitData = commits.commitMap[header.headerId]
+            if(commitData != null && commitData.localBranches.find { it.selected } != null) {
+                commitListTable.items.add(HeaderRowData(this, header, commitData))
+            }
+        }
 
         //コミット情報行を追加
         commits.commitList.forEach {

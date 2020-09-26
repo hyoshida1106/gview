@@ -47,8 +47,8 @@ class GViewApp : Application() {
 
             //Main WindowサイズをModal Informationにバインドする
             with(SystemModal) {
-                mainHeightProperty.bind(mainStage.heightProperty())
-                mainWidthProperty.bind(mainStage.widthProperty())
+                mainHeightProperty.bind(mainStage.scene.heightProperty())
+                mainWidthProperty.bind(mainStage.scene.widthProperty())
                 maximumProperty.bind(mainStage.fullScreenProperty())
             }
 

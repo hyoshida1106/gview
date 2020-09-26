@@ -61,7 +61,7 @@ class CommitRowData(private val commitList: CommitListCtrl,
             val xe = commitList.treeColumnWidth(branchLane)
             val ym = (ye - ys) / 2.0 - 2.0
             val xr = commitList.xPitch
-            val yr = xr
+            val yr = ym - ys
             when {
                 xs < xe -> {
                     gc.strokeLine(xs, ym, xe - xr, ym)
