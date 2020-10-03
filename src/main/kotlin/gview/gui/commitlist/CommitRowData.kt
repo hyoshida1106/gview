@@ -1,7 +1,7 @@
 package gview.gui.commitlist
 
-import gview.gui.util.branchTagLabels
-import gview.gui.util.textMessage
+import gview.gui.util.BranchTagLabels
+import gview.gui.util.TextMessage
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
@@ -114,12 +114,12 @@ class CommitRowData(private val commitList: CommitListCtrl,
 
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
             //日付・作者・メッセージ抜粋
-            val row1 = textMessage("日付: ", model.commitTime)
-            val row2 = textMessage("作者: ", model.author)
-            val row3 = textMessage("コメント:", model.shortMessage)
+            val row1 = TextMessage("日付: ", model.commitTime)
+            val row2 = TextMessage("作者: ", model.author)
+            val row3 = TextMessage("コメント:", model.shortMessage)
 
             //タグ・ブランチラベル
-            row1.children.addAll(branchTagLabels(model))
+            row1.children.addAll(BranchTagLabels(model))
 
             return Pair(VBox(row1, row2, row3), null)
         }

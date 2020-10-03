@@ -6,21 +6,27 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.Region
 
 //ラベル付きテキスト表示
-fun textMessage(title:String, message:String): HBox {
-    val titleLabel   = Label(title)
-    titleLabel.style = titleStringStyle
-    titleLabel.minWidth = Region.USE_PREF_SIZE
-    val messageLabel = Label(message)
-    messageLabel.style = messageStringStyle
-    HBox.setHgrow(titleLabel, Priority.NEVER)
-    return HBox(titleLabel, messageLabel)
+class TextMessage(title:String, message:String): HBox() {
+
+    init {
+        val titleLabel   = Label(title)
+        titleLabel.style = CSS.titleStringStyle
+        titleLabel.minWidth = Region.USE_PREF_SIZE
+        val messageLabel = Label(message)
+        messageLabel.style = CSS.messageStringStyle
+        HBox.setHgrow(titleLabel, Priority.NEVER)
+        children.addAll(titleLabel, messageLabel)
+    }
+
+    object CSS {
+        val titleStringStyle = """
+            -fx-font-weight: bold;
+            -fx-padding: 1;
+        """.trimIndent()
+
+        val messageStringStyle = """
+            -fx-padding: 1; 
+        """.trimIndent()
+    }
 }
 
-private val titleStringStyle = """
-    -fx-font-weight: bold;
-    -fx-padding: 1;
-""".trimIndent()
-
-private val messageStringStyle = """
-    -fx-padding: 1; 
-""".trimIndent()

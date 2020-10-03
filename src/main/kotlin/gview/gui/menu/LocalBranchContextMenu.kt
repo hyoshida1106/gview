@@ -1,5 +1,6 @@
 package gview.gui.menu
 
+import gview.gui.dialog.RemoveLocalBranchDialog
 import gview.gui.framework.GviewMenuItem
 import gview.gui.main.MainWindow
 import gview.model.branch.GviewLocalBranchModel
@@ -29,6 +30,7 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel): ContextM
 
     private fun onMyShowing() {
         checkOutMenuItem.isDisable = (model.isCurrentRepository)
+        removeMenuItem.isDisable = (model.isCurrentRepository)
     }
 
     private fun onCheckOut() {
@@ -36,6 +38,9 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel): ContextM
     }
 
     private fun onRemove() {
-        println("$model remove")
+        val dialog = RemoveLocalBranchDialog("${model.name}を削除しますか")
+        if(dialog.showDialog()) {
+            MainWindow.controller.runTask { model.branchList.removeLocalBranch(model, dialog.forceRemove) }
+        }
     }
 }

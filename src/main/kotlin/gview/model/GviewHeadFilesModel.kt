@@ -1,7 +1,6 @@
 package gview.model
 
-import gview.conf.ConfigUserInfo
-import gview.gui.framework.GviewCommonDialog
+import gview.gui.dialog.InformationDialog
 import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
 import gview.model.util.ModelObservable
@@ -103,7 +102,7 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
             }
         }
         if(count > 0) {
-            GviewCommonDialog.informationDialog("$count ファイルをステージしました")
+            InformationDialog("$count ファイルをステージしました").showDialog()
             update()
         }
     }
@@ -116,21 +115,23 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
                     .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
             reset.call()
-            GviewCommonDialog.informationDialog("${files.size} ファイルをアンステージしました")
+            InformationDialog("${files.size} ファイルをアンステージしました").showDialog()
             update()
         }
     }
 
     //コミット
-    fun commitFiles(files: List<GviewGitFileEntryModel>, message:String) {
+    fun commitFiles(files: List<GviewGitFileEntryModel>, message:String, userName:String, mailAddr:String) {
         if(files.isNotEmpty()) {
             val commit = Git(repository.jgitRepository)
                     .commit()
+                    .setCommitter(userName, mailAddr)
                     .setMessage(message)
             files.forEach { commit.setOnly(it.path) }
             commit.call()
-            GviewCommonDialog.informationDialog("${files.size} ファイルをコミットしました")
+            InformationDialog("${files.size} ファイルをコミットしました").showDialog()
             update()
+            repository.branches.update()
         }
     }
 }

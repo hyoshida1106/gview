@@ -78,9 +78,19 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel): ModelO
         update()
     }
 
+    //ローカルブランチをチェックアウトしてカレントブランチにする
     fun checkoutLocalBranch(model: GviewLocalBranchModel) {
         Git(repository.jgitRepository).checkout()
                 .setName(model.name)
+                .call()
+        repository.headerFiles.update()
+        update()
+    }
+
+    fun removeLocalBranch(model: GviewLocalBranchModel, force: Boolean) {
+        Git(repository.jgitRepository).branchDelete()
+                .setBranchNames(model.name)
+                .setForce(force)
                 .call()
         repository.headerFiles.update()
         update()

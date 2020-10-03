@@ -1,10 +1,10 @@
 package gview
 
 import gview.conf.SystemModal
+import gview.gui.dialog.ConfirmationDialog
+import gview.gui.dialog.ConfirmationDialog.ConfirmationType
 import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.gui.framework.GviewCommonDialog
-import gview.gui.menu.FileMenu
 import gview.gui.util.IdleMonitor
 import javafx.application.Application
 import javafx.event.EventHandler
@@ -36,7 +36,7 @@ class GViewApp : Application() {
 
             //Windowが閉じられる場合の終了確認
             mainStage.onCloseRequest = EventHandler {
-                if(GviewCommonDialog.confirmationDialog("アプリケーションを終了しますか？")) {
+                if(ConfirmationDialog(ConfirmationType.YesNo, "アプリケーションを終了しますか？").showDialog()) {
                     exitProcess(0)
                 }
                 it.consume()

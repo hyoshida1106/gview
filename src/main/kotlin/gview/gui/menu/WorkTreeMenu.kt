@@ -1,11 +1,7 @@
 package gview.gui.menu
 
-import gview.conf.ConfigUserInfo
-import gview.gui.dialog.SelectCommitFilesDialog
-import gview.gui.dialog.SelectStageFilesDialog
-import gview.gui.dialog.SelectUnStageFilesDialog
-import gview.gui.dialog.UserNameDialog
-import gview.gui.framework.GviewCommonDialog
+import gview.conf.GitConfigInfo
+import gview.gui.dialog.*
 import gview.gui.framework.GviewMenuItem
 import gview.model.GviewRepositoryModel
 import javafx.event.EventHandler
@@ -48,8 +44,8 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
     private fun onShowingMenu() {
         val headerData = GviewRepositoryModel.currentRepository.headerFiles
-        val stagedFileNumber = headerData.stagedFiles?.size?:0
-        val changedFileNumber = headerData.changedFiles?.size?:0
+        val stagedFileNumber = headerData.stagedFiles.size
+        val changedFileNumber = headerData.changedFiles.size
         stageMenu.isDisable = changedFileNumber == 0
         unstageMenu.isDisable = stagedFileNumber == 0
         commitMenu.isDisable = stagedFileNumber == 0
@@ -63,7 +59,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
                 try {
                     GviewRepositoryModel.currentRepository.headerFiles.stageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
-                    GviewCommonDialog.errorDialog(e)
+                    ErrorDialog(e).showDialog()
                 }
             }
         }
@@ -74,21 +70,22 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
                 try {
                     GviewRepositoryModel.currentRepository.headerFiles.unStageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
-                    GviewCommonDialog.errorDialog(e)
+                    ErrorDialog(e).showDialog()
                 }
             }
         }
 
         fun doCommitCommand() {
             //ユーザ名とメールアドレスが未入力ならば入力する
-            while (ConfigUserInfo.userName.isEmpty() || ConfigUserInfo.mailAddr.isEmpty()) {
-                val dialog = UserNameDialog(ConfigUserInfo.userName, ConfigUserInfo.mailAddr)
+            var userName = GitConfigInfo.userName
+            var mailAddr = GitConfigInfo.mailAddr
+            while (userName.isEmpty() || mailAddr.isEmpty()) {
+                val dialog = UserNameDialog(userName, mailAddr)
                 if (dialog.showDialog() != ButtonType.OK) {
                     return
                 }
-                ConfigUserInfo.userName = dialog.userName
-                ConfigUserInfo.mailAddr = dialog.mailAddr
-                ConfigUserInfo.saveToFile()
+                userName = dialog.userName
+                mailAddr = dialog.mailAddr
             }
             //対象ファイルを選択する
             val dialog = SelectCommitFilesDialog()
@@ -98,9 +95,9 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             //コミットを実行する
             try {
                 val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                headerData.commitFiles(dialog.selectedFiles, dialog.message)
+                headerData.commitFiles(dialog.selectedFiles, dialog.message, userName, mailAddr)
             } catch (e: Exception) {
-                GviewCommonDialog.errorDialog(e)
+                ErrorDialog(e).showDialog()
             }
         }
     }

@@ -1,6 +1,7 @@
 package gview.gui.menu
 
-import gview.gui.framework.GviewCommonDialog
+import gview.gui.dialog.CommentSearchDialog
+import gview.gui.dialog.TagSearchDialog
 import gview.gui.framework.GviewMenuItem
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
@@ -66,14 +67,14 @@ class CommitMenu: Menu("コミット(_C)") {
     }
 
     private fun onTagSearch() {
-        val tagName = GviewCommonDialog.createSimpleTextDialog("タグ検索", "検索するタグ")
+        val tagName = TagSearchDialog().showDialog()
         if(tagName != null) {
             //タグ検索(tagName)
         }
     }
 
     private fun onCommentSearch() {
-        val comment = GviewCommonDialog.createSimpleTextDialog("コメント検索", "検索する文字列")
+        val comment = CommentSearchDialog().showDialog()
         if(comment != null) {
             //コメント検索(comment)
         }

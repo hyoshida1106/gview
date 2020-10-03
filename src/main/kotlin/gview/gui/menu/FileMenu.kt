@@ -1,7 +1,8 @@
 package gview.gui.menu
 
 import gview.gui.dialog.CloneRepositoryDialog
-import gview.gui.framework.GviewCommonDialog
+import gview.gui.dialog.ConfirmationDialog
+import gview.gui.dialog.ConfirmationDialog.ConfirmationType
 import gview.gui.framework.GviewMenuItem
 import gview.gui.main.MainWindow
 import gview.model.GviewRepositoryModel
@@ -82,7 +83,7 @@ class FileMenu: Menu("ファイル(_F)") {
 
     //プログラム終了
     private fun onFileQuit() {
-        if (GviewCommonDialog.confirmationDialog("アプリケーションを終了しますか？")) {
+        if(ConfirmationDialog(ConfirmationType.YesNo, "アプリケーションを終了しますか？").showDialog()) {
             exitProcess(0)
         }
     }

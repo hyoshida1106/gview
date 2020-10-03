@@ -1,6 +1,6 @@
 package gview.gui.commitlist
 
-import gview.gui.util.textMessage
+import gview.gui.util.TextMessage
 import gview.model.GviewHeadFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
@@ -46,9 +46,9 @@ class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, 
     inner class HeaderInfoCellData(private val model: GviewHeadFilesModel): CommitListCtrl.CellData() {
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?>  {
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
-            val row1 = textMessage("ワークツリー情報 - ", timeStamp)
-            val row2 = textMessage("ステージ済:", "${model.stagedFiles.size} ファイル")
-            val row3 = textMessage("ステージ未:", "${model.changedFiles.size} ファイル")
+            val row1 = TextMessage("ワークツリー情報 - ", timeStamp)
+            val row2 = TextMessage("ステージ済:", "${model.stagedFiles.size} ファイル")
+            val row3 = TextMessage("ステージ未:", "${model.changedFiles.size} ファイル")
             return Pair(VBox(row1, row2, row3), null)
         }
     }
