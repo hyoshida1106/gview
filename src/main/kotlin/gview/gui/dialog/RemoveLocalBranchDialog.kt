@@ -9,7 +9,10 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 
 
-class RemoveLocalBranchDialog(private val message: String, force: Boolean = false) : GviewDialog<Boolean> {
+class RemoveLocalBranchDialog(
+        private val message: String,
+        force: Boolean = false)
+    : GviewDialog<Boolean> {
 
     private val forceCheckBox = CheckBox("強制的に削除")
     val forceRemove: Boolean get() = forceCheckBox.isSelected
@@ -18,7 +21,8 @@ class RemoveLocalBranchDialog(private val message: String, force: Boolean = fals
         forceCheckBox.isSelected = force
     }
 
-    override fun showDialog(): Boolean {
+    override fun showDialog()
+            : Boolean {
         val alert = Alert(Alert.AlertType.CONFIRMATION)
         val styleClass = alert.dialogPane.styleClass
 
@@ -26,7 +30,8 @@ class RemoveLocalBranchDialog(private val message: String, force: Boolean = fals
         alert.title = "Confirmation"
         alert.headerText = null
         alert.dialogPane = object : DialogPane() {
-            override fun createButtonBar(): Node {
+            override fun createButtonBar()
+                    : Node {
                 val checkBox = forceCheckBox
                 val buttonBar = super.createButtonBar()
                 HBox.setHgrow(checkBox, Priority.ALWAYS)

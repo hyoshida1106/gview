@@ -9,7 +9,8 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
 
 
-class LocalBranchContextMenu(private val model: GviewLocalBranchModel): ContextMenu() {
+class LocalBranchContextMenu(private val model: GviewLocalBranchModel)
+    : ContextMenu() {
 
     private val checkOutMenuItem = GviewMenuItem(
             "チェックアウト"
@@ -34,13 +35,18 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel): ContextM
     }
 
     private fun onCheckOut() {
-        MainWindow.controller.runTask { model.branchList.checkoutLocalBranch(model) }
+        MainWindow.controller.runTask {
+            model.branchList.checkoutLocalBranch(
+                    model) }
     }
 
     private fun onRemove() {
         val dialog = RemoveLocalBranchDialog("${model.name}を削除しますか")
         if(dialog.showDialog()) {
-            MainWindow.controller.runTask { model.branchList.removeLocalBranch(model, dialog.forceRemove) }
+            MainWindow.controller.runTask {
+                model.branchList.removeLocalBranch(
+                        model,
+                        dialog.forceRemove) }
         }
     }
 }

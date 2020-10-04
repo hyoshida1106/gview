@@ -12,7 +12,8 @@ import javafx.scene.control.TableView
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
 
-class SelectUnStageFilesDialogCtrl : GviewCustomDialogCtrl() {
+class SelectUnStageFilesDialogCtrl
+    : GviewCustomDialogCtrl() {
 
     @FXML private lateinit var selAllCheckBox: CheckBox
     @FXML private lateinit var fileList: TableView<RowData>
@@ -37,7 +38,8 @@ class SelectUnStageFilesDialogCtrl : GviewCustomDialogCtrl() {
 
         fileTypeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
         filePathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
-        fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index -> fileList.items[index].check }
+        fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index ->
+            fileList.items[index].check }
 
         fileTypeColumn.style = CSS.fileTypeStyle
         filePathColumn.style = CSS.filePathStyle

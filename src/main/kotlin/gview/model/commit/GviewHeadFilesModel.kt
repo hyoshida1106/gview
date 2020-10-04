@@ -1,7 +1,7 @@
-package gview.model
+package gview.model.commit
 
 import gview.gui.dialog.InformationDialog
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.GviewRepositoryModel
 import gview.model.util.ByteArrayDiffFormatter
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
@@ -19,7 +19,9 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelObservable<GviewHeadFilesModel>() {
+class GviewHeadFilesModel(
+        private val repository: GviewRepositoryModel)
+    : ModelObservable<GviewHeadFilesModel>() {
 
     //ステージングされているファイルを保持するリスト
     val stagedFiles = mutableListOf<GviewGitFileEntryModel>()
@@ -36,23 +38,29 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
         stagedFiles.clear()
         changedFiles.clear()
 
-        if(repository.jgitRepository != null) {
-            val cache = repository.jgitRepository!!.lockDirCache()
+        val jgitRepository = repository.jgitRepository
+        if(jgitRepository != null) {
+            val cache = jgitRepository.lockDirCache()
             try {
-                updateStagedFiles(repository.jgitRepository!!, cache, stagedFiles)
-                updateChangedFiles(repository.jgitRepository!!, cache, changedFiles)
+                updateStagedFiles(jgitRepository, cache, stagedFiles)
+                updateChangedFiles(jgitRepository, cache, changedFiles)
             } finally {
                 cache.unlock()
             }
         }
+
         fireCallback(this)
     }
 
     //ステージング済ファイル一覧を取得する
-    private fun updateStagedFiles(repository: Repository, cache: DirCache, files: MutableList<GviewGitFileEntryModel>) {
-        val cacheIterator = DirCacheIterator(cache)
+    private fun updateStagedFiles(
+            repository: Repository,
+            cache: DirCache,
+            files: MutableList<GviewGitFileEntryModel>) {
+
         //SubModuleは当面無視する
         if(headerId != null) {
+            val cacheIterator = DirCacheIterator(cache)
             ByteArrayDiffFormatter(repository).use() { formatter ->
                 formatter.scan(toTreeIterator(repository, headerId!!), cacheIterator)
                         .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
@@ -62,9 +70,13 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
     }
 
     //修正済ファイル一覧を取得する
-    private fun updateChangedFiles(repository: Repository, cache: DirCache, files: MutableList<GviewGitFileEntryModel>) {
-        val cacheIterator = DirCacheIterator(cache)
+    private fun updateChangedFiles(
+            repository: Repository,
+            cache: DirCache,
+            files: MutableList<GviewGitFileEntryModel>) {
+
         //SubModuleは当面無視する
+        val cacheIterator = DirCacheIterator(cache)
         ByteArrayDiffFormatter(repository).use() { formatter ->
             formatter.scan(cacheIterator, FileTreeIterator(repository))
                     .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
@@ -73,7 +85,10 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
     }
 
     // ファイルイテレータを取得する内部メソッド
-    private fun toTreeIterator(repository: Repository, id: ObjectId): AbstractTreeIterator {
+    private fun toTreeIterator(
+            repository: Repository,
+            id: ObjectId): AbstractTreeIterator {
+
         val parser = CanonicalTreeParser()
         val revWalk = RevWalk(repository)
         parser.reset(repository.newObjectReader(), revWalk.parseTree(id).id)
@@ -82,7 +97,9 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
     }
 
     //指定されたファイルをステージ
-    fun stageFiles(files: List<GviewGitFileEntryModel>) {
+    fun stageFiles(
+            files: List<GviewGitFileEntryModel>) {
+
         val git = Git(repository.jgitRepository)
         var count = 0
         files.forEach {
@@ -108,7 +125,9 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
     }
 
     //指定されたファイルをアンステージ
-    fun unStageFiles(files: List<GviewGitFileEntryModel>) {
+    fun unStageFiles(
+            files: List<GviewGitFileEntryModel>) {
+
         if(files.isNotEmpty()) {
             val reset = Git(repository.jgitRepository)
                     .reset()
@@ -121,7 +140,12 @@ class GviewHeadFilesModel(private val repository: GviewRepositoryModel): ModelOb
     }
 
     //コミット
-    fun commitFiles(files: List<GviewGitFileEntryModel>, message:String, userName:String, mailAddr:String) {
+    fun commitFiles(
+            files: List<GviewGitFileEntryModel>,
+            message:String,
+            userName:String,
+            mailAddr:String) {
+
         if(files.isNotEmpty()) {
             val commit = Git(repository.jgitRepository)
                     .commit()

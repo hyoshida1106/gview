@@ -1,15 +1,14 @@
 package gview.model.branch
 
-import gview.model.GviewBranchListModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.Repository
 
-/*
-    ローカルブランチ
- */
-class GviewLocalBranchModel(val branchList: GviewBranchListModel, val ref: Ref):
-        GviewBranchModel, ModelObservable<GviewLocalBranchModel>()  {
+class GviewLocalBranchModel(
+        val branchList: GviewBranchListModel,
+        val ref: Ref):
+        GviewBranchModel,
+        ModelObservable<GviewLocalBranchModel>() {
 
     //表示名
     override val name: String = Repository.shortenRefName(ref.name)

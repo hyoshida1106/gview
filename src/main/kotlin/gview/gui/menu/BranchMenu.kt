@@ -12,7 +12,8 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 
-class BranchMenu: Menu("ブランチ(_B)") {
+class BranchMenu
+    : Menu("ブランチ(_B)") {
 
     private val checkoutMenu = GviewMenuItem(
             text= "チェックアウト(_C)",
@@ -21,13 +22,19 @@ class BranchMenu: Menu("ブランチ(_B)") {
 
     private val pushMenu = GviewMenuItem(
             text= "プッシュ(_P)",
-            accelerator = KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.P,
+                    KeyCombination.SHORTCUT_DOWN,
+                    KeyCombination.SHIFT_DOWN),
             iconLiteral = "mdi-folder-upload"
     ) { onPush() }
 
     private val pullMenu = GviewMenuItem(
             text = "プル(_L)",
-            accelerator = KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.L,
+                    KeyCombination.SHORTCUT_DOWN,
+                    KeyCombination.SHIFT_DOWN),
             iconLiteral = "mdi-folder-download"
     ) { onPull() }
 
@@ -76,10 +83,6 @@ class BranchMenu: Menu("ブランチ(_B)") {
     }
 
     private fun onRemove() {
-    }
-
-    companion object {
-
     }
 
 }

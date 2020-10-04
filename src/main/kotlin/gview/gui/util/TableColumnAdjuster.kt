@@ -7,7 +7,9 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 
 
-class TableColumnAdjuster(private val table: TableView<*>, private val adjustColumn: TableColumn<*, *>) {
+class TableColumnAdjuster(
+        private val table: TableView<*>,
+        private val adjustColumn: TableColumn<*, *>) {
 
     private var verticalScrollBar: ScrollBar? = null
 
@@ -42,7 +44,10 @@ class TableColumnAdjuster(private val table: TableView<*>, private val adjustCol
         adjustColumn.maxWidth  = width
     }
 
-    private fun findVerticalScrollBar(node: Node): ScrollBar? {
+    //縦スクロールバーを検索する
+    private fun findVerticalScrollBar(node: Node):
+            ScrollBar? {
+
         node.lookupAll(".scroll-bar").forEach {
             var bar:ScrollBar? = it as ScrollBar
             if(bar != null && bar.orientation == Orientation.VERTICAL) {

@@ -1,5 +1,7 @@
 package gview.model
 
+import gview.model.branch.GviewBranchListModel
+import gview.model.commit.GviewHeadFilesModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Repository

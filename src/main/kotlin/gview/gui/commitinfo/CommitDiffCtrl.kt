@@ -10,31 +10,39 @@ import java.nio.charset.Charset
 
 class CommitDiffCtrl: GviewBasePaneCtrl() {
 
-    @FXML
-    private lateinit var commitDiffViewPane: BorderPane
-    @FXML
-    private lateinit var diffList: ListView<String>
+    @FXML private lateinit var commitDiffViewPane: BorderPane
+    @FXML private lateinit var diffList: ListView<String>
 
     //初期化
     fun initialize() {
+
         commitDiffViewPane.isVisible = false
         diffList.style = CSS.diffListStyle
         diffList.setCellFactory { DiffCell() }
     }
 
-    fun selectDiffEntry(entry: GviewGitFileEntryModel?) {
+    fun selectDiffEntry(
+            entry: GviewGitFileEntryModel?) {
+
         if(entry != null) {
-            diffList.items.setAll(
-                    entry.exportDiffText().inputStream().bufferedReader(Charset.forName("utf-8")).readLines())
+            diffList.items.setAll(entry
+                    .exportDiffText().
+                    inputStream().
+                    bufferedReader(Charset.forName("utf-8")).
+                    readLines())
             commitDiffViewPane.isVisible = true
         } else {
             commitDiffViewPane.isVisible = false
         }
     }
 
-    private class DiffCell : ListCell<String>() {
+    private class DiffCell
+        : ListCell<String>() {
 
-        override fun updateItem(text: String?, empty: Boolean) {
+        override fun updateItem(
+                text: String?,
+                empty: Boolean) {
+
             super.updateItem(text, empty)
             if (text != null && !empty) {
                 style = when {

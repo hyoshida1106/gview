@@ -63,11 +63,12 @@ object SystemModal: SerializableData("ModalInfo.json") {
         実際にファイルI/Oを行うプロパティを持ったデータクラス
      */
     @Serializable
-    data class StorageData(var maximum: Boolean,
-                           var mainHeight: Double,
-                           var mainWidth: Double,
-                           var mainSplitPos: DoubleArray
-    ){
+    data class StorageData(
+            var maximum: Boolean,
+            var mainHeight: Double,
+            var mainWidth: Double,
+            var mainSplitPos: DoubleArray){
+
         //デフォルト値
         constructor( ): this(false, 800.0, 1200.0, doubleArrayOf(0.15, 0.4))
 

@@ -7,10 +7,12 @@ import javafx.scene.input.KeyCodeCombination
 import org.kordamp.ikonli.javafx.FontIcon
 
 
-class GviewMenuItem(text: String,
-                    iconLiteral: String? = null,
-                    accelerator: KeyCodeCombination? = null,
-                    eventHandler: EventHandler<ActionEvent>): MenuItem(text) {
+class GviewMenuItem(
+        text: String,
+        iconLiteral: String? = null,
+        accelerator: KeyCodeCombination? = null,
+        eventHandler: EventHandler<ActionEvent>)
+    : MenuItem(text) {
 
     init {
         if(iconLiteral != null) {

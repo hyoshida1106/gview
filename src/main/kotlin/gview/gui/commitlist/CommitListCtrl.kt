@@ -2,8 +2,8 @@ package gview.gui.commitlist
 
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.TableColumnAdjuster
-import gview.model.GviewCommitListModel
-import gview.model.GviewHeadFilesModel
+import gview.model.commit.GviewCommitListModel
+import gview.model.commit.GviewHeadFilesModel
 import gview.model.GviewRepositoryModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
@@ -14,7 +14,8 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
 
-class CommitListCtrl: GviewBasePaneCtrl() {
+class CommitListCtrl
+    : GviewBasePaneCtrl() {
 
     //FXML内のエレメント選言
     @FXML private lateinit var commitListTable: TableView<RowData>
@@ -30,6 +31,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
         val treeCellValue: CellData
         val infoCellValue: CellData
     }
+
     //カラム単位データの基本クラス
     open class CellData {
         open fun update(tableCell: Cell): Pair<Node?, String?> { return Pair(null, null) }
@@ -108,6 +110,7 @@ class CommitListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
+
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
         val headers = repository.headerFiles
@@ -132,7 +135,9 @@ class CommitListCtrl: GviewBasePaneCtrl() {
     }
 
     //表示更新
-    private fun update(header: GviewHeadFilesModel, commits: GviewCommitListModel) {
+    private fun update(
+            header: GviewHeadFilesModel,
+            commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()

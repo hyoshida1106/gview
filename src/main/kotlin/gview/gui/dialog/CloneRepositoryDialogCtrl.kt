@@ -13,7 +13,8 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 import javafx.stage.DirectoryChooser
 
-class CloneRepositoryDialogCtrl : GviewCustomDialogCtrl() {
+class CloneRepositoryDialogCtrl
+    : GviewCustomDialogCtrl() {
 
     @FXML private lateinit var pane: GridPane
     @FXML private lateinit var remoteRepositoryPath: TextField
@@ -51,10 +52,15 @@ class CloneRepositoryDialogCtrl : GviewCustomDialogCtrl() {
             if (dir != null) { localDirectoryPath.text = dir.absolutePath }
         }
 
-        btnOkDisable.bind(remoteRepositoryPath.textProperty().isEmpty.or(localDirectoryPath.textProperty().isEmpty))
+        //リモート・ローカルともに入力された場合、OKを有効にする
+        btnOkDisable.bind(
+                remoteRepositoryPath.textProperty().isEmpty
+                        .or(localDirectoryPath.textProperty().isEmpty))
     }
 
-    fun setInitialPath(remotePath: String, localPath: String) {
+    fun setInitialPath(
+            remotePath: String,
+            localPath: String) {
         remoteRepositoryPath.text = remotePath
         localDirectoryPath.text = localPath
     }

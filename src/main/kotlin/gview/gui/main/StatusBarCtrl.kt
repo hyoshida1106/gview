@@ -6,7 +6,8 @@ import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
 
-class StatusBarCtrl : GviewBasePaneCtrl() {
+class StatusBarCtrl
+    : GviewBasePaneCtrl() {
 
     @FXML private lateinit var statusBar: HBox
     @FXML private lateinit var repositoryPath: Label
@@ -20,7 +21,11 @@ class StatusBarCtrl : GviewBasePaneCtrl() {
     override fun displayCompleted() {
         //リポジトリのパスを表示
         GviewRepositoryModel.currentRepository.addListener {
-            repositoryPath.text = GviewRepositoryModel.currentRepository.jgitRepository?.directory?.absolutePath
+            repositoryPath.text = GviewRepositoryModel
+                    .currentRepository
+                    .jgitRepository
+                    ?.directory
+                    ?.absolutePath
         }
     }
 

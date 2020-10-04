@@ -15,7 +15,8 @@ import kotlin.system.exitProcess
 /*
     Application Main Class
  */
-class GViewApp : Application() {
+class GViewApp
+    : Application() {
 
     private lateinit var mainStage: Stage
 
@@ -25,9 +26,10 @@ class GViewApp : Application() {
             //Main Windowsのセットアップ
             mainStage = stage
             mainStage.title = "G/View"
-            mainStage.scene = Scene(MainWindow.root,
-                SystemModal.mainWidthProperty.value,
-                SystemModal.mainHeightProperty.value)
+            mainStage.scene = Scene(
+                    MainWindow.root,
+                    SystemModal.mainWidthProperty.value,
+                    SystemModal.mainHeightProperty.value)
 
             //表示完了イベントを各Paneに通知する
             mainStage.onShown = EventHandler {
@@ -36,7 +38,8 @@ class GViewApp : Application() {
 
             //Windowが閉じられる場合の終了確認
             mainStage.onCloseRequest = EventHandler {
-                if(ConfirmationDialog(ConfirmationType.YesNo, "アプリケーションを終了しますか？").showDialog()) {
+                val message = "アプリケーションを終了しますか？"
+                if(ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
                     exitProcess(0)
                 }
                 it.consume()

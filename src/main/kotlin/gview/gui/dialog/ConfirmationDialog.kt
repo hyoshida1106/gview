@@ -6,17 +6,22 @@ import javafx.scene.control.Alert
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 
-class ConfirmationDialog(private val type: ConfirmationType, private val message: String) : GviewDialog<Boolean> {
+class ConfirmationDialog(
+        private val type: ConfirmationType,
+        private val message: String)
+    : GviewDialog<Boolean> {
 
     enum class ConfirmationType { YesNo, OkCancel }
 
-    override fun showDialog(): Boolean {
+    override fun showDialog()
+            : Boolean {
+
         val buttonTypes = when(type) {
-            ConfirmationType.YesNo -> {arrayOf(
+            ConfirmationType.YesNo -> { arrayOf(
                 ButtonType("はい", ButtonBar.ButtonData.OK_DONE),
                 ButtonType("いいえ", ButtonBar.ButtonData.CANCEL_CLOSE)
             )}
-            ConfirmationType.OkCancel ->  {arrayOf(
+            ConfirmationType.OkCancel -> { arrayOf(
                 ButtonType("OK", ButtonBar.ButtonData.OK_DONE),
                 ButtonType("キャンセル", ButtonBar.ButtonData.CANCEL_CLOSE)
             )}

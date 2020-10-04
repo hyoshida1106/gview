@@ -10,33 +10,46 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 
-class CommitMenu: Menu("コミット(_C)") {
+class CommitMenu
+    : Menu("コミット(_C)") {
 
     private val tagSearchMenu = GviewMenuItem(
             text= "タグを検索(_F)...",
-            accelerator = KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN)
+            accelerator = KeyCodeCombination(
+                    KeyCode.F,
+                    KeyCombination.SHORTCUT_DOWN,
+                    KeyCombination.SHIFT_DOWN)
     ) { onTagSearch() }
 
     private val commentSearchMenu = GviewMenuItem(
             text = "コメントを検索(_S)...",
-            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN)
+            accelerator = KeyCodeCombination(
+                    KeyCode.S,
+                    KeyCombination.SHORTCUT_DOWN,
+                    KeyCombination.SHIFT_DOWN)
     ) { onCommentSearch() }
 
     private val branchMenu = GviewMenuItem(
             text = "ブランチ...",
-            accelerator = KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.B,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-source-branch"
     ) { onBranch() }
 
     private val mergeMenu = GviewMenuItem(
             text = "マージ...",
-            accelerator = KeyCodeCombination(KeyCode.M, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.M,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-source-merge"
     ) { onMerge() }
 
     private val cherryPickMenu = GviewMenuItem(
             text = "チェリーピック...",
-            accelerator = KeyCodeCombination(KeyCode.P, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.P,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-source-pull"
     ) { onCherryPick() }
 

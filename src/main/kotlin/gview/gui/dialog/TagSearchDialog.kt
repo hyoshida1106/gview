@@ -4,7 +4,9 @@ import gview.gui.framework.GviewDialog
 import gview.gui.main.MainWindow
 import javafx.scene.control.TextInputDialog
 
-class TagSearchDialog  : TextInputDialog(), GviewDialog<String?> {
+class TagSearchDialog
+    : TextInputDialog(),
+        GviewDialog<String?> {
 
     init {
         initOwner(MainWindow.root.scene.window)

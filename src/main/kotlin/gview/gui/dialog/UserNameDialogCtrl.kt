@@ -6,7 +6,8 @@ import javafx.fxml.FXML
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 
-class UserNameDialogCtrl : GviewCustomDialogCtrl() {
+class UserNameDialogCtrl
+    : GviewCustomDialogCtrl() {
 
     @FXML private lateinit var pane: GridPane
     @FXML private lateinit var userName: TextField

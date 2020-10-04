@@ -1,6 +1,5 @@
 package gview.model.commit
 
-import gview.model.GviewCommitListModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
 import gview.model.util.ByteArrayDiffFormatter

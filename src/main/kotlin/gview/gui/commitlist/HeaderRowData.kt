@@ -1,7 +1,7 @@
 package gview.gui.commitlist
 
 import gview.gui.util.TextMessage
-import gview.model.GviewHeadFilesModel
+import gview.model.commit.GviewHeadFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
@@ -10,7 +10,10 @@ import javafx.scene.layout.VBox
 import java.text.DateFormat
 import java.util.*
 
-class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, head: GviewCommitDataModel?)
+class HeaderRowData(
+        commitList: CommitListCtrl,
+        val model: GviewHeadFilesModel,
+        head: GviewCommitDataModel?)
     : AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
@@ -19,10 +22,14 @@ class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, 
     override val styleClassName: String = "header-row"
 
     //コミットツリーセル
-    inner class HeaderTreeCellData(private val commitList: CommitListCtrl,
-                                   val model: GviewHeadFilesModel) : CommitListCtrl.CellData() {
+    inner class HeaderTreeCellData(
+            private val commitList: CommitListCtrl,
+            val model: GviewHeadFilesModel)
+        : CommitListCtrl.CellData() {
 
-        override fun layout(tableCell: CommitListCtrl.Cell) {
+        override fun layout(
+                tableCell: CommitListCtrl.Cell) {
+
             val canvas = Canvas(tableCell.width, tableCell.height)
             val ys = 0.0
             val ye = tableCell.height
@@ -31,7 +38,11 @@ class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, 
             tableCell.text = null
         }
 
-        private fun drawMark(canvas: Canvas, ys: Double, ye: Double) {
+        private fun drawMark(
+                canvas: Canvas,
+                ys: Double,
+                ye: Double) {
+
             val gc = setColor(canvas, laneNumber)
             val x = commitList.treeColumnWidth(laneNumber)
             val y = (ye - ys) / 2.0
@@ -43,8 +54,13 @@ class HeaderRowData(commitList: CommitListCtrl, val model: GviewHeadFilesModel, 
     }
 
     //コミット情報セル
-    inner class HeaderInfoCellData(private val model: GviewHeadFilesModel): CommitListCtrl.CellData() {
-        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?>  {
+    inner class HeaderInfoCellData(
+            private val model: GviewHeadFilesModel)
+        : CommitListCtrl.CellData() {
+
+        override fun update(tableCell: CommitListCtrl.Cell)
+                : Pair<Node?, String?>  {
+
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
             val row1 = TextMessage("ワークツリー情報 - ", timeStamp)
             val row2 = TextMessage("ステージ済:", "${model.stagedFiles.size} ファイル")

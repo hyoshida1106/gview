@@ -16,19 +16,26 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
     private val stageMenu = GviewMenuItem(
             text = "ステージ(_S)...",
-            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.S,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-arrow-up-bold-circle-outline"
     ) { doStageCommand() }
 
     private val unstageMenu = GviewMenuItem(
             text = "アンステージ(_U)...",
-            accelerator = KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.S,
+                    KeyCombination.SHORTCUT_DOWN,
+                    KeyCombination.SHIFT_DOWN),
             iconLiteral = "mdi-arrow-down-bold-circle-outline"
     ) { doUnStageCommand() }
 
     private val commitMenu = GviewMenuItem(
             text = "コミット(_C)...",
-            accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.C,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-checkbox-marked-circle-outline"
     ) { doCommitCommand() }
 
@@ -57,7 +64,8 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.headerFiles.stageFiles(dialog.selectedFiles)
+                    GviewRepositoryModel.currentRepository.headerFiles.stageFiles(
+                            dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -68,7 +76,8 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectUnStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.headerFiles.unStageFiles(dialog.selectedFiles)
+                    GviewRepositoryModel.currentRepository.headerFiles.unStageFiles(
+                            dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -81,21 +90,20 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             var mailAddr = GitConfigInfo.mailAddr
             while (userName.isEmpty() || mailAddr.isEmpty()) {
                 val dialog = UserNameDialog(userName, mailAddr)
-                if (dialog.showDialog() != ButtonType.OK) {
-                    return
-                }
+                if (dialog.showDialog() != ButtonType.OK) return
                 userName = dialog.userName
                 mailAddr = dialog.mailAddr
             }
             //対象ファイルを選択する
             val dialog = SelectCommitFilesDialog()
-            if (dialog.showDialog() != ButtonType.OK) {
-                return
-            }
+            if (dialog.showDialog() != ButtonType.OK) return
             //コミットを実行する
             try {
-                val headerData = GviewRepositoryModel.currentRepository.headerFiles
-                headerData.commitFiles(dialog.selectedFiles, dialog.message, userName, mailAddr)
+                GviewRepositoryModel.currentRepository.headerFiles.commitFiles(
+                        dialog.selectedFiles,
+                        dialog.message,
+                        userName,
+                        mailAddr)
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }

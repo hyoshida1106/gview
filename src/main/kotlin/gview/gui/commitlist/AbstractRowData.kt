@@ -11,7 +11,8 @@ import javafx.scene.paint.Paint
 /*
     コミットリスト行データの共通ベースクラス
  */
-abstract class AbstractRowData: CommitListCtrl.RowData {
+abstract class AbstractRowData
+    : CommitListCtrl.RowData {
 
     //表示色
     private val colors = arrayOf(

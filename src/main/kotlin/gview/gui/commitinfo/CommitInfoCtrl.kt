@@ -5,21 +5,18 @@ import gview.gui.commitlist.CommitListCtrl
 import gview.gui.commitlist.CommitRowData
 import gview.gui.commitlist.HeaderRowData
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.model.GviewHeadFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 
-class CommitInfoCtrl: GviewBasePaneCtrl() {
+class CommitInfoCtrl
+    : GviewBasePaneCtrl() {
 
     @FXML private lateinit var commitInfoPane: SplitPane
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
-
-    val headerDataProperty = SimpleObjectProperty<GviewHeadFilesModel?>()
-    val headerData: GviewHeadFilesModel? get() { return headerDataProperty.value }
 
     val commitDataProperty = SimpleObjectProperty<GviewCommitDataModel?>()
 
@@ -50,7 +47,6 @@ class CommitInfoCtrl: GviewBasePaneCtrl() {
         commitInfoFiles.children.setAll(headerFileListView)
         commitInfoDiff.children.setAll(commitDiffView)
         commitDataProperty.value = null
-        headerDataProperty.value = data.model
         commitInfoPane.isVisible = true
         commitDiffView.isVisible = false
     }
@@ -59,7 +55,6 @@ class CommitInfoCtrl: GviewBasePaneCtrl() {
         commitInfoFiles.children.setAll(commitFileListView)
         commitInfoDiff.children.setAll(commitDiffView)
         commitDataProperty.value = data.model
-        headerDataProperty.value = null
         commitInfoPane.isVisible = true
         commitDiffView.isVisible = false
     }

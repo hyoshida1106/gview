@@ -10,7 +10,8 @@ import javafx.scene.control.*
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
 
-class SelectCommitFilesDialogCtrl : GviewCustomDialogCtrl() {
+class SelectCommitFilesDialogCtrl
+    : GviewCustomDialogCtrl() {
 
     @FXML private lateinit var selAllCheckBox: CheckBox
     @FXML private lateinit var fileList: TableView<RowData>

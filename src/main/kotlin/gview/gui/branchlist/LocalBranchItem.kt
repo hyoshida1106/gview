@@ -12,7 +12,11 @@ import javafx.scene.layout.HBox
 /*
     ローカルブランチTree Item
  */
-class LocalBranchItem(val model: GviewLocalBranchModel, toggleGroup: ToggleGroup): BranchListCtrl.BranchTreeItem(model) {
+class LocalBranchItem(
+        val model: GviewLocalBranchModel,
+        toggleGroup: ToggleGroup)
+    : BranchListCtrl.BranchTreeItem(model) {
+
     private  val branchName = Label(model.name)
     private  val showInTree = RadioButton()
     override val cellImage: Node = HBox(branchName, showInTree)

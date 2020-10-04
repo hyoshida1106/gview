@@ -1,6 +1,5 @@
 package gview.gui.commitinfo
 
-import gview.gui.framework.GviewBasePane
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.menu.WorkTreeMenu
 import gview.gui.util.TableColumnAdjuster

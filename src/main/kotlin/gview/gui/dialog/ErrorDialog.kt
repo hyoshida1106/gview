@@ -4,7 +4,9 @@ import gview.gui.framework.GviewDialog
 import gview.gui.main.MainWindow
 import javafx.scene.control.Alert
 
-class ErrorDialog(message: String?): Alert(AlertType.ERROR, message), GviewDialog<Unit> {
+class ErrorDialog(message: String?):
+        Alert(AlertType.ERROR, message),
+        GviewDialog<Unit> {
 
     constructor(e: Exception) : this(e.message)
 

@@ -3,10 +3,9 @@ package gview.model.commit
 import gview.model.util.ByteArrayDiffFormatter
 import org.eclipse.jgit.diff.DiffEntry
 
-/*
-    修正前/修正後をペアにした更新ファイルを表現するモデル
- */
-class GviewGitFileEntryModel(private val formatter: ByteArrayDiffFormatter, private val entry: DiffEntry) {
+class GviewGitFileEntryModel(
+        private val formatter: ByteArrayDiffFormatter,
+        private val entry: DiffEntry) {
 
     //ファイルの更新状況を表すenum
     enum class ModifiedType { ADD, COPY, DELETE, MODIFY, RENAME, UNKNOWN }

@@ -3,7 +3,10 @@ package gview.gui.dialog
 import gview.gui.framework.GviewCustomDialog
 import javafx.scene.control.ButtonType
 
-class CloneRepositoryDialog(remotePath: String, localPath: String) : GviewCustomDialog<CloneRepositoryDialogCtrl>(
+class CloneRepositoryDialog(
+        remotePath: String,
+        localPath: String)
+    : GviewCustomDialog<CloneRepositoryDialogCtrl>(
         "取得するリポジトリのパス/URLと、作成するリポジトリのパスを指定してください",
         "/dialog/CloneRepositoryDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {

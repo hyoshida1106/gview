@@ -3,7 +3,8 @@ package gview.gui.util
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.control.Label
 
-class BranchTagLabels(model: GviewCommitDataModel): ArrayList<Label>() {
+class BranchTagLabels(model: GviewCommitDataModel)
+    : ArrayList<Label>() {
 
     init {
         //ローカルブランチ

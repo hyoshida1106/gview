@@ -7,15 +7,19 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
 
-open class GviewCustomDialog<Controller>(title: String, form: String, vararg buttons: ButtonType)
+open class GviewCustomDialog<Controller>(
+        title: String,
+        form: String,
+        vararg buttons: ButtonType)
     : Dialog<ButtonType>(), GviewDialog<ButtonType?>
-        where Controller: GviewCustomDialogCtrl
-{
+        where Controller: GviewCustomDialogCtrl {
+
     val controller: Controller
 
     init {
         this.title = title
         dialogPane.buttonTypes.addAll(buttons)
+
         val loader = FXMLLoader(javaClass.getResource(form))
         dialogPane.content = loader.load()
         controller = loader.getController() as Controller
@@ -27,8 +31,11 @@ open class GviewCustomDialog<Controller>(title: String, form: String, vararg but
         dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }
     }
 
-    fun addButtonHandler(buttonType: ButtonType, disable: BooleanProperty?,
-                         handler: EventHandler<ActionEvent>? = null) {
+    fun addButtonHandler(
+            buttonType: ButtonType,
+            disable: BooleanProperty?,
+            handler: EventHandler<ActionEvent>? = null) {
+
         val button = dialogPane.lookupButton(buttonType)
         if(button != null) {
             if (disable != null) { button.disableProperty().bind(disable) }

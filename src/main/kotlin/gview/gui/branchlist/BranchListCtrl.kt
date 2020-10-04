@@ -57,7 +57,9 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     }
 
     //BranchTreeに描画するTreeCellクラス
-    private class BranchTreeCell: TreeCell<GviewBranchModel>() {
+    private class BranchTreeCell
+        : TreeCell<GviewBranchModel>() {
+
         override fun updateItem(model: GviewBranchModel?, empty: Boolean) {
             super.updateItem(model, empty)
             if(!empty) {
@@ -73,10 +75,11 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     }
 
     //ローカルブランチツリーを更新する
-    private fun updateLocalBranches(branches: List<GviewLocalBranchModel>) {
+    private fun updateLocalBranches(
+            branches: List<GviewLocalBranchModel>) {
+
         //ローカルブランチ一覧からツリー項目を生成
         localTreeRoot.children.clear()
-
         branches.forEach {
             val item = LocalBranchItem(it, localBranchToggleGroup)
             localTreeRoot.children.add(item)
@@ -87,21 +90,28 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     }
 
     //リモートブランチツリーを更新する
-    private fun updateRemoteBranches(branches: List<GviewRemoteBranchModel>) {
+    private fun updateRemoteBranches(
+            branches: List<GviewRemoteBranchModel>) {
+
         remoteTreeRoot.children.clear()
         branches.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
         branchTree.isVisible = true
     }
 
     //ブランチツリーの基本クラス
-    abstract class BranchTreeItem(model: GviewBranchModel?): TreeItem<GviewBranchModel>(model) {
+    abstract class BranchTreeItem(
+            model: GviewBranchModel?)
+        : TreeItem<GviewBranchModel>(model) {
+
         abstract val cellImage: Node                    //表示イメージ
         abstract val contextMenu: ContextMenu?          //コンテキストメニュー
         abstract override fun isLeaf(): Boolean         //末端か
     }
 
     //Remote/Localそれぞれのルートになるコンポーネント
-    class RootItem(name: String): BranchTreeItem(null) {
+    class RootItem(name: String)
+        : BranchTreeItem(null) {
+
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
         override fun isLeaf(): Boolean = false

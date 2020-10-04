@@ -8,7 +8,8 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
 
 
-class RemoteBranchContextMenu(val model: GviewRemoteBranchModel): ContextMenu() {
+class RemoteBranchContextMenu(val model: GviewRemoteBranchModel)
+    : ContextMenu() {
 
     private val checkOutMenuItem = GviewMenuItem(
             "ローカルへチェックアウト"
@@ -32,7 +33,8 @@ class RemoteBranchContextMenu(val model: GviewRemoteBranchModel): ContextMenu() 
     }
 
     private fun onCheckOut() {
-        MainWindow.controller.runTask { model.branchList.checkoutRemoteBranch(model) }
+        MainWindow.controller.runTask {
+            model.branchList.checkoutRemoteBranch(model) }
     }
 
     private fun onRemove() {

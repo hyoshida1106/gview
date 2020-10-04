@@ -16,23 +16,30 @@ import javafx.scene.input.KeyCombination
 import javafx.stage.DirectoryChooser
 import kotlin.system.exitProcess
 
-class FileMenu: Menu("ファイル(_F)") {
+class FileMenu
+    : Menu("ファイル(_F)") {
 
     private val openMenu = GviewMenuItem(
             text= "リポジトリを開く(_O)...",
-            accelerator = KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.O,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-folder"
     ) { onFileOpenRepo() }
 
     private val createMenu = GviewMenuItem(
             text = "新規リポジトリ(_N)...",
-            accelerator = KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.N,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-folder-plus"
     ) { onFileCreateRepo() }
 
     private val cloneMenu = GviewMenuItem(
             text = "クローン(_C)...",
-            accelerator = KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN),
+            accelerator = KeyCodeCombination(
+                    KeyCode.C,
+                    KeyCombination.SHORTCUT_DOWN),
             iconLiteral = "mdi-cloud-download"
     ) { onFileCloneRepo() }
 
@@ -60,7 +67,9 @@ class FileMenu: Menu("ファイル(_F)") {
         val chooser = DirectoryChooser()
         chooser.title = "オープンするリポジトリのパスを指定してください"
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask { GviewRepositoryModel.currentRepository.openExist(dir.absolutePath) }
+        MainWindow.controller.runTask {
+            GviewRepositoryModel.currentRepository.openExist(
+                    dir.absolutePath) }
     }
 
     //新規作成
@@ -68,7 +77,9 @@ class FileMenu: Menu("ファイル(_F)") {
         val chooser = DirectoryChooser()
         chooser.title = "リポジトリを生成するパスを指定してください"
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask { GviewRepositoryModel.currentRepository.createNew(dir.absolutePath) }
+        MainWindow.controller.runTask {
+            GviewRepositoryModel.currentRepository.createNew(
+                    dir.absolutePath) }
     }
 
     //クローン
@@ -76,14 +87,18 @@ class FileMenu: Menu("ファイル(_F)") {
         val dialog = CloneRepositoryDialog("", "")
         if(dialog.showDialog() == ButtonType.OK) {
             MainWindow.controller.runTask {
-                GviewRepositoryModel.currentRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
+                GviewRepositoryModel.currentRepository.clone(
+                        dialog.localPath,
+                        dialog.remotePath,
+                        dialog.bareRepo)
             }
         }
     }
 
     //プログラム終了
     private fun onFileQuit() {
-        if(ConfirmationDialog(ConfirmationType.YesNo, "アプリケーションを終了しますか？").showDialog()) {
+        val message = "アプリケーションを終了しますか？"
+        if(ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
             exitProcess(0)
         }
     }

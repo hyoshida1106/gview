@@ -15,7 +15,8 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 
-class CommitFileListCtrl: GviewBasePaneCtrl()  {
+class CommitFileListCtrl
+    : GviewBasePaneCtrl()  {
 
     @FXML private lateinit var commitFileInfo: BorderPane
     @FXML private lateinit var commitFileList: TableView<RowData>
@@ -45,15 +46,14 @@ class CommitFileListCtrl: GviewBasePaneCtrl()  {
     override fun displayCompleted() {
 
         CommitInfo.controller.commitDataProperty.addListener { _, _, newValue -> update(newValue) }
-
         commitFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->
             CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
         }
-
         commitFileListAdjuster.adjustColumnWidth()
     }
 
     private fun update(model: GviewCommitDataModel?) {
+
         updateFileInfo(model)
         updateFileList(model)
         commitFileList.selectionModel.clearSelection()

@@ -3,9 +3,11 @@ package gview.gui.framework
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 
-open class GviewBasePane<Controller>(form: String, className: String)
-    where Controller: GviewBasePaneCtrl
-{
+open class GviewBasePane<Controller>(
+        form: String,
+        className: String)
+    where Controller: GviewBasePaneCtrl {
+
     val root: Parent                //親インスタンス参照
     val controller: Controller      //コントローラ参照
 

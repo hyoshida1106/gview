@@ -1,6 +1,6 @@
-package gview.model
+package gview.model.commit
 
-import gview.model.commit.GviewCommitDataModel
+import gview.model.GviewRepositoryModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.ObjectId
@@ -12,7 +12,9 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
 import org.eclipse.jgit.revwalk.RevWalk
 
-class GviewCommitListModel(private val repository: GviewRepositoryModel): ModelObservable<GviewCommitListModel>() {
+class GviewCommitListModel(
+        private val repository: GviewRepositoryModel)
+    : ModelObservable<GviewCommitListModel>() {
 
     //Commit情報のリスト
     val commitList = mutableListOf<GviewCommitDataModel>()
@@ -36,11 +38,11 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel): ModelO
     //表示更新
     private fun refresh() {
         commitList.clear()
-        if (repository.jgitRepository != null) {
-            val repo = repository.jgitRepository!!
+        val jgitRepository = repository.jgitRepository
+        if (jgitRepository != null) {
 
             //PlotCommitListインスタンスを生成
-            val plotWalk = PlotWalk(repo)
+            val plotWalk = PlotWalk(jgitRepository)
             repository.branches.localBranches
                     .filter { it.selected }
                     .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
@@ -54,30 +56,41 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel): ModelO
 
             //Commitモデルに変換
             var prev: GviewCommitDataModel? = null
-            plotCommitList.forEach {
-                val commit = GviewCommitDataModel(repo, this, it, it.id == headId, prev)
-                commitList.add(commit)
-                prev = commit
-            }
+            plotCommitList
+                    .forEach {
+                        val commit = GviewCommitDataModel(
+                                jgitRepository,
+                                this,
+                                it,
+                                it.id == headId,
+                                prev)
+                        commitList.add(commit)
+                        prev = commit
+                    }
 
             //IDをキーとするMapに変換
             commitMap.clear()
             commitList.forEach { commitMap[it.id] = it }
 
             //コミット情報からローカルブランチへのリンクを設定
-            repository.branches.localBranches.forEach { commitMap[it.ref.objectId]?.localBranches?.add(it) }
+            repository.branches.localBranches
+                    .forEach { commitMap[it.ref.objectId]?.localBranches?.add(it) }
 
             //コミット情報からリモートブランチへのリンクを設定
-            repository.branches.remoteBranches.forEach { commitMap[it.ref.objectId]?.remoteBranches?.add(it) }
+            repository.branches.remoteBranches
+                    .forEach { commitMap[it.ref.objectId]?.remoteBranches?.add(it) }
 
             //コミット情報にタグを設定
-            val revWalk = RevWalk(repo)
-            Git(repo).tagList().call().forEach {
-                val tagName = Repository.shortenRefName(it.name)
-                when (val obj = revWalk.parseAny(it.objectId)) {
-                    is RevTag -> commitMap[obj.getObject().id]?.tags?.add(tagName)
-                    is RevCommit -> commitMap[obj.id]?.tags?.add(tagName)
-                }
+            val revWalk = RevWalk(jgitRepository)
+            Git(jgitRepository)
+                    .tagList()
+                    .call()
+                    .forEach {
+                        val tagName = Repository.shortenRefName(it.name)
+                        when (val obj = revWalk.parseAny(it.objectId)) {
+                            is RevTag -> commitMap[obj.getObject().id]?.tags?.add(tagName)
+                            is RevCommit -> commitMap[obj.id]?.tags?.add(tagName)
+                        }
             }
             revWalk.close()
 

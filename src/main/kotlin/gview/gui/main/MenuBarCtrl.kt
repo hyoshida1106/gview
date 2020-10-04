@@ -5,7 +5,8 @@ import gview.gui.menu.*
 import javafx.fxml.FXML
 import javafx.scene.control.MenuBar as JavaFxMenuBar
 
-class MenuBarCtrl : GviewBasePaneCtrl() {
+class MenuBarCtrl
+    : GviewBasePaneCtrl() {
 
     @FXML private lateinit var menuBar: JavaFxMenuBar
 

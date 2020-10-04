@@ -16,7 +16,8 @@ import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 import org.controlsfx.control.MaskerPane
 
-class MainWindowCtrl: GviewBasePaneCtrl() {
+class MainWindowCtrl
+    : GviewBasePaneCtrl() {
 
     @FXML private lateinit var mainSplit: SplitPane
     @FXML private lateinit var menuBar: AnchorPane
@@ -25,8 +26,6 @@ class MainWindowCtrl: GviewBasePaneCtrl() {
     @FXML private lateinit var commitInfo: AnchorPane
     @FXML private lateinit var statusBar: AnchorPane
     @FXML private lateinit var masker: MaskerPane
-
-    val maskerVisibility: BooleanProperty get() = masker.visibleProperty()
 
     //SplitPaneのDivider位置を保持するProperty
     private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()

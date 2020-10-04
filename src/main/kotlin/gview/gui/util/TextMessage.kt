@@ -6,7 +6,8 @@ import javafx.scene.layout.Priority
 import javafx.scene.layout.Region
 
 //ラベル付きテキスト表示
-class TextMessage(title:String, message:String): HBox() {
+class TextMessage(title:String, message:String)
+    : HBox() {
 
     init {
         val titleLabel   = Label(title)
