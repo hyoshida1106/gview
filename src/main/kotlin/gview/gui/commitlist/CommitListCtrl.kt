@@ -1,18 +1,16 @@
 package gview.gui.commitlist
 
 import gview.gui.framework.GviewBasePaneCtrl
+import gview.gui.menu.CommitRowContextMenu
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewCommitListModel
-import gview.model.commit.GviewHeadFilesModel
+import gview.model.commit.GviewWorkFilesModel
 import gview.model.GviewRepositoryModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.Node
-import javafx.scene.control.TableCell
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableRow
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 
 class CommitListCtrl
     : GviewBasePaneCtrl() {
@@ -36,6 +34,7 @@ class CommitListCtrl
     open class CellData {
         open fun update(tableCell: Cell): Pair<Node?, String?> { return Pair(null, null) }
         open fun layout(tableCell: Cell) {}
+        open val contextMenu: ContextMenu? = null
     }
 
     //コミットテーブル用セルファクトリクラス
@@ -46,7 +45,7 @@ class CommitListCtrl
         private var cellData: CellData? = null
 
         init {
-            this.style = CSS.cellStyle
+            style = CSS.cellStyle
         }
 
         //データ更新通知
@@ -56,6 +55,7 @@ class CommitListCtrl
             val pair = if(data != null && !empty) { data.update(this ) } else { Pair(null, null) }
             graphic = pair.first
             text = pair.second
+            contextMenu = data?.contextMenu
         }
 
         //描画コンポーネント配置通知
@@ -113,12 +113,11 @@ class CommitListCtrl
 
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
-        val headers = repository.headerFiles
+        val headers = repository.workFileInfo
         val commits = repository.branches.commits
 
-        //コミット情報、ヘッダ情報が更新されたら再描画
+        //コミット情報が更新されたら再描画
         commits.addListener { update(headers, commits) }
-        headers.addListener { update(headers, commits) }
 
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
@@ -136,15 +135,15 @@ class CommitListCtrl
 
     //表示更新
     private fun update(
-            header: GviewHeadFilesModel,
+            header: GviewWorkFilesModel,
             commits: GviewCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()
 
         //ヘッダ情報業を追加
-        if(header.headerId != null) {
-            val commitData = commits.commitMap[header.headerId]
+        if(header.headId != null) {
+            val commitData = commits.commitMap[header.headId]
             if(commitData != null && commitData.localBranches.find { it.selected } != null) {
                 commitListTable.items.add(HeaderRowData(this, header, commitData))
             }

@@ -2,6 +2,7 @@ package gview.model.branch
 
 import gview.model.commit.GviewCommitListModel
 import gview.model.GviewRepositoryModel
+import gview.model.commit.GviewCommitDataModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.Git
@@ -22,7 +23,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
     val commits = GviewCommitListModel(repository)
 
     //現在チェックアウトされているブランチ名
-    var currentBranch: String? = null
+    var currentBranch: String = ""
 
     //更新
     fun update() {
@@ -67,6 +68,8 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
                             }
                         }
                     }
+        } else {
+            currentBranch = ""
         }
 
         commits.update()
@@ -82,7 +85,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
                 .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
                 .setCreateBranch(true)
                 .call()
-        repository.headerFiles.update()
+        repository.workFileInfo.update()
         update()
     }
 
@@ -91,16 +94,40 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         Git(repository.jgitRepository).checkout()
                 .setName(model.name)
                 .call()
-        repository.headerFiles.update()
+        repository.workFileInfo.update()
         update()
     }
 
+    //ローカルブランチを削除する
     fun removeLocalBranch(model: GviewLocalBranchModel, force: Boolean) {
         Git(repository.jgitRepository).branchDelete()
                 .setBranchNames(model.name)
                 .setForce(force)
                 .call()
-        repository.headerFiles.update()
+        repository.workFileInfo.update()
+        update()
+    }
+
+    fun createNewBranchFromHead(newBranch: String) {
+        Git(repository.jgitRepository).branchCreate()
+                .setName(newBranch)
+                .call()
+        update()
+    }
+
+    fun createNewBranchFromCommit(newBranch: String, commit: GviewCommitDataModel) {
+        Git(repository.jgitRepository).branchCreate()
+                .setName(newBranch)
+                .setStartPoint(commit.revCommit)
+                .call()
+        update()
+    }
+
+    fun createNewBranchFromOtherBranch(newBranch: String, branch: GviewLocalBranchModel) {
+        Git(repository.jgitRepository).branchCreate()
+                .setName(newBranch)
+                .setStartPoint(branch.path)
+                .call()
         update()
     }
 }

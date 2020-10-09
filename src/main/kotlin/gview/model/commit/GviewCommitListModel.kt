@@ -31,12 +31,15 @@ class GviewCommitListModel(
     //リポジトリ変更時の処理
     fun update() {
         //ローカルブランチの選択が変更された場合のリスナを設定
-        repository.branches.localBranches.forEach { it.addListener { refresh() } }
+        repository.branches.localBranches.forEach {
+            it.clearListeners()
+            it.addListener { refresh() }
+        }
         refresh()
     }
 
     //表示更新
-    private fun refresh() {
+    fun refresh() {
         commitList.clear()
         val jgitRepository = repository.jgitRepository
         if (jgitRepository != null) {
@@ -52,7 +55,7 @@ class GviewCommitListModel(
             plotWalk.close()
 
             //HEAD IDを取得
-            val headId = repository.headerFiles.headerId
+            val headId = repository.workFileInfo.headId
 
             //Commitモデルに変換
             var prev: GviewCommitDataModel? = null

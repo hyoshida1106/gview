@@ -1,16 +1,13 @@
 package gview.conf
 
 import gview.model.GviewRepositoryModel
-import org.eclipse.jgit.lib.StoredConfig
+import org.eclipse.jgit.lib.UserConfig
 
 object GitConfigInfo {
 
-    val userName: String
-        get() = config?.getString("user", null, "name") ?: ""
+    val userName get() = userConfig?.committerName ?: ""
+    val mailAddr get() = userConfig?.committerEmail ?: ""
 
-    val mailAddr: String
-        get() = config?.getString("user", null, "email") ?: ""
-
-    private val config: StoredConfig?
-        get() = GviewRepositoryModel.currentRepository.jgitRepository?.config
+    private val config get() = GviewRepositoryModel.currentRepository.jgitRepository?.config
+    private val userConfig get() = config?.get(UserConfig.KEY)
 }

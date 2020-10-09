@@ -10,6 +10,10 @@ open class ModelObservable<TargetClass> {
         observers.add(callback)
     }
 
+    fun clearListeners() {
+        observers.clear()
+    }
+
     fun fireCallback(target: TargetClass) {
         Platform.runLater { observers.forEach { it(target) } }
     }

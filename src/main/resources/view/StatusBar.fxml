@@ -8,6 +8,7 @@
             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
             fx:id="statusBar" fx:controller="gview.gui.main.StatusBarCtrl">
     <children>
-        <Label fx:id="repositoryPath" />
+        <Pane fx:id="repositoryPath" />
+        <Pane fx:id="currentBranch" />
     </children>
 </HBox>

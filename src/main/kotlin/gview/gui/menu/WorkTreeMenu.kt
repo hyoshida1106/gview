@@ -50,7 +50,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
     }
 
     private fun onShowingMenu() {
-        val headerData = GviewRepositoryModel.currentRepository.headerFiles
+        val headerData = GviewRepositoryModel.currentRepository.workFileInfo
         val stagedFileNumber = headerData.stagedFiles.size
         val changedFileNumber = headerData.changedFiles.size
         stageMenu.isDisable = changedFileNumber == 0
@@ -64,7 +64,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.headerFiles.stageFiles(
+                    GviewRepositoryModel.currentRepository.workFileInfo.stageFiles(
                             dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
@@ -76,7 +76,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectUnStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.headerFiles.unStageFiles(
+                    GviewRepositoryModel.currentRepository.workFileInfo.unStageFiles(
                             dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
@@ -99,7 +99,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             if (dialog.showDialog() != ButtonType.OK) return
             //コミットを実行する
             try {
-                GviewRepositoryModel.currentRepository.headerFiles.commitFiles(
+                GviewRepositoryModel.currentRepository.workFileInfo.commitFiles(
                         dialog.selectedFiles,
                         dialog.message,
                         userName,

@@ -21,7 +21,7 @@ class CommitInfoCtrl
     val commitDataProperty = SimpleObjectProperty<GviewCommitDataModel?>()
 
     private val commitFileListView = CommitFileList.root
-    private val headerFileListView = HeaderFileList.root
+    private val headerFileListView = WorkFileList.root
     private val commitDiffView = CommitDiff.root
 
     //初期化

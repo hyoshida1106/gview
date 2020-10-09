@@ -1,7 +1,7 @@
 package gview.gui.commitlist
 
 import gview.gui.util.TextMessage
-import gview.model.commit.GviewHeadFilesModel
+import gview.model.commit.GviewWorkFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
@@ -12,7 +12,7 @@ import java.util.*
 
 class HeaderRowData(
         commitList: CommitListCtrl,
-        val model: GviewHeadFilesModel,
+        val model: GviewWorkFilesModel,
         head: GviewCommitDataModel?)
     : AbstractRowData() {
 
@@ -24,7 +24,7 @@ class HeaderRowData(
     //コミットツリーセル
     inner class HeaderTreeCellData(
             private val commitList: CommitListCtrl,
-            val model: GviewHeadFilesModel)
+            val model: GviewWorkFilesModel)
         : CommitListCtrl.CellData() {
 
         override fun layout(
@@ -55,7 +55,7 @@ class HeaderRowData(
 
     //コミット情報セル
     inner class HeaderInfoCellData(
-            private val model: GviewHeadFilesModel)
+            private val model: GviewWorkFilesModel)
         : CommitListCtrl.CellData() {
 
         override fun update(tableCell: CommitListCtrl.Cell)

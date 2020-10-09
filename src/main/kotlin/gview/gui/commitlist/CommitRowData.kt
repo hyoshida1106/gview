@@ -1,10 +1,12 @@
 package gview.gui.commitlist
 
+import gview.gui.menu.CommitRowContextMenu
 import gview.gui.util.BranchTagLabels
 import gview.gui.util.TextMessage
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
@@ -26,7 +28,10 @@ class CommitRowData(
             private val model: GviewCommitDataModel)
         : CommitListCtrl.CellData() {
 
-        //表示更新
+        //コンテキストメニュー
+        override val contextMenu = CommitRowContextMenu(model)
+
+        //セル表示の更新
         override fun layout(
                 tableCell: CommitListCtrl.Cell) {
 
@@ -142,6 +147,10 @@ class CommitRowData(
             private val model: GviewCommitDataModel)
         : CommitListCtrl.CellData() {
 
+        //コンテキストメニュー
+        override val contextMenu = CommitRowContextMenu(model)
+
+        //セル表示の更新
         override fun update(
                 tableCell: CommitListCtrl.Cell)
                 : Pair<Node?, String?> {

@@ -19,9 +19,9 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewHeadFilesModel(
+class GviewWorkFilesModel(
         private val repository: GviewRepositoryModel)
-    : ModelObservable<GviewHeadFilesModel>() {
+    : ModelObservable<GviewWorkFilesModel>() {
 
     //ステージングされているファイルを保持するリスト
     val stagedFiles = mutableListOf<GviewGitFileEntryModel>()
@@ -30,11 +30,11 @@ class GviewHeadFilesModel(
     val changedFiles =  mutableListOf<GviewGitFileEntryModel>()
 
     //HEADのObject ID
-    var headerId: ObjectId? = null
+    var headId: ObjectId? = null
 
     //データ更新
     fun update() {
-        headerId = repository.jgitRepository?.resolve(Constants.HEAD)
+        headId = repository.jgitRepository?.resolve(Constants.HEAD)
         stagedFiles.clear()
         changedFiles.clear()
 
@@ -59,10 +59,10 @@ class GviewHeadFilesModel(
             files: MutableList<GviewGitFileEntryModel>) {
 
         //SubModuleは当面無視する
-        if(headerId != null) {
+        if(headId != null) {
             val cacheIterator = DirCacheIterator(cache)
             ByteArrayDiffFormatter(repository).use() { formatter ->
-                formatter.scan(toTreeIterator(repository, headerId!!), cacheIterator)
+                formatter.scan(toTreeIterator(repository, headId!!), cacheIterator)
                         .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
                         .forEach { files.add(GviewGitFileEntryModel(formatter, it)) }
             }
@@ -121,6 +121,7 @@ class GviewHeadFilesModel(
         if(count > 0) {
             InformationDialog("$count ファイルをステージしました").showDialog()
             update()
+            repository.branches.commits.refresh()
         }
     }
 
@@ -136,6 +137,7 @@ class GviewHeadFilesModel(
             reset.call()
             InformationDialog("${files.size} ファイルをアンステージしました").showDialog()
             update()
+            repository.branches.commits.refresh()
         }
     }
 

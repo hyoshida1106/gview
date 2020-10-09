@@ -46,7 +46,7 @@ class SelectCommitFilesDialogCtrl
         commitMessageLabel.style = CSS.commitMessageLabelStyle
         commitMessageText.style = CSS.commitMessageTextStyle
 
-        val files =  GviewRepositoryModel.currentRepository.headerFiles.stagedFiles
+        val files =  GviewRepositoryModel.currentRepository.workFileInfo.stagedFiles
         fileList.items.addAll(files.map { RowData(it) })
 
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->

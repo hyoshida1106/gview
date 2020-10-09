@@ -8,7 +8,9 @@ class ErrorDialog(message: String?):
         Alert(AlertType.ERROR, message),
         GviewDialog<Unit> {
 
-    constructor(e: Exception) : this(e.message)
+    constructor(e: Exception) : this(e.localizedMessage) {
+        println("${e.toString()}")
+    }
 
     override fun showDialog() {
         initOwner(MainWindow.root.scene.window)

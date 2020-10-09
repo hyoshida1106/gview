@@ -7,6 +7,7 @@ import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommit
 import org.eclipse.jgit.revplot.PlotLane
+import org.eclipse.jgit.revwalk.RevCommit
 import java.text.DateFormat
 
 /*
@@ -41,6 +42,8 @@ class GviewCommitDataModel(private val repo: Repository,
     // true if merge
     val isMerge : Boolean = ( commit.parentCount > 1 )
 
+    // RevCommit instance
+    val revCommit: RevCommit = commit
 
     //以下のプロパティは、インスタンス生成後に外部から設定する
 

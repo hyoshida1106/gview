@@ -1,7 +1,7 @@
 package gview.model
 
 import gview.model.branch.GviewBranchListModel
-import gview.model.commit.GviewHeadFilesModel
+import gview.model.commit.GviewWorkFilesModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Repository
@@ -19,7 +19,7 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     }
 
     //インデックス未登録/登録済ファイル情報
-    val headerFiles = GviewHeadFilesModel(this)
+    val workFileInfo = GviewWorkFilesModel(this)
 
     //ブランチ一覧(ローカル/リモート)
     val branches = GviewBranchListModel(this)
@@ -59,7 +59,7 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     //リポジトリインスタンスの更新
     private fun updateRepository(newRepository: Repository?) {
         jgitRepository = newRepository
-        headerFiles.update()
+        workFileInfo.update()
         branches.update()
         fireCallback(this)
     }

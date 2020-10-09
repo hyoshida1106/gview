@@ -45,7 +45,7 @@ class SelectStageFilesDialogCtrl
         filePathColumn.style = CSS.filePathStyle
         fileCheckColumn.style = CSS.fileCheckStyle
 
-        val files = GviewRepositoryModel.currentRepository.headerFiles.changedFiles
+        val files = GviewRepositoryModel.currentRepository.workFileInfo.changedFiles
         fileList.items.addAll(files.map { RowData(it) })
 
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->

@@ -8,12 +8,15 @@ import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.control.SplitPane
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.AnchorPane
 
-class HeaderFileListCtrl: GviewBasePaneCtrl() {
+class WorkFileListCtrl: GviewBasePaneCtrl() {
+
+    @FXML private lateinit var workFileListPane: SplitPane
 
     @FXML private lateinit var stagedFileTopBox: AnchorPane
     @FXML private lateinit var stagedFileList: TableView<RowData>
@@ -78,7 +81,7 @@ class HeaderFileListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GviewRepositoryModel.currentRepository.headerFiles.addListener {
+        GviewRepositoryModel.currentRepository.workFileInfo.addListener {
             updateStagedFiles(it.stagedFiles)
             updateChangedFiles(it.changedFiles)
         }
