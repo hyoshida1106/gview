@@ -7,10 +7,7 @@ import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.SplitPane
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.AnchorPane
 
@@ -56,16 +53,18 @@ class WorkFileListCtrl: GviewBasePaneCtrl() {
         changedFilePathColumn.cellValueFactory = PropertyValueFactory("path")
 
         stagedFileTopBox.style = CSS.topBoxStyle
-        stagedFileList.style = CSS.fileListStyle
         stagedFileBottomBox.style = CSS.bottomBoxStyle
         stagedFileTypeColumn.style = CSS.typeColumnStyle
         stagedFilePathColumn.style = CSS.pathColumnStyle
+        stagedFileList.style = CSS.fileListStyle
+        stagedFileList.placeholder = Label()
 
         changedFileTopBox.style = CSS.topBoxStyle
-        changedFileList.style = CSS.fileListStyle
         changedFileBottomBox.style = CSS.bottomBoxStyle
         changedFileTypeColumn.style = CSS.typeColumnStyle
         changedFilePathColumn.style = CSS.pathColumnStyle
+        changedFileList.style = CSS.fileListStyle
+        changedFileList.placeholder = Label()
 
         stagedFileListAdjuster = TableColumnAdjuster(stagedFileList, stagedFilePathColumn)
         changedFileListAdjuster = TableColumnAdjuster(changedFileList, changedFilePathColumn)

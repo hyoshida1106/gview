@@ -29,12 +29,8 @@ class GviewWorkFilesModel(
     //ワーキングツリー上のインデックス未登録ファイルを保持するリスト
     val changedFiles =  mutableListOf<GviewGitFileEntryModel>()
 
-    //HEADのObject ID
-    var headId: ObjectId? = null
-
     //データ更新
     fun update() {
-        headId = repository.jgitRepository?.resolve(Constants.HEAD)
         stagedFiles.clear()
         changedFiles.clear()
 
@@ -59,13 +55,11 @@ class GviewWorkFilesModel(
             files: MutableList<GviewGitFileEntryModel>) {
 
         //SubModuleは当面無視する
-        if(headId != null) {
-            val cacheIterator = DirCacheIterator(cache)
-            ByteArrayDiffFormatter(repository).use() { formatter ->
-                formatter.scan(toTreeIterator(repository, headId!!), cacheIterator)
-                        .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
-                        .forEach { files.add(GviewGitFileEntryModel(formatter, it)) }
-            }
+        val headId = repository.resolve(Constants.HEAD)
+        ByteArrayDiffFormatter(repository).use() { formatter ->
+            formatter.scan(toTreeIterator(repository, headId), DirCacheIterator(cache))
+                    .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
+                    .forEach { files.add(GviewGitFileEntryModel(formatter, it)) }
         }
     }
 

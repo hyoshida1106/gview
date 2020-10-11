@@ -23,9 +23,11 @@ class GviewLocalBranchModel(
     var isCurrentRepository: Boolean = (branchList.currentBranch == name)
 
     //表示対象フラグ
-    var selected = isCurrentRepository
+    var selected = true
         set(value) {
-            field = value
-            if(value) fireCallback(this)
+            if(field != value) {
+                field = value
+                fireCallback(this)
+            }
         }
 }

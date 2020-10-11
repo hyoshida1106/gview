@@ -13,6 +13,7 @@ import java.util.*
 class HeaderRowData(
         commitList: CommitListCtrl,
         val model: GviewWorkFilesModel,
+        val laneNumber: Int,
         head: GviewCommitDataModel?)
     : AbstractRowData() {
 
@@ -69,6 +70,4 @@ class HeaderRowData(
         }
     }
 
-    //レーン番号
-    val laneNumber: Int = head?.laneNumber?: 0
 }

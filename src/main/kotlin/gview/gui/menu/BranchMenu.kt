@@ -1,7 +1,9 @@
 package gview.gui.menu
 
 import gview.gui.branchlist.BranchList
+import gview.gui.dialog.CreateBranchDialog
 import gview.gui.framework.GviewMenuItem
+import gview.model.GviewRepositoryModel
 import gview.model.branch.GviewBranchModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
@@ -38,6 +40,11 @@ class BranchMenu
             iconLiteral = "mdi-folder-download"
     ) { onPull() }
 
+    private val createMenu = GviewMenuItem(
+            text = "新規作成(_)...",
+            iconLiteral = "mdi-folder-plus"
+    ) { onCreate() }
+
     private val renameMenu = GviewMenuItem(
             text = "名称変更(_R)...",
             iconLiteral = "mdi-folder-move"
@@ -54,6 +61,7 @@ class BranchMenu
                 pushMenu,
                 pullMenu,
                 SeparatorMenuItem(),
+                createMenu,
                 renameMenu,
                 removeMenu
         )
@@ -77,6 +85,11 @@ class BranchMenu
     }
 
     private fun onPull() {
+    }
+
+    private fun onCreate() {
+        val dialog = CreateBranchDialog()
+        dialog.showAndWait()
     }
 
     private fun onRename() {

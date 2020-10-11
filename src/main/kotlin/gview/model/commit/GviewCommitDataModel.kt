@@ -16,7 +16,6 @@ import java.text.DateFormat
 class GviewCommitDataModel(private val repo: Repository,
                            private val commitList: GviewCommitListModel,
                            private val commit: PlotCommit<PlotLane>,
-                           private val isHead: Boolean,
                            private val prevCommit: GviewCommitDataModel?) {
     // ID
     val id: ObjectId = commit.id
@@ -56,26 +55,25 @@ class GviewCommitDataModel(private val repo: Repository,
     //タグ、当面は名称のみ
     val tags: MutableList<String> = mutableListOf()
 
-
     //通過パス(このコミットの前後でつながるパス
-    val passWays : List<Int> by lazy {
+    val passWays : MutableList<Int> by lazy {
         val result = mutableSetOf<PlotLane>()
         commitList.plotCommitList.findPassingThrough(commit, result)
-        result.map { it.position }
+        result.map { it.position }.toMutableList()
     }
 
     //親コミットの一覧を取得する
     private val parents: List<GviewCommitDataModel> by lazy {
         val list = mutableListOf<GviewCommitDataModel>()
         (0 until commit.parentCount).forEach {
-            val parent = commitList.commitMap[commit.getParent(it).id]
+            val parent = commitList.commitIdMap[commit.getParent(it).id]
             if(parent != null) list.add(parent)
         }
         list
     }
 
     //このコミットから出るレーン
-    val branchTo : List<Int> by lazy {
+    val branchTo : MutableList<Int> by lazy {
         val branchLanes = mutableListOf<Int>()
         //１つ先のコミット情報をチェックする
         if(prevCommit != null) {
@@ -93,20 +91,15 @@ class GviewCommitDataModel(private val repo: Repository,
             }
         }
 
-        //コミットがHEADの場合、HEADERへのラインを引いておく
-        if(isHead) {
-            branchLanes.add(laneNumber)
-        }
-
         //ソートした上で重複を削除する
         branchLanes.sorted().distinct().toMutableList()
     }
 
     //このコミットに来るレーン
-    val mergeFrom : List<Int> by lazy {
+    val mergeFrom : MutableList<Int> by lazy {
         if(parents.count() > 0) {
             //親コミットから出るレーンにつながるように線を引く
-            List<Int>(parents.count()) {
+            List(parents.count()) {
                 if (parents[it].branchTo.contains(laneNumber)) {
                     laneNumber
                 } else {
@@ -116,14 +109,14 @@ class GviewCommitDataModel(private val repo: Repository,
         } else {
             //親がひとつもない場合(末端)、真下に線を引く(と自然に見える)
             listOf(laneNumber)
-        }
+        }.toMutableList()
     }
 
     //更新ファイルのリスト
     val diffEntries: List<GviewGitFileEntryModel> by lazy {
         val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
         val tree2 = commit.tree
-        ByteArrayDiffFormatter(repo).use() { fmt ->
+        ByteArrayDiffFormatter(repo).use { fmt ->
             fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
         }
     }

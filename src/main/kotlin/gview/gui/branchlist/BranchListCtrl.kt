@@ -20,9 +20,6 @@ class BranchListCtrl: GviewBasePaneCtrl() {
     //リモートブランチTree
     private var remoteTreeRoot = RootItem("Remote")
 
-    //ローカルブランチ選択グループ
-    private var localBranchToggleGroup = ToggleGroup()
-
     //View初期化
     fun initialize() {
         //Root Treeを作成
@@ -81,7 +78,7 @@ class BranchListCtrl: GviewBasePaneCtrl() {
         //ローカルブランチ一覧からツリー項目を生成
         localTreeRoot.children.clear()
         branches.forEach {
-            val item = LocalBranchItem(it, localBranchToggleGroup)
+            val item = LocalBranchItem(it)
             localTreeRoot.children.add(item)
         }
 

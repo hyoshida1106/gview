@@ -1,7 +1,6 @@
 package gview.gui.commitlist
 
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.gui.menu.CommitRowContextMenu
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewCommitListModel
 import gview.model.commit.GviewWorkFilesModel
@@ -86,6 +85,7 @@ class CommitListCtrl
     //初期化
     fun initialize() {
         commitListTable.style = CSS.commitListStyle
+        commitListTable.placeholder = null
 
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.treeCellValue) }
         infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.infoCellValue) }
@@ -141,11 +141,13 @@ class CommitListCtrl
         //最初に全削除
         commitListTable.items.clear()
 
+        val headerLaneNumber = commits.headerLaneNumber ?: 0
+
         //ヘッダ情報業を追加
-        if(header.headId != null) {
-            val commitData = commits.commitMap[header.headId]
+        if(commits.headId != null) {
+            val commitData = commits.commitIdMap[commits.headId]
             if(commitData != null && commitData.localBranches.find { it.selected } != null) {
-                commitListTable.items.add(HeaderRowData(this, header, commitData))
+                commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber, commitData))
             }
         }
 
@@ -158,7 +160,8 @@ class CommitListCtrl
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        maxLaneNumber = commits.commitList.map { it.laneNumber }.maxOrNull() ?: 0
+        maxLaneNumber = commits.commitList.maxOf { it.laneNumber }
+        if(maxLaneNumber < headerLaneNumber) maxLaneNumber = headerLaneNumber
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 
