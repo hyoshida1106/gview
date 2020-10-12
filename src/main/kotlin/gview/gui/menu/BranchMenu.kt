@@ -1,13 +1,11 @@
 package gview.gui.menu
 
-import gview.gui.branchlist.BranchList
 import gview.gui.dialog.CreateBranchDialog
+import gview.gui.dialog.CreateBranchDialogCtrl
 import gview.gui.framework.GviewMenuItem
 import gview.model.GviewRepositoryModel
-import gview.model.branch.GviewBranchModel
-import gview.model.branch.GviewLocalBranchModel
-import gview.model.branch.GviewRemoteBranchModel
 import javafx.event.EventHandler
+import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCode
@@ -55,6 +53,9 @@ class BranchMenu
             iconLiteral = "mdi-folder-remove"
     ) { onRemove() }
 
+
+    private val branches = GviewRepositoryModel.currentRepository.branches
+
     init {
         items.setAll(
                 checkoutMenu,
@@ -70,12 +71,13 @@ class BranchMenu
 
     //メニュー表示
     private fun onShowingMenu() {
-        val selectedBranch: GviewBranchModel? = BranchList.controller.selectedBranch
-        checkoutMenu.isDisable = selectedBranch !is GviewRemoteBranchModel
-        pushMenu.isDisable = selectedBranch !is GviewLocalBranchModel
-        pullMenu.isDisable = selectedBranch !is GviewLocalBranchModel
-        renameMenu.isDisable = selectedBranch == null
-        removeMenu.isDisable = selectedBranch == null
+        val repositoryInvalid = GviewRepositoryModel.currentRepository.jgitRepository == null
+        checkoutMenu.isDisable = repositoryInvalid
+        pushMenu.isDisable = repositoryInvalid
+        pullMenu.isDisable = repositoryInvalid
+        createMenu.isDisable = repositoryInvalid
+        renameMenu.isDisable = repositoryInvalid
+        removeMenu.isDisable = repositoryInvalid
     }
 
     private fun onCheckOut() {
@@ -89,7 +91,25 @@ class BranchMenu
 
     private fun onCreate() {
         val dialog = CreateBranchDialog()
-        dialog.showAndWait()
+        if(dialog.showDialog() == ButtonType.OK) {
+            val branches = GviewRepositoryModel.currentRepository.branches
+            val branchName = dialog.controller.newBranchName
+            when (dialog.controller.startPoint) {
+                CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
+                    branches.createNewBranchFromHead(branchName)
+                }
+                CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
+                    branches.createNewBranchFromOtherBranch(
+                            branchName,
+                            dialog.controller.selectedBranch!!)
+                }
+                CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
+                    branches.createNewBranchFromCommit(
+                            branchName,
+                            dialog.controller.selected!!)
+                }
+            }
+        }
     }
 
     private fun onRename() {
