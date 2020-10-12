@@ -1,7 +1,8 @@
-package gview.model.commit
+package gview.model.workfile
 
 import gview.gui.dialog.InformationDialog
 import gview.model.GviewRepositoryModel
+import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
@@ -19,8 +20,7 @@ import org.eclipse.jgit.treewalk.FileTreeIterator
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewWorkFilesModel(
-        private val repository: GviewRepositoryModel)
+class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
     : ModelObservable<GviewWorkFilesModel>() {
 
     //ステージングされているファイルを保持するリスト
@@ -115,7 +115,7 @@ class GviewWorkFilesModel(
         if(count > 0) {
             InformationDialog("$count ファイルをステージしました").showDialog()
             update()
-            repository.branches.commits.refresh()
+            repository.commits.refresh()
         }
     }
 
@@ -131,7 +131,7 @@ class GviewWorkFilesModel(
             reset.call()
             InformationDialog("${files.size} ファイルをアンステージしました").showDialog()
             update()
-            repository.branches.commits.refresh()
+            repository.commits.refresh()
         }
     }
 

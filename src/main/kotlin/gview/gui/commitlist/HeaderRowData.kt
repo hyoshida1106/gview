@@ -1,7 +1,7 @@
 package gview.gui.commitlist
 
 import gview.gui.util.TextMessage
-import gview.model.commit.GviewWorkFilesModel
+import gview.model.workfile.GviewWorkFilesModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas

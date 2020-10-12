@@ -3,7 +3,7 @@ package gview.gui.commitlist
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewCommitListModel
-import gview.model.commit.GviewWorkFilesModel
+import gview.model.workfile.GviewWorkFilesModel
 import gview.model.GviewRepositoryModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
@@ -85,7 +85,7 @@ class CommitListCtrl
     //初期化
     fun initialize() {
         commitListTable.style = CSS.commitListStyle
-        commitListTable.placeholder = null
+        commitListTable.placeholder = Label("")
 
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.treeCellValue) }
         infoColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.infoCellValue) }
@@ -114,7 +114,7 @@ class CommitListCtrl
         //データ更新時の再表示
         val repository = GviewRepositoryModel.currentRepository
         val headers = repository.workFileInfo
-        val commits = repository.branches.commits
+        val commits = repository.commits
 
         //コミット情報が更新されたら再描画
         commits.addListener { update(headers, commits) }
@@ -160,8 +160,12 @@ class CommitListCtrl
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        maxLaneNumber = commits.commitList.maxOf { it.laneNumber }
-        if(maxLaneNumber < headerLaneNumber) maxLaneNumber = headerLaneNumber
+        if(commits.commitList.isNotEmpty()) {
+            maxLaneNumber = commits.commitList.maxOf { it.laneNumber }
+            if (maxLaneNumber < headerLaneNumber) maxLaneNumber = headerLaneNumber
+        } else {
+            maxLaneNumber = 0
+        }
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 

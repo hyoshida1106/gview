@@ -1,6 +1,5 @@
 package gview.model.branch
 
-import gview.model.commit.GviewCommitListModel
 import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewCommitDataModel
 import gview.model.util.ModelObservable
@@ -18,9 +17,6 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
 
     //リモートブランチリスト
     var remoteBranches = mutableListOf<GviewRemoteBranchModel>()
-
-    //コミット情報リスト
-    val commits = GviewCommitListModel(repository)
 
     //現在チェックアウトされているブランチ名
     var currentBranch: String = ""
@@ -71,8 +67,6 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         } else {
             currentBranch = ""
         }
-
-        commits.update()
 
         fireCallback(this)
     }

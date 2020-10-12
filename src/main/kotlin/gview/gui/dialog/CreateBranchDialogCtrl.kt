@@ -53,9 +53,7 @@ class CreateBranchDialogCtrl
         tagRadio.toggleGroup = selectorGroup
         headRadio.isSelected = true
 
-        val branches = GviewRepositoryModel.currentRepository.branches
-
-        branchMap = branches.localBranches.map { it.name to it }.toMap()
+        branchMap = GviewRepositoryModel.currentRepository.branches.localBranches.map { it.name to it }.toMap()
         if(branchMap.isNotEmpty()) {
             branchList.items.addAll(branchMap.keys)
             branchList.selectionModel.select(0)
@@ -65,7 +63,7 @@ class CreateBranchDialogCtrl
             branchList.isDisable = true
         }
 
-        tagMap = branches.commits.commitTagMap
+        tagMap = GviewRepositoryModel.currentRepository.commits.commitTagMap
         if(tagMap.isNotEmpty()) {
             tagList.items.addAll(tagMap.keys)
             tagList.selectionModel.select(0)

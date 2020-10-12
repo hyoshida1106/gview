@@ -13,8 +13,7 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
 import org.eclipse.jgit.revwalk.RevWalk
 
-class GviewCommitListModel(
-        private val repository: GviewRepositoryModel)
+class GviewCommitListModel(private val repository: GviewRepositoryModel)
     : ModelObservable<GviewCommitListModel>() {
 
     //Commit情報のリスト
@@ -37,6 +36,10 @@ class GviewCommitListModel(
 
     //Commit一覧表示サイズ(暫定)
     private val commitSize = 1000
+
+    init {
+        repository.branches.addListener { update() }
+    }
 
     //リポジトリ変更時の処理
     fun update() {

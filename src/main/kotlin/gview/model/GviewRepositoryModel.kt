@@ -1,7 +1,8 @@
 package gview.model
 
 import gview.model.branch.GviewBranchListModel
-import gview.model.commit.GviewWorkFilesModel
+import gview.model.commit.GviewCommitListModel
+import gview.model.workfile.GviewWorkFilesModel
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Repository
@@ -11,6 +12,9 @@ import java.io.File
     RepositoryModel
  */
 class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
+
+    //JGitリポジトリ
+    var jgitRepository: Repository? = null
 
     //リポジトリインスタンス
     //現状は１つのみ
@@ -24,8 +28,8 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     //ブランチ一覧(ローカル/リモート)
     val branches = GviewBranchListModel(this)
 
-    //JGitリポジトリ
-    var jgitRepository: Repository? = null
+    //コミット情報リスト
+    val commits = GviewCommitListModel(this)
 
     //リポジトリ新規作成
     fun createNew(dir : String, bare : Boolean = false) {
