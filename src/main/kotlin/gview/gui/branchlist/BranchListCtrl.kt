@@ -1,7 +1,7 @@
 package gview.gui.branchlist
 
+import gview.GviewApp
 import gview.gui.framework.GviewBasePaneCtrl
-import gview.model.GviewRepositoryModel
 import gview.model.branch.GviewBranchModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.branch.GviewRemoteBranchModel
@@ -40,7 +40,7 @@ class BranchListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        val branchList = GviewRepositoryModel.currentRepository.branches
+        val branchList = GviewApp.currentRepository.branches
         //リポジトリ内のLocal/Remoteブランチ情報更新時に再描画する
         branchList.addListener {
             updateLocalBranches (it.localBranches)

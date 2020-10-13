@@ -1,9 +1,9 @@
 package gview.gui.commitinfo
 
+import gview.GviewApp
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.menu.WorkTreeMenu
 import gview.gui.util.TableColumnAdjuster
-import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
@@ -80,7 +80,7 @@ class WorkFileListCtrl: GviewBasePaneCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GviewRepositoryModel.currentRepository.workFileInfo.addListener {
+        GviewApp.currentRepository.workFileInfo.addListener {
             updateStagedFiles(it.stagedFiles)
             updateChangedFiles(it.changedFiles)
         }

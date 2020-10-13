@@ -13,8 +13,7 @@ import java.util.*
 class HeaderRowData(
         commitList: CommitListCtrl,
         val model: GviewWorkFilesModel,
-        val laneNumber: Int,
-        head: GviewCommitDataModel?)
+        val laneNumber: Int)
     : AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)

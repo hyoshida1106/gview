@@ -1,23 +1,15 @@
 package gview.gui.dialog
 
-import gview.gui.framework.GviewDialog
-import gview.gui.main.MainWindow
-import javafx.scene.control.TextInputDialog
+import gview.gui.framework.GviewCustomDialog
+import javafx.scene.control.ButtonType
 
-class BranchNameDialog
-    : TextInputDialog(),
-        GviewDialog<String?> {
+class BranchNameDialog()
+    : GviewCustomDialog<BranchNameDialogCtrl>(
+        "作成するブランチの名前を指定してください",
+        "/dialog/BranchNameDialog.fxml",
+        ButtonType.OK, ButtonType.CANCEL) {
 
     init {
-        initOwner(MainWindow.root.scene.window)
-        title = "ブランチ作成"
-        graphic = null
-        headerText = null
-        contentText = "作成するブランチの名称"
-    }
-
-    override fun showDialog(): String? {
-        val result = showAndWait()
-        return if (result.isPresent) result.get() else null
+        addButtonHandler(ButtonType.OK, controller.btnOkDisable)
     }
 }

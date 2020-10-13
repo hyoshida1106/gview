@@ -1,9 +1,9 @@
 package gview.gui.menu
 
+import gview.GviewApp
 import gview.conf.GitConfigInfo
 import gview.gui.dialog.*
 import gview.gui.framework.GviewMenuItem
-import gview.model.GviewRepositoryModel
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
@@ -50,7 +50,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
     }
 
     private fun onShowingMenu() {
-        val headerData = GviewRepositoryModel.currentRepository.workFileInfo
+        val headerData = GviewApp.currentRepository.workFileInfo
         val stagedFileNumber = headerData.stagedFiles.size
         val changedFileNumber = headerData.changedFiles.size
         stageMenu.isDisable = changedFileNumber == 0
@@ -64,8 +64,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.workFileInfo.stageFiles(
-                            dialog.selectedFiles)
+                    GviewApp.currentRepository.workFileInfo.stageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -76,8 +75,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectUnStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GviewRepositoryModel.currentRepository.workFileInfo.unStageFiles(
-                            dialog.selectedFiles)
+                    GviewApp.currentRepository.workFileInfo.unStageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -99,7 +97,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             if (dialog.showDialog() != ButtonType.OK) return
             //コミットを実行する
             try {
-                GviewRepositoryModel.currentRepository.workFileInfo.commitFiles(
+                GviewApp.currentRepository.workFileInfo.commitFiles(
                         dialog.selectedFiles,
                         dialog.message,
                         userName,

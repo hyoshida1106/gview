@@ -1,15 +1,12 @@
 package gview.gui.dialog
 
+import gview.GviewApp
 import gview.gui.framework.GviewCustomDialogCtrl
-import gview.model.GviewRepositoryModel
 import gview.model.branch.GviewLocalBranchModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
-import javafx.scene.control.ChoiceBox
-import javafx.scene.control.RadioButton
-import javafx.scene.control.TextField
-import javafx.scene.control.ToggleGroup
+import javafx.scene.control.*
 
 class CreateBranchDialogCtrl
     : GviewCustomDialogCtrl() {
@@ -20,6 +17,7 @@ class CreateBranchDialogCtrl
     @FXML private lateinit var tagRadio: RadioButton
     @FXML private lateinit var branchList: ChoiceBox<String>
     @FXML private lateinit var tagList: ChoiceBox<String>
+    @FXML private lateinit var checkout: CheckBox
     private val selectorGroup = ToggleGroup()
 
     private lateinit var branchMap: Map<String,GviewLocalBranchModel>
@@ -28,6 +26,7 @@ class CreateBranchDialogCtrl
     //OKボタンの無効を指示するプロパティ
     val btnOkDisable = SimpleBooleanProperty(true)
 
+    //ブランチ名称
     val newBranchName get() = branchName.text.trim()
 
     //ブランチ指定方法
@@ -46,6 +45,9 @@ class CreateBranchDialogCtrl
     //選択されたタグ
     val selected: GviewCommitDataModel? get() = tagMap[tagList.selectionModel.selectedItem]
 
+    //チェックアウトフラグ
+    val checkoutFlag: Boolean get() = checkout.isSelected
+
     //初期化
     override fun initialize() {
         headRadio.toggleGroup = selectorGroup
@@ -53,7 +55,9 @@ class CreateBranchDialogCtrl
         tagRadio.toggleGroup = selectorGroup
         headRadio.isSelected = true
 
-        branchMap = GviewRepositoryModel.currentRepository.branches.localBranches.map { it.name to it }.toMap()
+        checkout.isSelected = true
+
+        branchMap = GviewApp.currentRepository.branches.localBranches.map { it.name to it }.toMap()
         if(branchMap.isNotEmpty()) {
             branchList.items.addAll(branchMap.keys)
             branchList.selectionModel.select(0)
@@ -63,7 +67,7 @@ class CreateBranchDialogCtrl
             branchList.isDisable = true
         }
 
-        tagMap = GviewRepositoryModel.currentRepository.commits.commitTagMap
+        tagMap = GviewApp.currentRepository.commits.commitTagMap
         if(tagMap.isNotEmpty()) {
             tagList.items.addAll(tagMap.keys)
             tagList.selectionModel.select(0)

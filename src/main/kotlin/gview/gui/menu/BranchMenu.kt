@@ -1,9 +1,9 @@
 package gview.gui.menu
 
+import gview.GviewApp
 import gview.gui.dialog.CreateBranchDialog
 import gview.gui.dialog.CreateBranchDialogCtrl
 import gview.gui.framework.GviewMenuItem
-import gview.model.GviewRepositoryModel
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
@@ -54,7 +54,7 @@ class BranchMenu
     ) { onRemove() }
 
 
-    private val branches = GviewRepositoryModel.currentRepository.branches
+    private val branches = GviewApp.currentRepository.branches
 
     init {
         items.setAll(
@@ -71,7 +71,7 @@ class BranchMenu
 
     //メニュー表示
     private fun onShowingMenu() {
-        val repositoryInvalid = GviewRepositoryModel.currentRepository.jgitRepository == null
+        val repositoryInvalid = !GviewApp.currentRepository.isValid
         checkoutMenu.isDisable = repositoryInvalid
         pushMenu.isDisable = repositoryInvalid
         pullMenu.isDisable = repositoryInvalid
@@ -92,21 +92,24 @@ class BranchMenu
     private fun onCreate() {
         val dialog = CreateBranchDialog()
         if(dialog.showDialog() == ButtonType.OK) {
-            val branches = GviewRepositoryModel.currentRepository.branches
+            val branches = GviewApp.currentRepository.branches
             val branchName = dialog.controller.newBranchName
+            val checkout = dialog.controller.checkoutFlag
             when (dialog.controller.startPoint) {
                 CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
-                    branches.createNewBranchFromHead(branchName)
+                    branches.createNewBranchFromHead(branchName, checkout)
                 }
                 CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
                     branches.createNewBranchFromOtherBranch(
                             branchName,
-                            dialog.controller.selectedBranch!!)
+                            dialog.controller.selectedBranch!!,
+                            checkout)
                 }
                 CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
                     branches.createNewBranchFromCommit(
                             branchName,
-                            dialog.controller.selected!!)
+                            dialog.controller.selected!!,
+                            checkout)
                 }
             }
         }

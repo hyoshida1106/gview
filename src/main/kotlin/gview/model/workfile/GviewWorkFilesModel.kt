@@ -34,8 +34,8 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
         stagedFiles.clear()
         changedFiles.clear()
 
-        val jgitRepository = repository.jgitRepository
-        if(jgitRepository != null) {
+        if(repository.isValid) {
+            val jgitRepository = repository.getJgitRepository()
             val cache = jgitRepository.lockDirCache()
             try {
                 updateStagedFiles(jgitRepository, cache, stagedFiles)
@@ -94,7 +94,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
     fun stageFiles(
             files: List<GviewGitFileEntryModel>) {
 
-        val git = Git(repository.jgitRepository)
+        val git = Git(repository.getJgitRepository())
         var count = 0
         files.forEach {
             when(it.type) {
@@ -124,7 +124,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             files: List<GviewGitFileEntryModel>) {
 
         if(files.isNotEmpty()) {
-            val reset = Git(repository.jgitRepository)
+            val reset = Git(repository.getJgitRepository())
                     .reset()
                     .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
@@ -143,7 +143,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             mailAddr:String) {
 
         if(files.isNotEmpty()) {
-            val commit = Git(repository.jgitRepository)
+            val commit = Git(repository.getJgitRepository())
                     .commit()
                     .setCommitter(userName, mailAddr)
                     .setMessage(message)

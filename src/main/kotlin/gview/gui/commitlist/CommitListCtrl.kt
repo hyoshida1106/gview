@@ -1,10 +1,10 @@
 package gview.gui.commitlist
 
+import gview.GviewApp
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.TableColumnAdjuster
 import gview.model.commit.GviewCommitListModel
 import gview.model.workfile.GviewWorkFilesModel
-import gview.model.GviewRepositoryModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
@@ -112,7 +112,7 @@ class CommitListCtrl
     override fun displayCompleted() {
 
         //データ更新時の再表示
-        val repository = GviewRepositoryModel.currentRepository
+        val repository = GviewApp.currentRepository
         val headers = repository.workFileInfo
         val commits = repository.commits
 
@@ -147,7 +147,7 @@ class CommitListCtrl
         if(commits.headId != null) {
             val commitData = commits.commitIdMap[commits.headId]
             if(commitData != null && commitData.localBranches.find { it.selected } != null) {
-                commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber, commitData))
+                commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber))
             }
         }
 

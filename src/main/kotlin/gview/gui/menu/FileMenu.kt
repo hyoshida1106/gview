@@ -1,11 +1,9 @@
 package gview.gui.menu
 
+import gview.GviewApp
 import gview.gui.dialog.CloneRepositoryDialog
-import gview.gui.dialog.ConfirmationDialog
-import gview.gui.dialog.ConfirmationDialog.ConfirmationType
 import gview.gui.framework.GviewMenuItem
 import gview.gui.main.MainWindow
-import gview.model.GviewRepositoryModel
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Menu
@@ -14,7 +12,6 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.stage.DirectoryChooser
-import kotlin.system.exitProcess
 
 class FileMenu
     : Menu("ファイル(_F)") {
@@ -67,9 +64,7 @@ class FileMenu
         val chooser = DirectoryChooser()
         chooser.title = "オープンするリポジトリのパスを指定してください"
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask {
-            GviewRepositoryModel.currentRepository.openExist(
-                    dir.absolutePath) }
+        MainWindow.controller.runTask { GviewApp.currentRepository.openExist(dir.absolutePath) }
     }
 
     //新規作成
@@ -77,9 +72,7 @@ class FileMenu
         val chooser = DirectoryChooser()
         chooser.title = "リポジトリを生成するパスを指定してください"
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask {
-            GviewRepositoryModel.currentRepository.createNew(
-                    dir.absolutePath) }
+        MainWindow.controller.runTask { GviewApp.currentRepository.createNew(dir.absolutePath) }
     }
 
     //クローン
@@ -87,19 +80,13 @@ class FileMenu
         val dialog = CloneRepositoryDialog("", "")
         if(dialog.showDialog() == ButtonType.OK) {
             MainWindow.controller.runTask {
-                GviewRepositoryModel.currentRepository.clone(
-                        dialog.localPath,
-                        dialog.remotePath,
-                        dialog.bareRepo)
+                GviewApp.currentRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
             }
         }
     }
 
     //プログラム終了
     private fun onFileQuit() {
-        val message = "アプリケーションを終了しますか？"
-        if(ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
-            exitProcess(0)
-        }
+        GviewApp.confirmToQuit()
     }
 }

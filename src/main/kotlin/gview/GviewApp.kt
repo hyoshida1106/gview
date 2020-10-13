@@ -6,6 +6,7 @@ import gview.gui.dialog.ConfirmationDialog.ConfirmationType
 import gview.gui.main.MainWindow
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.IdleMonitor
+import gview.model.GviewRepositoryModel
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Scene
@@ -15,10 +16,22 @@ import kotlin.system.exitProcess
 /*
     Application Main Class
  */
-class GViewApp
-    : Application() {
+class GviewApp: Application() {
 
     private lateinit var mainStage: Stage
+
+    companion object {
+        //リポジトリインスタンス、現状は１つのみ
+        val currentRepository = GviewRepositoryModel()
+
+        //アプリ終了の確認処理
+        fun confirmToQuit() {
+            val message = "アプリケーションを終了しますか？"
+            if(ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
+                exitProcess(0)
+            }
+        }
+    }
 
     // アプリケーション起動
     override fun start(stage: Stage) {
@@ -38,10 +51,7 @@ class GViewApp
 
             //Windowが閉じられる場合の終了確認
             mainStage.onCloseRequest = EventHandler {
-                val message = "アプリケーションを終了しますか？"
-                if(ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
-                    exitProcess(0)
-                }
+                confirmToQuit()
                 it.consume()
             }
 
@@ -73,6 +83,6 @@ class GViewApp
 
 // Main Function
 fun main(args: Array<String>) {
-    Application.launch(GViewApp::class.java, *args)
+    Application.launch(GviewApp::class.java, *args)
 }
 

@@ -26,8 +26,10 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         localBranches.clear()
         remoteBranches.clear()
 
-        val jgitRepository = repository.jgitRepository
-        if(jgitRepository != null) {
+        if(repository.isValid) {
+
+            //JGitのRepositoryインスタンス
+            val jgitRepository = repository.getJgitRepository()
 
             //Gitインスタンスを共用する
             val git = Git(jgitRepository)
@@ -37,7 +39,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
             val remoteBranchMap = mutableMapOf<String, GviewRemoteBranchModel>()
             git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE)
                     .call()
-                    .filterNot { jgitRepository.shortenRemoteBranchName(it.name) == "HEAD" }
+                    .filterNot { repository.getJgitRepository().shortenRemoteBranchName(it.name) == "HEAD" }
                     .forEach {
                         val remoteBranch = GviewRemoteBranchModel(this, it, jgitRepository)
                         remoteBranches.add(remoteBranch)
@@ -45,7 +47,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
                     }
 
             //現在チェックアウトされているブランチ名
-            currentBranch = repository.jgitRepository!!.branch
+            currentBranch = jgitRepository.branch
 
             //ローカルブランチの一覧を取得
             git.branchList()
@@ -73,7 +75,8 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
 
     //リモートブランチをローカルへチェックアウトする
     fun checkoutRemoteBranch(model: GviewRemoteBranchModel) {
-        Git(repository.jgitRepository).checkout()
+        Git(repository.getJgitRepository())
+                .checkout()
                 .setName(model.name)
                 .setStartPoint(model.path)
                 .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
@@ -85,8 +88,19 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
 
     //ローカルブランチをチェックアウトしてカレントブランチにする
     fun checkoutLocalBranch(model: GviewLocalBranchModel) {
-        Git(repository.jgitRepository).checkout()
+        Git(repository.getJgitRepository())
+                .checkout()
                 .setName(model.name)
+                .call()
+        repository.workFileInfo.update()
+        update()
+    }
+
+    //指定したコミットをチェックアウトする
+    fun checkoutCommit(model: GviewCommitDataModel) {
+        Git(repository.getJgitRepository())
+                .checkout()
+                .setStartPoint(model.revCommit)
                 .call()
         repository.workFileInfo.update()
         update()
@@ -94,7 +108,8 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
 
     //ローカルブランチを削除する
     fun removeLocalBranch(model: GviewLocalBranchModel, force: Boolean) {
-        Git(repository.jgitRepository).branchDelete()
+        Git(repository.getJgitRepository())
+                .branchDelete()
                 .setBranchNames(model.name)
                 .setForce(force)
                 .call()
@@ -102,26 +117,58 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         update()
     }
 
-    fun createNewBranchFromHead(newBranch: String) {
-        Git(repository.jgitRepository).branchCreate()
-                .setName(newBranch)
-                .call()
+    //HEADからブランチを作成する
+    fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
+        if(checkout) {
+            Git(repository.getJgitRepository())
+                    .checkout()
+                    .setName(newBranch)
+                    .setCreateBranch(true)
+                    .call()
+        } else {
+            Git(repository.getJgitRepository())
+                    .branchCreate()
+                    .setName(newBranch)
+                    .call()
+        }
         update()
     }
 
-    fun createNewBranchFromCommit(newBranch: String, commit: GviewCommitDataModel) {
-        Git(repository.jgitRepository).branchCreate()
-                .setName(newBranch)
-                .setStartPoint(commit.revCommit)
-                .call()
+    //指定したコミットからブランチを作成する
+    fun createNewBranchFromCommit(newBranch: String, commit: GviewCommitDataModel, checkout: Boolean) {
+        if(checkout) {
+            Git(repository.getJgitRepository())
+                    .checkout()
+                    .setName(newBranch)
+                    .setStartPoint(commit.revCommit)
+                    .setCreateBranch(true)
+                    .call()
+        } else {
+            Git(repository.getJgitRepository())
+                    .branchCreate()
+                    .setName(newBranch)
+                    .setStartPoint(commit.revCommit)
+                    .call()
+        }
         update()
     }
 
-    fun createNewBranchFromOtherBranch(newBranch: String, branch: GviewLocalBranchModel) {
-        Git(repository.jgitRepository).branchCreate()
-                .setName(newBranch)
-                .setStartPoint(branch.path)
-                .call()
+    //指定したブランチからブランチを作成する
+    fun createNewBranchFromOtherBranch(newBranch: String, model: GviewLocalBranchModel, checkout: Boolean) {
+        if(checkout) {
+            Git(repository.getJgitRepository())
+                    .checkout()
+                    .setName(newBranch)
+                    .setStartPoint(model.path)
+                    .setCreateBranch(true)
+                    .call()
+        } else {
+            Git(repository.getJgitRepository())
+                    .branchCreate()
+                    .setName(newBranch)
+                    .setStartPoint(model.path)
+                    .call()
+        }
         update()
     }
 }

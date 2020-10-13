@@ -1,11 +1,12 @@
 package gview.gui.menu
 
+import gview.GviewApp
 import gview.gui.dialog.BranchNameDialog
 import gview.gui.dialog.ErrorDialog
 import gview.gui.framework.GviewMenuItem
-import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewCommitDataModel
 import javafx.event.EventHandler
+import javafx.scene.control.ButtonType
 import javafx.scene.control.ContextMenu
 import java.lang.Exception
 
@@ -28,11 +29,11 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
     }
 
     private fun onCreateBranch() {
-        val branchName = BranchNameDialog().showDialog()
-        if(branchName != null) {
+        val dialog = BranchNameDialog()
+        if(dialog.showDialog() == ButtonType.OK) {
             try {
-                GviewRepositoryModel.currentRepository.branches
-                        .createNewBranchFromCommit(branchName, model)
+                GviewApp.currentRepository.branches.createNewBranchFromCommit(
+                        dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()
             }

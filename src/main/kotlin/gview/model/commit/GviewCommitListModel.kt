@@ -53,9 +53,14 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
 
     //表示更新
     fun refresh() {
+        //所持値を初期化
         commitList.clear()
-        val jgitRepository = repository.jgitRepository
-        if (jgitRepository != null) {
+        plotCommitList.clear()
+        commitIdMap.clear()
+
+        if(repository.isValid) {
+
+            val jgitRepository = repository.getJgitRepository()
 
             headId = jgitRepository.resolve(Constants.HEAD)
 
@@ -64,22 +69,19 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
             repository.branches.localBranches
                     .filter { it.selected }
                     .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
-            plotCommitList.clear()
             plotCommitList.source(plotWalk)
             plotCommitList.fillTo(this.commitSize)
             plotWalk.close()
 
             //Commitモデルに変換
             var prev: GviewCommitDataModel? = null
-            plotCommitList
-                    .forEach {
-                        val commit = GviewCommitDataModel(jgitRepository, this, it, prev)
-                        commitList.add(commit)
-                        prev = commit
-                    }
+            plotCommitList.forEach {
+                val commit = GviewCommitDataModel(jgitRepository, this, it, prev)
+                commitList.add(commit)
+                prev = commit
+            }
 
             //IDをキーとするMapに変換
-            commitIdMap.clear()
             commitIdMap.putAll(commitList.map { it.id to it }.toMap())
 
             //WorkFileからHEADまでの線を描く
@@ -109,27 +111,25 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
             //コミット情報にタグを設定
             commitTagMap.clear()
             val revWalk = RevWalk(jgitRepository)
-            Git(jgitRepository)
-                    .tagList()
-                    .call()
-                    .forEach {
-                        val tagName = Repository.shortenRefName(it.name)
-                        val commit = when (val obj = revWalk.parseAny(it.objectId)) {
-                            is RevTag -> commitIdMap[obj.getObject().id]
-                            is RevCommit -> commitIdMap[obj.id]
-                            else -> null
+            try {
+                Git(jgitRepository)
+                        .tagList()
+                        .call()
+                        .forEach {
+                            val tagName = Repository.shortenRefName(it.name)
+                            val commit = when (val obj = revWalk.parseAny(it.objectId)) {
+                                is RevTag -> commitIdMap[obj.getObject().id]
+                                is RevCommit -> commitIdMap[obj.id]
+                                else -> null
+                            }
+                            if (commit != null) {
+                                commit.tags.add(tagName)
+                                commitTagMap[tagName] = commit
+                            }
                         }
-                        if(commit != null) {
-                            commit.tags.add(tagName)
-                            commitTagMap[tagName] = commit
-                        }
-                    }
-            revWalk.close()
-
-        } else {
-            //所持値を初期化
-            plotCommitList.clear()
-            commitIdMap.clear()
+            } finally {
+                revWalk.close()
+            }
         }
 
         fireCallback(this)

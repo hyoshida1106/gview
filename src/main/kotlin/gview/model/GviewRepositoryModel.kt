@@ -1,5 +1,6 @@
 package gview.model
 
+import gview.error.RepositoryInvalidException
 import gview.model.branch.GviewBranchListModel
 import gview.model.commit.GviewCommitListModel
 import gview.model.workfile.GviewWorkFilesModel
@@ -13,15 +14,6 @@ import java.io.File
  */
 class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
 
-    //JGitリポジトリ
-    var jgitRepository: Repository? = null
-
-    //リポジトリインスタンス
-    //現状は１つのみ
-    companion object {
-        val currentRepository = GviewRepositoryModel()
-    }
-
     //インデックス未登録/登録済ファイル情報
     val workFileInfo = GviewWorkFilesModel(this)
 
@@ -31,8 +23,22 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     //コミット情報リスト
     val commits = GviewCommitListModel(this)
 
+
+    //JGitリポジトリ
+    private var jgitRepository: Repository? = null
+
+    //リポジトリ情報の有効性チェック
+    val isValid: Boolean get() = (jgitRepository != null)
+
+    //無効チェック付きリポジトリ参照
+    fun getJgitRepository(): Repository {
+        if(!this.isValid) { throw RepositoryInvalidException() }
+        return jgitRepository!!
+    }
+
+
     //リポジトリ新規作成
-    fun createNew(dir : String, bare : Boolean = false) {
+    fun createNew(dir: String, bare: Boolean = false) {
         updateRepository(Git
             .init()
             .setBare(bare)
@@ -43,7 +49,7 @@ class GviewRepositoryModel: ModelObservable<GviewRepositoryModel>() {
     }
 
     //既存リポジトリのオープン
-    fun openExist(dir : String) {
+    fun openExist(dir: String) {
         updateRepository(Git
             .open(File(dir))
             .repository)

@@ -1,8 +1,8 @@
 package gview.gui.main
 
+import gview.GviewApp
 import gview.gui.framework.GviewBasePaneCtrl
 import gview.gui.util.TextMessage
-import gview.model.GviewRepositoryModel
 import javafx.fxml.FXML
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
@@ -21,8 +21,8 @@ class StatusBarCtrl
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //リポジトリのパスを表示
-        GviewRepositoryModel.currentRepository.addListener {
-            setCurrentRepositoryPath( it.jgitRepository?.directory?.absolutePath )
+        GviewApp.currentRepository.addListener {
+            setCurrentRepositoryPath(if(it.isValid) it.getJgitRepository().directory.absolutePath else "")
             setCurrentBranch( it.branches.currentBranch )
             it.branches.addListener { branches -> setCurrentBranch( branches.currentBranch ) }
         }

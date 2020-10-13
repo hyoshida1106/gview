@@ -8,15 +8,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 
+<?import javafx.scene.control.CheckBox?>
 <GridPane hgap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           fx:id="pane" fx:controller="gview.gui.dialog.CreateBranchDialogCtrl"
-          vgap="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+          vgap="12.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
     <columnConstraints>
         <ColumnConstraints hgrow="ALWAYS"/>
         <ColumnConstraints hgrow="ALWAYS"/>
     </columnConstraints>
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="12.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
     <Label text="ブランチの名称:" GridPane.halignment="RIGHT"/>
     <TextField fx:id="branchName" prefColumnCount="20" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
@@ -26,4 +27,5 @@
     <RadioButton fx:id="tagRadio" text="指定されたタグから" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <ChoiceBox fx:id="branchList" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
     <ChoiceBox fx:id="tagList" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+    <CheckBox fx:id="checkout" text="作成したブランチをチェックアウトする" GridPane.rowIndex="4" GridPane.columnSpan="3"/>
 </GridPane>

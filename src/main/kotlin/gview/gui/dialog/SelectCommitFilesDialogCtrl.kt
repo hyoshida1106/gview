@@ -1,8 +1,8 @@
 package gview.gui.dialog
 
+import gview.GviewApp
 import gview.gui.framework.GviewCustomDialogCtrl
 import gview.gui.util.TableColumnAdjuster
-import gview.model.GviewRepositoryModel
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -46,7 +46,7 @@ class SelectCommitFilesDialogCtrl
         commitMessageLabel.style = CSS.commitMessageLabelStyle
         commitMessageText.style = CSS.commitMessageTextStyle
 
-        val files =  GviewRepositoryModel.currentRepository.workFileInfo.stagedFiles
+        val files =  GviewApp.currentRepository.workFileInfo.stagedFiles
         fileList.items.addAll(files.map { RowData(it) })
 
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->

@@ -33,7 +33,7 @@ class CommitInfoCtrl
         var commitList: CommitListCtrl = CommitList.controller
         commitList.selectedRowProperty.addListener { _, _, newValue ->
             when(newValue) {
-                is HeaderRowData -> selectHeaderRowData(newValue)
+                is HeaderRowData -> selectHeaderRowData()
                 is CommitRowData -> selectCommitRowData(newValue)
                 else -> commitInfoPane.isVisible = false
             }
@@ -43,7 +43,7 @@ class CommitInfoCtrl
         commitInfoPane.isVisible = false
     }
 
-    private fun selectHeaderRowData(data: HeaderRowData) {
+    private fun selectHeaderRowData() {
         commitInfoFiles.children.setAll(headerFileListView)
         commitInfoDiff.children.setAll(commitDiffView)
         commitDataProperty.value = null
