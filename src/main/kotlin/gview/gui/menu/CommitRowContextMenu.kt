@@ -2,6 +2,7 @@ package gview.gui.menu
 
 import gview.GviewApp
 import gview.gui.dialog.BranchNameDialog
+import gview.gui.dialog.BranchSelectDialog
 import gview.gui.dialog.ErrorDialog
 import gview.gui.framework.GviewMenuItem
 import gview.model.commit.GviewCommitDataModel
@@ -13,19 +14,46 @@ import java.lang.Exception
 class CommitRowContextMenu(private val model: GviewCommitDataModel)
     : ContextMenu() {
 
+    private val checkoutMenu = GviewMenuItem(
+            text = "このコミットをチェックアウトする...",
+            iconLiteral = "mdi-source-branch"
+    ) { onCheckout() }
+
     private val createBranchMenu = GviewMenuItem(
         text = "このコミットからブランチを作成する...",
         iconLiteral = "mdi-source-branch"
     ) { onCreateBranch() }
 
+    private val branches = model.localBranches.filter { !it.isCurrentBranch }
+
     init {
         items.setAll(
+                checkoutMenu,
                 createBranchMenu
         )
         onShowing = EventHandler { onMyShowing() }
     }
 
     private fun onMyShowing() {
+        when (branches.count()) {
+            0 -> { checkoutMenu.isDisable = true }
+            1 -> { checkoutMenu.text = "\"${branches[0].name}\"をチェックアウトする" }
+        }
+    }
+
+    private fun onCheckout() {
+        try {
+            val selectedBranch = if(branches.count() == 1) {
+                branches[0]
+            } else {
+                BranchSelectDialog(branches).showDialog()
+            }
+            if(selectedBranch != null) {
+                GviewApp.currentRepository.branches.checkoutLocalBranch(selectedBranch)
+            }
+        } catch(e: Exception) {
+            ErrorDialog(e).showDialog()
+        }
     }
 
     private fun onCreateBranch() {

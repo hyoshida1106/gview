@@ -20,6 +20,9 @@ class GviewCommitDataModel(private val repo: Repository,
     // ID
     val id: ObjectId = commit.id
 
+    //
+    val isHead: Boolean = (id == commitList.headId)
+
     // Commit message (short)
     val shortMessage : String = commit.shortMessage
 

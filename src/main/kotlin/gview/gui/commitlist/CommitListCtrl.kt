@@ -146,7 +146,7 @@ class CommitListCtrl
         //ヘッダ情報業を追加
         if(commits.headId != null) {
             val commitData = commits.commitIdMap[commits.headId]
-            if(commitData != null && commitData.localBranches.find { it.selected } != null) {
+            if(commitData != null) {
                 commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber))
             }
         }

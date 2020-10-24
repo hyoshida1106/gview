@@ -20,7 +20,7 @@ class LocalBranchItem(val model: GviewLocalBranchModel)
 
     //初期化
     init {
-        if(model.isCurrentRepository) {
+        if(model.isCurrentBranch) {
             branchName.style = CSS.currentBranchLabelStyle
             showInTree.isSelected = true
         }

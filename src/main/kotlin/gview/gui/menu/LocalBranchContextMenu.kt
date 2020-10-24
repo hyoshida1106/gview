@@ -43,8 +43,8 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel)
     }
 
     private fun onMyShowing() {
-        checkOutMenuItem.isDisable = (model.isCurrentRepository)
-        removeMenuItem.isDisable = (model.isCurrentRepository)
+        checkOutMenuItem.isDisable = (model.isCurrentBranch)
+        removeMenuItem.isDisable = (model.isCurrentBranch)
     }
 
     private fun onCheckOut() {

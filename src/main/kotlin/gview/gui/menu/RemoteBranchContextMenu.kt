@@ -12,11 +12,13 @@ class RemoteBranchContextMenu(val model: GviewRemoteBranchModel)
     : ContextMenu() {
 
     private val checkOutMenuItem = GviewMenuItem(
-            "ローカルへチェックアウト"
+            text = "このリモートブランチをローカルへチェックアウトする",
+            iconLiteral = "mdi-folder-star"
     ) { onCheckOut() }
 
     private val removeMenuItem   = GviewMenuItem(
-            "リモートブランチを削除"
+            text = "このリモートブランチを削除する",
+            iconLiteral = "mdi-delete-forever"
     ) { onRemove() }
 
     init {

@@ -25,6 +25,12 @@ class BranchTagLabels(model: GviewCommitDataModel)
             label.style = CSS.tagLabelStyle
             add(label)
         }
+
+        if(this.count() == 0 && model.isHead) {
+            val label = Label("HEAD(detached)")
+            label.style = CSS.headLabelStyle
+            add(label)
+        }
     }
 
     object CSS {
@@ -38,6 +44,10 @@ class BranchTagLabels(model: GviewCommitDataModel)
             -fx-border-width: 2;
             -fx-border-radius: 2;
             -fx-border-insets: 0 2 0 0;
+        """.trimIndent()
+
+        val headLabelStyle = labelStyle + """
+            -fx-background-color: rgb(207, 77, 77); 
         """.trimIndent()
 
         val localBranchLabelStyle = labelStyle + """

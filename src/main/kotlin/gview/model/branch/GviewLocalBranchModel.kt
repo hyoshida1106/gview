@@ -19,8 +19,8 @@ class GviewLocalBranchModel(
     //リモートブランチへのリンク
     var remoteBranch: GviewRemoteBranchModel? = null
 
-    //カレントリポジトリフラグ
-    var isCurrentRepository: Boolean = (branchList.currentBranch == name)
+    //カレントブランチフラグ
+    var isCurrentBranch: Boolean = (branchList.currentBranch == name)
 
     //表示対象フラグ
     var selected = true

@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ListBranchCommand
 import org.eclipse.jgit.lib.BranchTrackingStatus
+import org.eclipse.jgit.lib.Repository
 
 
 class GviewBranchListModel(private val repository: GviewRepositoryModel)
@@ -39,6 +40,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
             val remoteBranchMap = mutableMapOf<String, GviewRemoteBranchModel>()
             git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE)
                     .call()
+                    .filterNot { repository.getJgitRepository().shortenRemoteBranchName(it.name) == null }
                     .filterNot { repository.getJgitRepository().shortenRemoteBranchName(it.name) == "HEAD" }
                     .forEach {
                         val remoteBranch = GviewRemoteBranchModel(this, it, jgitRepository)
@@ -52,6 +54,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
             //ローカルブランチの一覧を取得
             git.branchList()
                     .call()
+                    .filterNot { Repository.shortenRefName(it.name) == "HEAD" }
                     .forEach {
                         //ローカルブランチ一覧に追加
                         val localBranch = GviewLocalBranchModel(this, it)
@@ -153,7 +156,7 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         update()
     }
 
-    //指定したブランチからブランチを作成する
+    //指定したブランチから新しいブランチを作成する
     fun createNewBranchFromOtherBranch(newBranch: String, model: GviewLocalBranchModel, checkout: Boolean) {
         if(checkout) {
             Git(repository.getJgitRepository())
