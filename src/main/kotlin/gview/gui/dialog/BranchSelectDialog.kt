@@ -13,10 +13,10 @@ class BranchSelectDialog(private val list: List<GviewLocalBranchModel>)
 
 	init {
 		initOwner(MainWindow.root.scene.window)
-		title = "タグ検索"
+		title = "ブランチ選択"
 		graphic = null
 		headerText = null
-		contentText = "検索するタグ"
+		contentText = "チェックアウトするブランチ"
 		branchMap = list
 				.filter { !it.isCurrentBranch }
 				.map { it.name to it }.toMap()

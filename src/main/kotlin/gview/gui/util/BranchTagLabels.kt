@@ -26,8 +26,8 @@ class BranchTagLabels(model: GviewCommitDataModel)
             add(label)
         }
 
-        if(this.count() == 0 && model.isHead) {
-            val label = Label("HEAD(detached)")
+        if(model.isHead) {
+            val label = Label(if(this.isEmpty()) "HEAD(detached)" else "HEAD")
             label.style = CSS.headLabelStyle
             add(label)
         }

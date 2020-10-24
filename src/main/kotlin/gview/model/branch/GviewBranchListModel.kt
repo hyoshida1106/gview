@@ -99,16 +99,6 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         update()
     }
 
-    //指定したコミットをチェックアウトする
-    fun checkoutCommit(model: GviewCommitDataModel) {
-        Git(repository.getJgitRepository())
-                .checkout()
-                .setStartPoint(model.revCommit)
-                .call()
-        repository.workFileInfo.update()
-        update()
-    }
-
     //ローカルブランチを削除する
     fun removeLocalBranch(model: GviewLocalBranchModel, force: Boolean) {
         Git(repository.getJgitRepository())
@@ -174,4 +164,14 @@ class GviewBranchListModel(private val repository: GviewRepositoryModel)
         }
         update()
     }
+
+    //指定したコミットをHEADへマージする
+	fun mergeCommit(model: GviewCommitDataModel, message: String) {
+        Git(repository.getJgitRepository())
+                .merge()
+                .include(model.id)
+                .setMessage(message)
+                .call()
+        update()
+	}
 }

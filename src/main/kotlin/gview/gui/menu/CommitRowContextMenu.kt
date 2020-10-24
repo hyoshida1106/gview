@@ -4,6 +4,7 @@ import gview.GviewApp
 import gview.gui.dialog.BranchNameDialog
 import gview.gui.dialog.BranchSelectDialog
 import gview.gui.dialog.ErrorDialog
+import gview.gui.dialog.MergeDialog
 import gview.gui.framework.GviewMenuItem
 import gview.model.commit.GviewCommitDataModel
 import javafx.event.EventHandler
@@ -24,12 +25,18 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
         iconLiteral = "mdi-source-branch"
     ) { onCreateBranch() }
 
+    private val mergeMenu = GviewMenuItem(
+            text = "このコミットをヘッドへマージする...",
+            iconLiteral = "mdi-source-merge"
+    ) { onMerge() }
+
     private val branches = model.localBranches.filter { !it.isCurrentBranch }
 
     init {
         items.setAll(
                 checkoutMenu,
-                createBranchMenu
+                createBranchMenu,
+                mergeMenu
         )
         onShowing = EventHandler { onMyShowing() }
     }
@@ -62,6 +69,18 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
             try {
                 GviewApp.currentRepository.branches.createNewBranchFromCommit(
                         dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
+            } catch(e: Exception) {
+                ErrorDialog(e).showDialog()
+            }
+        }
+    }
+
+    private fun onMerge() {
+        val dialog = MergeDialog()
+        if(dialog.showDialog() == ButtonType.OK) {
+            try {
+                GviewApp.currentRepository.branches.mergeCommit(
+                        model, dialog.controller.message)
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()
             }
