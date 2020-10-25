@@ -17,10 +17,29 @@ class GviewCommitDataModel(private val repo: Repository,
                            private val commitList: GviewCommitListModel,
                            private val commit: PlotCommit<PlotLane>,
                            private val prevCommit: GviewCommitDataModel?) {
+
+    //以下のプロパティは、インスタンス生成後に外部から設定する
+
+    //次のコミット
+    var nextCommit: GviewCommitDataModel? = null
+
+    //ローカルブランチとのリンク
+    val localBranches: MutableList<GviewLocalBranchModel> = mutableListOf()
+
+    //リモートブランチとのリンク
+    val remoteBranches: MutableList<GviewRemoteBranchModel> = mutableListOf()
+
+    //タグ、当面は名称のみ
+    val tags: MutableList<String> = mutableListOf()
+
+    init {
+        if(prevCommit != null) prevCommit.nextCommit = this
+    }
+
     // ID
     val id: ObjectId = commit.id
 
-    //
+    //　HEADであればtrue
     val isHead: Boolean = (id == commitList.headId)
 
     // Commit message (short)
@@ -47,72 +66,61 @@ class GviewCommitDataModel(private val repo: Repository,
     // RevCommit instance
     val revCommit: RevCommit = commit
 
-    //以下のプロパティは、インスタンス生成後に外部から設定する
-
-    //ローカルブランチとのリンク
-    val localBranches: MutableList<GviewLocalBranchModel> = mutableListOf()
-
-    //リモートブランチとのリンク
-    val remoteBranches: MutableList<GviewRemoteBranchModel> = mutableListOf()
-
-    //タグ、当面は名称のみ
-    val tags: MutableList<String> = mutableListOf()
-
-    //通過パス(このコミットの前後でつながるパス
-    val passWays : MutableList<Int> by lazy {
-        val result = mutableSetOf<PlotLane>()
-        commitList.plotCommitList.findPassingThrough(commit, result)
-        result.map { it.position }.toMutableList()
-    }
-
     //親コミットの一覧を取得する
     private val parents: List<GviewCommitDataModel> by lazy {
-        val list = mutableListOf<GviewCommitDataModel>()
-        (0 until commit.parentCount).forEach {
-            val parent = commitList.commitIdMap[commit.getParent(it).id]
-            if(parent != null) list.add(parent)
-        }
-        list
+        commit.parents.mapNotNull { commitList.commitIdMap[it.id] }
+    }
+
+    //通過レーン(このコミットの前後でつながるレーン)
+    val passLanes : MutableList<Int> by lazy {
+        val result = mutableSetOf<PlotLane>()
+        commitList.plotCommitList.findPassingThrough(commit, result)
+        result.map { it.position }.sorted().distinct().toMutableList()
     }
 
     //このコミットから出るレーン
-    val branchTo : MutableList<Int> by lazy {
-        val branchLanes = mutableListOf<Int>()
+    val exitTo : MutableList<Int> by lazy {
         //１つ先のコミット情報をチェックする
         if(prevCommit != null) {
-            //このコミットにない通過レーンがあれば、分岐する必要がある
-            prevCommit.passWays.filterNot { passWays.contains(it) }.forEach {
-                branchLanes.add(it)
-            }
-            //レーンがこちらの通過レーンでなければ、分岐する必要がある
-            if(!passWays.contains(prevCommit.laneNumber)) {
-                branchLanes.add(prevCommit.laneNumber)
-            }
+            val exitLanes = mutableListOf<Int>()
+            //このコミットを通過しない通過レーンがあれば、分岐する
+            exitLanes.addAll(prevCommit.passLanes.filterNot { passLanes.contains(it) })
             //親コミットに自分が含まれていれば、自分のレーンを延長する
             if(prevCommit.parents.contains(this)) {
-                branchLanes.add(laneNumber)
+                if(passLanes.contains(prevCommit.laneNumber)) {
+                    exitLanes.add(laneNumber)
+                } else {
+                    exitLanes.add(prevCommit.laneNumber)
+                }
             }
+            //ソートして重複を削除する
+            exitLanes.sorted().distinct().toMutableList()
+        } else {
+            //空リスト
+            mutableListOf<Int>()
         }
-
-        //ソートした上で重複を削除する
-        branchLanes.sorted().distinct().toMutableList()
     }
 
     //このコミットに来るレーン
-    val mergeFrom : MutableList<Int> by lazy {
-        if(parents.count() > 0) {
-            //親コミットから出るレーンにつながるように線を引く
-            List(parents.count()) {
-                if (parents[it].branchTo.contains(laneNumber)) {
-                    laneNumber
-                } else {
-                    parents[it].laneNumber
-                }
-            }.sorted().distinct()
+    val enterFrom : MutableList<Int> by lazy {
+        //１つ前のコミット情報をチェックする
+        if(nextCommit != null) {
+            val enterLanes = mutableListOf<Int>()
+            //このコミットを通過しない通過レーンがあれば、マージする
+            enterLanes.addAll(nextCommit!!.passLanes.filterNot { passLanes.contains(it) })
+            //分岐先が自分の通過レーンに含まれていなければ、マージする
+            enterLanes.addAll(nextCommit!!.exitTo.filterNot { passLanes.contains(it) })
+            //ソートして重複を削除する
+            enterLanes.sorted().distinct().toMutableList()
         } else {
-            //親がひとつもない場合(末端)、真下に線を引く(と自然に見える)
-            listOf(laneNumber)
-        }.toMutableList()
+            //末端は真下に線を引く(と自然に見える)
+            listOf( laneNumber ).toMutableList()
+        }
+    }
+
+    //このコミットのレーン幅
+    val maxLaneNumber: Int get() {
+        return (passLanes + exitTo + enterFrom).maxOfOrNull { it } ?: -1
     }
 
     //更新ファイルのリスト

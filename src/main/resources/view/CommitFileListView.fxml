@@ -3,12 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.TextFlow?>
 <SplitPane fx:id="commitFileListPane" dividerPositions="0.4"
            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
            stylesheets="@/Gview.css" fx:controller="gview.gui.commitinfo.CommitFileListCtrl">
-    <BorderPane fx:id="commitFileInfo" minWidth="50.0"/>
+    <BorderPane minWidth="50.0">
+        <top>
+            <VBox fx:id="commitProps" BorderPane.alignment="CENTER" />
+        </top>
+        <center>
+            <TextArea fx:id="commitMessage" BorderPane.alignment="CENTER" editable="false"
+                      wrapText="true" />
+        </center>
+    </BorderPane>
     <TableView fx:id="commitFileList">
         <columns>
             <TableColumn fx:id="typeColumn" editable="false" reorderable="false" text="種別" minWidth="50"/>

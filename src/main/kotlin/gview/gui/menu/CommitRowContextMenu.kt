@@ -46,6 +46,7 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
             0 -> { checkoutMenu.isDisable = true }
             1 -> { checkoutMenu.text = "\"${branches[0].name}\"をチェックアウトする" }
         }
+        mergeMenu.isDisable = model.isHead
     }
 
     private fun onCheckout() {
@@ -80,7 +81,7 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
         if(dialog.showDialog() == ButtonType.OK) {
             try {
                 GviewApp.currentRepository.branches.mergeCommit(
-                        model, dialog.controller.message)
+                        model, dialog.controller.message.trim())
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()
             }

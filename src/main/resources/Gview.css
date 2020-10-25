@@ -105,12 +105,21 @@
     -fx-background-color: -background-color;
 }
 
+/* Button */
 .button {
     -fx-font-weight: bold;
     -fx-background-color: -background-color;
     -fx-effect: dropshadow( three-pass-box , rgba(20,20,20,0.6), 3, 0.0, 0, 1);
 }
 
+/* TextArea */
+.text-area {
+    -fx-font-family: "Meiryo UI", sans-serif;
+    -fx-background-color: -split-pane-color;
+}
+.text-area .viewport, .text-area .content {
+    -fx-background-color: transparent ;
+}
 /* ================================================================
     コミット一覧
 */

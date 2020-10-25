@@ -9,16 +9,15 @@ import gview.model.commit.GviewGitFileEntryModel
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
+import javafx.scene.control.TextArea
 import javafx.scene.control.cell.PropertyValueFactory
-import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
-import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 
-class CommitFileListCtrl
-    : GviewBasePaneCtrl()  {
+class CommitFileListCtrl: GviewBasePaneCtrl()  {
 
-    @FXML private lateinit var commitFileInfo: BorderPane
+    @FXML private lateinit var commitProps: VBox
+    @FXML private lateinit var commitMessage: TextArea
     @FXML private lateinit var commitFileList: TableView<RowData>
     @FXML private lateinit var typeColumn: TableColumn<RowData, String>
     @FXML private lateinit var pathColumn: TableColumn<RowData, String>
@@ -61,25 +60,23 @@ class CommitFileListCtrl
 
     private fun updateFileInfo(model: GviewCommitDataModel?) {
 
-        commitFileInfo.children.clear()
+        commitProps.children.clear()
 
         if(model != null) {
             val labelList = TextFlow()
             labelList.children.setAll(BranchTagLabels(model))
             labelList.style = CSS.labelListStyle
 
-            val itemList = VBox(TextMessage("ID: ", model.id.toString()),
+            commitProps.children.setAll(
+                    TextMessage("ID: ", model.id.toString()),
                     TextMessage("日付: ", model.commitTime),
                     TextMessage("作者: ", model.author),
                     TextMessage("登録: ", model.committer),
                     labelList)
-            itemList.style = CSS.itemListStyle
+            commitProps.style = CSS.itemListStyle
 
-            val commitMessage = TextFlow(Text(model.fullMessage))
+            commitMessage.text = model.fullMessage
             commitMessage.style = CSS.commitMessageStyle
-
-            commitFileInfo.top = itemList
-            commitFileInfo.center = commitMessage
         }
     }
 
@@ -101,10 +98,8 @@ class CommitFileListCtrl
         """.trimIndent()
 
         val commitMessageStyle = """
-            -fx-font-family: "Meiryo UI", sans-serif;
-            -fx-padding: 15 20 5 20;
+            -fx-padding: 10;
             -fx-background-insets: 7;
-            -fx-background-color: -split-pane-color;
             -fx-background-radius: 5;
         """.trimIndent()
 

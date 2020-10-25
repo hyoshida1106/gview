@@ -2,9 +2,9 @@ package gview.gui.commitlist
 
 import gview.gui.util.TextMessage
 import gview.model.workfile.GviewWorkFilesModel
-import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import java.text.DateFormat
@@ -25,10 +25,13 @@ class HeaderRowData(
     inner class HeaderTreeCellData(
             private val commitList: CommitListCtrl,
             val model: GviewWorkFilesModel)
-        : CommitListCtrl.CellData() {
+        : CommitListCtrl.CellData {
 
-        override fun layout(
-                tableCell: CommitListCtrl.Cell) {
+        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
+            return Pair(null, null)
+        }
+
+        override fun layout(tableCell: CommitListCtrl.Cell) {
 
             val canvas = Canvas(tableCell.width, tableCell.height)
             val ys = 0.0
@@ -37,6 +40,8 @@ class HeaderRowData(
             tableCell.graphic = Pane(canvas)
             tableCell.text = null
         }
+
+        override val contextMenu: ContextMenu? = null
 
         private fun drawMark(
                 canvas: Canvas,
@@ -56,7 +61,7 @@ class HeaderRowData(
     //コミット情報セル
     inner class HeaderInfoCellData(
             private val model: GviewWorkFilesModel)
-        : CommitListCtrl.CellData() {
+        : CommitListCtrl.CellData {
 
         override fun update(tableCell: CommitListCtrl.Cell)
                 : Pair<Node?, String?>  {
@@ -67,6 +72,11 @@ class HeaderRowData(
             val row3 = TextMessage("ステージ未:", "${model.changedFiles.size} ファイル")
             return Pair(VBox(row1, row2, row3), null)
         }
+
+        override fun layout(tableCell: CommitListCtrl.Cell) {
+        }
+
+        override val contextMenu: ContextMenu? = null
     }
 
 }

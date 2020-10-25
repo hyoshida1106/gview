@@ -6,7 +6,6 @@ import gview.gui.util.TextMessage
 import gview.model.commit.GviewCommitDataModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
-import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
@@ -26,21 +25,23 @@ class CommitRowData(
     inner class CommitTreeCellData(
             private val commitList: CommitListCtrl,
             private val model: GviewCommitDataModel)
-        : CommitListCtrl.CellData() {
+        : CommitListCtrl.CellData {
 
         //コンテキストメニュー
         override val contextMenu = CommitRowContextMenu(model)
 
-        //セル表示の更新
-        override fun layout(
-                tableCell: CommitListCtrl.Cell) {
+        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
+            return Pair(null, null)
+        }
 
+        //セル表示の更新
+        override fun layout(tableCell: CommitListCtrl.Cell) {
             val canvas = Canvas(tableCell.width, tableCell.height)
             val ys = 0.0
             val ye = tableCell.height
-            model.passWays.forEach { p -> drawPassingWay(canvas, p, ys, ye)}
-            model.branchTo.forEach { b -> drawBranchLine(canvas, model.laneNumber, b, ys, ye) }
-            model.mergeFrom.forEach { b -> drawMergeLine(canvas, model.laneNumber, b, ys, ye) }
+            model.passLanes.forEach { p -> drawPassingWay(canvas, p, ys, ye)}
+            model.exitTo.forEach { b -> drawBranchLine(canvas, model.laneNumber, b, ys, ye) }
+            model.enterFrom.forEach { b -> drawMergeLine(canvas, model.laneNumber, b, ys, ye) }
             drawLane(canvas, model, ys, ye)
             tableCell.graphic = Pane(canvas)
             tableCell.text = null
@@ -139,22 +140,18 @@ class CommitRowData(
                 }
             }
         }
-
     }
 
     //コミット情報セル
     inner class CommitInfoCellData(
             private val model: GviewCommitDataModel)
-        : CommitListCtrl.CellData() {
+        : CommitListCtrl.CellData {
 
         //コンテキストメニュー
         override val contextMenu = CommitRowContextMenu(model)
 
         //セル表示の更新
-        override fun update(
-                tableCell: CommitListCtrl.Cell)
-                : Pair<Node?, String?> {
-
+        override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
             //日付・作者・メッセージ抜粋
             val row1 = TextMessage("日付: ", model.commitTime)
             val row2 = TextMessage("作者: ", model.author)
@@ -164,6 +161,9 @@ class CommitRowData(
             row1.children.addAll(BranchTagLabels(model))
 
             return Pair(VBox(row1, row2, row3), null)
+        }
+
+        override fun layout(tableCell: CommitListCtrl.Cell) {
         }
     }
 }

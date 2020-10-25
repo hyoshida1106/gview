@@ -90,12 +90,11 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
                 //HEAD直前までのパスを重複しないように描く
                 var lane = head.laneNumber
                 val headerPath = commitList.subList(0, commitList.indexOf(head))
-                while(headerPath.find { it.laneNumber == lane || it.passWays.contains(lane) } != null) {
-                    lane += 1
-                }
-                headerPath.forEach { it.passWays.add(lane) }
+                val maxLineNumber = headerPath.maxOfOrNull { it.maxLaneNumber } ?: -1
+                if(lane <= maxLineNumber) { lane = maxLineNumber + 1 }
+                headerPath.forEach { it.passLanes.add(lane) }
                 //HEADからの分岐線を描く
-                if(!head.branchTo.contains(lane)) { head.branchTo.add(lane) }
+                if(!head.exitTo.contains(lane)) { head.exitTo.add(lane) }
                 //WorkFileのレーン番号を更新
                 headerLaneNumber = lane
             }

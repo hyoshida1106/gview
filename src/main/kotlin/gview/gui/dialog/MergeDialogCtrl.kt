@@ -14,5 +14,4 @@ class MergeDialogCtrl: GviewCustomDialogCtrl() {
 
     //メッセージ
     val message: String get() = messageText.text
-
 }

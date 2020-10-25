@@ -30,10 +30,10 @@ class CommitListCtrl
     }
 
     //カラム単位データの基本クラス
-    open class CellData {
-        open fun update(tableCell: Cell): Pair<Node?, String?> { return Pair(null, null) }
-        open fun layout(tableCell: Cell) {}
-        open val contextMenu: ContextMenu? = null
+    interface CellData {
+        fun update(tableCell: Cell): Pair<Node?, String?>
+        fun layout(tableCell: Cell)
+        val contextMenu: ContextMenu?
     }
 
     //コミットテーブル用セルファクトリクラス
@@ -51,9 +51,14 @@ class CommitListCtrl
         override fun updateItem(data: CellData?, empty: Boolean) {
             super.updateItem(data, empty)
             cellData = data
-            val pair = if(data != null && !empty) { data.update(this ) } else { Pair(null, null) }
-            graphic = pair.first
-            text = pair.second
+            if(data != null && !empty) {
+                val( graphic, text ) = data.update(this )
+                this.graphic = graphic
+                this.text = text
+            } else {
+                this.graphic = null
+                this.text = null
+            }
             contextMenu = data?.contextMenu
         }
 
@@ -169,7 +174,7 @@ class CommitListCtrl
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 
-        //戦闘のコミットまたはヘッダを選択する
+        //先頭のコミットまたはヘッダを選択する
         commitListTable.selectionModel.select(if(commitListTable.items.size <= 1) 0 else 1)
 
         //リストを可視化
