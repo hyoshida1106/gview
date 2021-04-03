@@ -1,21 +1,23 @@
 package gview.model.workfile
 
-import gview.gui.dialog.InformationDialog
+import gview.view.dialog.InformationDialog
 import gview.model.GviewRepositoryModel
+import gview.model.commit.GviewConflictEntryModel
+import gview.model.commit.GviewGitDiffEntryModel
 import gview.model.commit.GviewGitFileEntryModel
 import gview.model.util.ByteArrayDiffFormatter
 import gview.model.util.ModelObservable
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.dircache.DirCache
+import org.eclipse.jgit.dircache.DirCacheEntry
 import org.eclipse.jgit.dircache.DirCacheIterator
-import org.eclipse.jgit.lib.Constants
-import org.eclipse.jgit.lib.FileMode
-import org.eclipse.jgit.lib.ObjectId
-import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.lib.*
 import org.eclipse.jgit.revwalk.RevWalk
-import org.eclipse.jgit.treewalk.AbstractTreeIterator
-import org.eclipse.jgit.treewalk.CanonicalTreeParser
-import org.eclipse.jgit.treewalk.FileTreeIterator
+import org.eclipse.jgit.treewalk.*
+import org.eclipse.jgit.treewalk.filter.AndTreeFilter
+import org.eclipse.jgit.treewalk.filter.IndexDiffFilter
+import org.eclipse.jgit.treewalk.filter.TreeFilter
 
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
@@ -27,19 +29,35 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
     val stagedFiles = mutableListOf<GviewGitFileEntryModel>()
 
     //ワーキングツリー上のインデックス未登録ファイルを保持するリスト
-    val changedFiles =  mutableListOf<GviewGitFileEntryModel>()
+    val changedFiles = mutableListOf<GviewGitFileEntryModel>()
+
+    //コンフリクトの発生しているファイルのリスト
+    val conflictedFiles = mutableListOf<String>()
+
+    //コンフリクトの発生していないファイルを取得するためのフィルタ
+    class NotConflictFilter(private val treeIdx: Int) : TreeFilter() {
+        override fun include(walker: TreeWalk): Boolean {
+            val it = walker.getTree(treeIdx, DirCacheIterator::class.java) ?: return true
+            return it.dirCacheEntry?.stage == DirCacheEntry.STAGE_0
+        }
+        override fun shouldBeRecursive(): Boolean { return false }
+        override fun clone(): TreeFilter { return this }
+        override fun toString(): String { return "TestFilter($treeIdx)"}
+    }
 
     //データ更新
     fun update() {
         stagedFiles.clear()
         changedFiles.clear()
+        conflictedFiles.clear()
 
         if(repository.isValid) {
             val jgitRepository = repository.getJgitRepository()
             val cache = jgitRepository.lockDirCache()
             try {
-                updateStagedFiles(jgitRepository, cache, stagedFiles)
-                updateChangedFiles(jgitRepository, cache, changedFiles)
+                updateStagedFiles(jgitRepository, cache)
+                updateChangedFiles(jgitRepository, cache)
+                updateConflictedFiles(cache)
             } finally {
                 cache.unlock()
             }
@@ -48,46 +66,72 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
         fireCallback(this)
     }
 
+    //パラメータ設定済のTreeWalkインスタンスを取得する
+    private fun getTreeWalk(repository: Repository): TreeWalk {
+        val treeWalk = TreeWalk(repository)
+        treeWalk.operationType = TreeWalk.OperationType.CHECKIN_OP
+        treeWalk.isRecursive = false
+        return treeWalk
+    }
+
     //ステージング済ファイル一覧を取得する
-    private fun updateStagedFiles(
-            repository: Repository,
-            cache: DirCache,
-            files: MutableList<GviewGitFileEntryModel>) {
+    private fun updateStagedFiles(repository: Repository, cache: DirCache) {
 
         //SubModuleは当面無視する
-        val headId = repository.resolve(Constants.HEAD)
+        val treeWalk = getTreeWalk(repository)
+        treeWalk.addTree(getHeadIterator(repository))
+        treeWalk.addTree(DirCacheIterator(cache))
+        treeWalk.filter = NotConflictFilter(1)
+
         ByteArrayDiffFormatter(repository).use() { formatter ->
-            formatter.scan(toTreeIterator(repository, headId), DirCacheIterator(cache))
-                    .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
-                    .forEach { files.add(GviewGitFileEntryModel(formatter, it)) }
+            DiffEntry.scan(treeWalk).forEach {
+                stagedFiles.add(GviewGitDiffEntryModel(formatter, it))
+            }
         }
     }
 
     //修正済ファイル一覧を取得する
-    private fun updateChangedFiles(
-            repository: Repository,
-            cache: DirCache,
-            files: MutableList<GviewGitFileEntryModel>) {
+    private fun updateChangedFiles(repository: Repository, cache: DirCache) {
 
         //SubModuleは当面無視する
-        val cacheIterator = DirCacheIterator(cache)
+        val treeWalk = getTreeWalk(repository)
+        val dirTreeIterator = DirCacheIterator(cache)
+        val fileTreeIterator = FileTreeIterator(repository)
+        treeWalk.addTree(dirTreeIterator)
+        treeWalk.addTree(fileTreeIterator)
+        fileTreeIterator.setDirCacheIterator(treeWalk, 0)
+        treeWalk.filter = AndTreeFilter.create(
+                NotConflictFilter(0),
+                IndexDiffFilter(0, 1))
+
         ByteArrayDiffFormatter(repository).use() { formatter ->
-            formatter.scan(cacheIterator, FileTreeIterator(repository))
-                    .filter { it.oldMode != FileMode.GITLINK && it.newMode != FileMode.GITLINK }
-                    .forEach { files.add(GviewGitFileEntryModel(formatter, it)) }
+            /* 1度SCANしないとFormatter内の"source"に情報が設定されないらしい */
+            formatter.scan(DirCacheIterator(cache), FileTreeIterator(repository))
+            DiffEntry.scan(treeWalk).forEach { changedFiles.add(GviewGitDiffEntryModel(formatter, it)) }
         }
     }
 
     // ファイルイテレータを取得する内部メソッド
-    private fun toTreeIterator(
-            repository: Repository,
-            id: ObjectId): AbstractTreeIterator {
-
+    private fun getHeadIterator(repository: Repository): AbstractTreeIterator {
+        val headId = repository.resolve(Constants.HEAD) ?: return EmptyTreeIterator()
         val parser = CanonicalTreeParser()
         val revWalk = RevWalk(repository)
-        parser.reset(repository.newObjectReader(), revWalk.parseTree(id).id)
+        parser.reset(repository.newObjectReader(), revWalk.parseTree(headId).id)
         revWalk.close()
         return parser
+    }
+
+    //コンフリクトファイル一覧を取得する
+    private fun updateConflictedFiles(cache: DirCache) {
+        val cacheIterator = DirCacheIterator(cache)
+        while(!cacheIterator.eof()) {
+            if(cacheIterator.dirCacheEntry?.stage == DirCacheEntry.STAGE_1) {
+                println("${cacheIterator.dirCacheEntry.length} ${cacheIterator.dirCacheEntry.pathString}")
+                conflictedFiles.add(cacheIterator.dirCacheEntry.pathString)
+                stagedFiles.add(GviewConflictEntryModel(DirCacheEntry(cacheIterator.dirCacheEntry)))
+            }
+            cacheIterator.next(1)
+        }
     }
 
     //指定されたファイルをステージ
@@ -97,15 +141,15 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
         val git = Git(repository.getJgitRepository())
         var count = 0
         files.forEach {
-            when(it.type) {
+            when(it.getType()) {
                 GviewGitFileEntryModel.ModifiedType.ADD,
                 GviewGitFileEntryModel.ModifiedType.MODIFY,
                 GviewGitFileEntryModel.ModifiedType.RENAME -> {
-                    git.add().addFilepattern(it.path).call()
+                    git.add().addFilepattern(it.getPath()).call()
                     ++count
                 }
                 GviewGitFileEntryModel.ModifiedType.DELETE -> {
-                    git.rm().addFilepattern(it.path).call()
+                    git.rm().addFilepattern(it.getPath()).call()
                     ++count
                 }
                 /* COPYは存在しないらしい */
@@ -127,7 +171,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             val reset = Git(repository.getJgitRepository())
                     .reset()
                     .setRef(Constants.HEAD)
-            files.forEach { reset.addPath(it.path) }
+            files.forEach { reset.addPath(it.getPath()) }
             reset.call()
             InformationDialog("${files.size} ファイルをアンステージしました").showDialog()
             update()
@@ -147,7 +191,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
                     .commit()
                     .setCommitter(userName, mailAddr)
                     .setMessage(message)
-            files.forEach { commit.setOnly(it.path) }
+            files.forEach { commit.setOnly(it.getPath()) }
             commit.call()
             InformationDialog("${files.size} ファイルをコミットしました").showDialog()
             update()

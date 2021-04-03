@@ -22,6 +22,9 @@ object SystemModal: SerializableData("ModalInfo.json") {
     //メインウィンドウ分割位置
     val mainSplitPosProperty: SimpleObjectProperty<DoubleArray>
 
+    //前回オープンしたファイル一覧
+    val lastOpenedFiles: List<String> get() { return data.lastOpenedFiles }
+
     //保存データ
     private val data: StorageData                   //保存データインスタンス
     private var lastHashCode: Int                   //保存データハッシュコード
@@ -42,6 +45,13 @@ object SystemModal: SerializableData("ModalInfo.json") {
         maximumProperty.addListener { _, _, newValue -> data.maximum = newValue }
         mainHeightProperty.addListener { _, _, newValue -> data.mainHeight = newValue.toDouble() }
         mainWidthProperty.addListener { _, _, newValue -> data.mainWidth = newValue.toDouble() }
+    }
+
+    //前回オープンしたファイル一覧を更新
+    fun addLastOpenedFile(filePath: String) {
+        val lastOpenedFiles = data.lastOpenedFiles.filter { it != filePath }.toMutableList()
+        lastOpenedFiles.add(0, filePath)
+        data.lastOpenedFiles = lastOpenedFiles.take(5)
     }
 
     //ファイルから取得
@@ -67,18 +77,24 @@ object SystemModal: SerializableData("ModalInfo.json") {
             var maximum: Boolean,
             var mainHeight: Double,
             var mainWidth: Double,
-            var mainSplitPos: DoubleArray){
+            var mainSplitPos: DoubleArray,
+            var lastOpenedFiles: List<String>){
 
         //デフォルト値
-        constructor( ): this(false, 800.0, 1200.0, doubleArrayOf(0.15, 0.4))
+        constructor( ): this(
+            false,
+            800.0,
+            1200.0,
+            doubleArrayOf(0.15, 0.4),
+            mutableListOf<String>())
 
         //ハッシュ値の算出
         override fun hashCode(): Int {
-            var result = maximum.hashCode()
-            result = 31 * result + mainHeight.hashCode()
-            result = 31 * result + mainWidth.hashCode()
-            result = 31 * result + mainSplitPos.contentHashCode()
-            return result
+            return maximum.hashCode() +
+                    mainHeight.hashCode() +
+                    mainWidth.hashCode() +
+                    mainSplitPos.contentHashCode() +
+                    lastOpenedFiles.hashCode()
         }
 
         //等価比較

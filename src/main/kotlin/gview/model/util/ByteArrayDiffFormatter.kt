@@ -9,7 +9,7 @@ import java.io.Closeable
 /*
     diff出力をByteArrayとして取得可能なDiff Formatter
  */
-class ByteArrayDiffFormatter(repository: Repository,
+class ByteArrayDiffFormatter(val repository: Repository,
                              private val output: ByteArrayOutputStream): DiffFormatter(output), Closeable {
 
     //出力先ByteArrayインスタンスを内部生成するコンストラクタ

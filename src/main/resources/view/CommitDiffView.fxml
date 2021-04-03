@@ -11,7 +11,7 @@
 <BorderPane fx:id="commitDiffViewPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-            fx:controller="gview.gui.commitinfo.CommitDiffCtrl">
+            fx:controller="gview.view.commitinfo.CommitDiffCtrl">
     <center>
         <ListView fx:id="diffList">
             <items>

@@ -128,7 +128,7 @@ class GviewCommitDataModel(private val repo: Repository,
         val tree1 = if( commit.parentCount > 0 ) commit.getParent(0).tree else null
         val tree2 = commit.tree
         ByteArrayDiffFormatter(repo).use { fmt ->
-            fmt.scan(tree1, tree2).map { GviewGitFileEntryModel(fmt, it) }
+            fmt.scan(tree1, tree2).map { GviewGitDiffEntryModel(fmt, it) }
         }
     }
 

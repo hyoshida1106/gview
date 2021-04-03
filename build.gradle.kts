@@ -12,19 +12,21 @@ repositories {
 }
 
 dependencies {
-    // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     // Use the Kotlin JDK standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc" )
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+
     // JGit
-    implementation("org.eclipse.jgit:org.eclipse.jgit:5.6.0.201912101111-r")
-    // Ikonli
-    implementation( "org.kordamp.ikonli:ikonli-javafx:11.4.0")
-    implementation( "org.kordamp.ikonli:ikonli-materialdesign-pack:11.4.0")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:5.9.0.202009080501-r")
+
     // SLF4J/Log4J
     implementation("org.slf4j:slf4j-log4j12:1.7.30")
 
+    // Ikonli
+    implementation( "org.kordamp.ikonli:ikonli-javafx:11.4.0")
+    implementation( "org.kordamp.ikonli:ikonli-materialdesign-pack:11.4.0")
+
+    //ControlFX
     implementation("org.controlsfx:controlsfx:11.0.2")
 }
 

@@ -8,7 +8,7 @@
            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-           stylesheets="@/Gview.css" fx:controller="gview.gui.commitinfo.CommitFileListCtrl">
+           stylesheets="@/Gview.css" fx:controller="gview.view.commitinfo.CommitFileListCtrl">
     <BorderPane minWidth="50.0">
         <top>
             <VBox fx:id="commitProps" BorderPane.alignment="CENTER" />

@@ -6,7 +6,7 @@
 <HBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-            fx:id="statusBar" fx:controller="gview.gui.main.StatusBarCtrl">
+            fx:id="statusBar" fx:controller="gview.view.main.StatusBarCtrl">
     <children>
         <Pane fx:id="repositoryPath" />
         <Pane fx:id="currentBranch" />
