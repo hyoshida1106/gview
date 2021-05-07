@@ -21,7 +21,7 @@ class StatusBarCtrl
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
         //リポジトリのパスを表示
-        GvApplication.app.currentRepository.addListener {
+        GvApplication.instance.currentRepository.addListener {
             setCurrentRepositoryPath(if(it.isValid) it.getJgitRepository().directory.absolutePath else "")
             setCurrentBranch( it.branches.currentBranch )
             it.branches.addListener { branches -> setCurrentBranch( branches.currentBranch ) }

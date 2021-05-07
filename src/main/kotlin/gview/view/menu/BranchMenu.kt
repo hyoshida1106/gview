@@ -53,7 +53,7 @@ class BranchMenu
     ) { onRemove() }
 
 
-    private val branches = GvApplication.app.currentRepository.branches
+    private val branches = GvApplication.instance.currentRepository.branches
 
     init {
         items.setAll(
@@ -70,7 +70,7 @@ class BranchMenu
 
     //メニュー表示
     private fun onShowingMenu() {
-        val repositoryInvalid = !GvApplication.app.currentRepository.isValid
+        val repositoryInvalid = !GvApplication.instance.currentRepository.isValid
         checkoutMenu.isDisable = repositoryInvalid
         pushMenu.isDisable = repositoryInvalid
         pullMenu.isDisable = repositoryInvalid
@@ -91,7 +91,7 @@ class BranchMenu
     private fun onCreate() {
         val dialog = CreateBranchDialog()
         if(dialog.showDialog() == ButtonType.OK) {
-            val branches = GvApplication.app.currentRepository.branches
+            val branches = GvApplication.instance.currentRepository.branches
             val branchName = dialog.controller.newBranchName
             val checkout = dialog.controller.checkoutFlag
             when (dialog.controller.startPoint) {

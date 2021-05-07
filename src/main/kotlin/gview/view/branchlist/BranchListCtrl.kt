@@ -40,7 +40,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        val branchList = GvApplication.app.currentRepository.branches
+        val branchList = GvApplication.instance.currentRepository.branches
         //リポジトリ内のLocal/Remoteブランチ情報更新時に再描画する
         branchList.addListener {
             updateLocalBranches (it.localBranches)

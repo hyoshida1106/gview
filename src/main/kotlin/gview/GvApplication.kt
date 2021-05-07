@@ -20,9 +20,9 @@ class GvApplication: Application() {
 
     companion object {
         /**
-         * 唯一のアプリケーションインスタンス
+         * アプリケーションインスタンス
          */
-        lateinit var app : GvApplication
+        lateinit var instance : GvApplication
     }
 
     /**
@@ -35,11 +35,16 @@ class GvApplication: Application() {
      */
     val currentRepository = GviewRepositoryModel()
 
+    /**
+     * 起動時にインスタンスを設定する
+     */
     init {
-        app = this
+        instance = this
     }
 
-    // アプリケーション起動
+    /**
+     * アプリケーション起動
+     */
     override fun start(stage: Stage) {
         try {
             //Main Windowsのセットアップ
@@ -90,7 +95,9 @@ class GvApplication: Application() {
         }
     }
 
-    // 1秒のIDLE状態タイマ
+    /**
+     * 1秒のIDLE状態タイマ
+     */
     private val monitor = GvIdleTimer(1000) {
         GvBaseWindowCtrl.updateConfigInfo()
         SystemModal.saveToFile()

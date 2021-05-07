@@ -80,7 +80,7 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GvApplication.app.currentRepository.workFileInfo.addListener {
+        GvApplication.instance.currentRepository.workFileInfo.addListener {
             updateStagedFiles(it.stagedFiles)
             updateChangedFiles(it.changedFiles)
         }

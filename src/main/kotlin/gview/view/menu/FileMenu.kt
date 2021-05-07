@@ -101,7 +101,7 @@ class FileMenu
     private fun onLastFileMenu(item: MenuItem) {
         MainWindow.controller.runTask {
             val filePath = item.text
-            GvApplication.app.currentRepository.openExist(filePath)
+            GvApplication.instance.currentRepository.openExist(filePath)
             SystemModal.addLastOpenedFile(filePath)
         }
     }
@@ -113,7 +113,7 @@ class FileMenu
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
-            GvApplication.app.currentRepository.openExist(filePath)
+            GvApplication.instance.currentRepository.openExist(filePath)
             SystemModal.addLastOpenedFile(filePath)
         }
     }
@@ -125,7 +125,7 @@ class FileMenu
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
-            GvApplication.app.currentRepository.createNew(filePath)
+            GvApplication.instance.currentRepository.createNew(filePath)
             SystemModal.addLastOpenedFile(filePath)
         }
     }
@@ -135,7 +135,7 @@ class FileMenu
         val dialog = CloneRepositoryDialog("", "")
         if(dialog.showDialog() == ButtonType.OK) {
             MainWindow.controller.runTask {
-                GvApplication.app.currentRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
+                GvApplication.instance.currentRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
                 SystemModal.addLastOpenedFile(dialog.localPath)
             }
         }
@@ -143,6 +143,6 @@ class FileMenu
 
     //プログラム終了
     private fun onFileQuit() {
-        GvApplication.app.confirmToQuit()
+        GvApplication.instance.confirmToQuit()
     }
 }

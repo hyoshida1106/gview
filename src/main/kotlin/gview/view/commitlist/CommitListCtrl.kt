@@ -117,7 +117,7 @@ class CommitListCtrl
     override fun displayCompleted() {
 
         //データ更新時の再表示
-        val repository = GvApplication.app.currentRepository
+        val repository = GvApplication.instance.currentRepository
         val headers = repository.workFileInfo
         val commits = repository.commits
 

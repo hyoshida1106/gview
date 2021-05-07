@@ -56,7 +56,7 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
                 BranchSelectDialog(branches).showDialog()
             }
             if(selectedBranch != null) {
-                GvApplication.app.currentRepository.branches.checkoutLocalBranch(selectedBranch)
+                GvApplication.instance.currentRepository.branches.checkoutLocalBranch(selectedBranch)
             }
         } catch(e: Exception) {
             ErrorDialog(e).showDialog()
@@ -67,7 +67,7 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
         val dialog = BranchNameDialog()
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                GvApplication.app.currentRepository.branches.createNewBranchFromCommit(
+                GvApplication.instance.currentRepository.branches.createNewBranchFromCommit(
                         dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()
@@ -79,7 +79,7 @@ class CommitRowContextMenu(private val model: GviewCommitDataModel)
         val dialog = MergeDialog()
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                GvApplication.app.currentRepository.branches.mergeCommit(
+                GvApplication.instance.currentRepository.branches.mergeCommit(
                         model, dialog.controller.message.trim())
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()

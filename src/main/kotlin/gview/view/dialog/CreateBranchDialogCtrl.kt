@@ -57,7 +57,7 @@ class CreateBranchDialogCtrl
 
         checkout.isSelected = true
 
-        branchMap = GvApplication.app.currentRepository.branches.localBranches.map { it.name to it }.toMap()
+        branchMap = GvApplication.instance.currentRepository.branches.localBranches.map { it.name to it }.toMap()
         if(branchMap.isNotEmpty()) {
             branchList.items.addAll(branchMap.keys)
             branchList.selectionModel.select(0)
@@ -67,7 +67,7 @@ class CreateBranchDialogCtrl
             branchList.isDisable = true
         }
 
-        tagMap = GvApplication.app.currentRepository.commits.commitTagMap
+        tagMap = GvApplication.instance.currentRepository.commits.commitTagMap
         if(tagMap.isNotEmpty()) {
             tagList.items.addAll(tagMap.keys)
             tagList.selectionModel.select(0)

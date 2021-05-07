@@ -8,6 +8,6 @@ object GitConfigInfo {
     val userName get() = userConfig?.committerName ?: ""
     val mailAddr get() = userConfig?.committerEmail ?: ""
 
-    private val config get() = GvApplication.app.currentRepository.getJgitRepository().config
+    private val config get() = GvApplication.instance.currentRepository.getJgitRepository().config
     private val userConfig get() = config.get(UserConfig.KEY)
 }

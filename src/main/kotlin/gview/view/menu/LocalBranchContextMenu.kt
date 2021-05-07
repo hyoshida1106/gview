@@ -56,7 +56,7 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel)
         val dialog = BranchNameDialog()
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                GvApplication.app.currentRepository.branches.createNewBranchFromOtherBranch(
+                GvApplication.instance.currentRepository.branches.createNewBranchFromOtherBranch(
                         dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()
