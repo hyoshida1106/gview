@@ -7,7 +7,6 @@ import gview.view.commitlist.CommitList
 import gview.view.dialog.ErrorDialog
 import gview.view.framework.GvBaseWindowCtrl
 import javafx.application.Platform
-import javafx.beans.property.SimpleObjectProperty
 import javafx.concurrent.Task
 import javafx.fxml.FXML
 import javafx.scene.Cursor
@@ -15,9 +14,7 @@ import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 import org.controlsfx.control.MaskerPane
 
-class MainWindowCtrl
-    : GvBaseWindowCtrl() {
-
+class MainWindowCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var mainSplit: SplitPane
     @FXML private lateinit var menuBar: AnchorPane
     @FXML private lateinit var branchList: AnchorPane
@@ -26,26 +23,15 @@ class MainWindowCtrl
     @FXML private lateinit var statusBar: AnchorPane
     @FXML private lateinit var masker: MaskerPane
 
-    //SplitPaneのDivider位置を保持するProperty
-    private val splitPositionsProperty = SimpleObjectProperty<DoubleArray>()
-    private val splitPositions: DoubleArray get() { return splitPositionsProperty.value }
-
     //初期化処理
     fun initialize() {
-        //Dividerの初期設定
-        splitPositionsProperty.value = SystemModal.mainSplitPosProperty.value
-        mainSplit.setDividerPositions(splitPositions[0], splitPositions[1])
-
-        //Divider移動時にsplitPositionPropertyを更新する
+        mainSplit.setDividerPositions(
+            SystemModal.mainSplitPos[0], SystemModal.mainSplitPos[1])
         mainSplit.dividers[0].positionProperty().addListener { _, _, value
-            -> splitPositions[0] = value.toDouble() }
+            -> SystemModal.mainSplitPos[0] = value.toDouble() }
         mainSplit.dividers[1].positionProperty().addListener { _, _, value
-            -> splitPositions[1] = value.toDouble() }
+            -> SystemModal.mainSplitPos[1] = value.toDouble() }
 
-        //Configuration情報にsplitPositionsPropertyをbind
-        SystemModal.mainSplitPosProperty.bind(splitPositionsProperty)
-
-        //初期化
         branchList.children.add(BranchList.root)
         commitList.children.add(CommitList.root)
         commitInfo.children.add(CommitInfo.root)

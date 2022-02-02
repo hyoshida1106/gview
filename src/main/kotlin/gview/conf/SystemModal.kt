@@ -20,7 +20,8 @@ object SystemModal: SerializableData("ModalInfo.json") {
     val mainWidthProperty: SimpleDoubleProperty
 
     //メインウィンドウ分割位置
-    val mainSplitPosProperty: SimpleObjectProperty<DoubleArray>
+//    val mainSplitPosProperty: SimpleObjectProperty<DoubleArray>
+    val mainSplitPos: DoubleArray
 
     //前回オープンしたファイル一覧
     val lastOpenedFiles: List<String> get() { return data.lastOpenedFiles }
@@ -39,7 +40,7 @@ object SystemModal: SerializableData("ModalInfo.json") {
         maximumProperty = SimpleBooleanProperty(data.maximum)
         mainHeightProperty = SimpleDoubleProperty(data.mainHeight)
         mainWidthProperty = SimpleDoubleProperty(data.mainWidth )
-        mainSplitPosProperty = SimpleObjectProperty(data.mainSplitPos)
+        mainSplitPos = data.mainSplitPos
 
         //プロパティ更新時に保存データを更新するためのBind
         maximumProperty.addListener { _, _, newValue -> data.maximum = newValue }

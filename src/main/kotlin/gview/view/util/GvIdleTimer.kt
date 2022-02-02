@@ -21,19 +21,19 @@ class GvIdleTimer(idleTime: Int, handler: () -> Unit ) {
      *  指定されたタイマ値を持つTimeLine
      */
     private val idleTimeline: Timeline = Timeline(
-        KeyFrame(Duration(idleTime.toDouble()), EventHandler { _ -> handler() }))
+        KeyFrame(Duration(idleTime.toDouble()), { _ -> handler() }))
 
     /**
      *  イベントが通知された場合に notUIdle() を起動するEventHandler
      */
-    private val userEventHandler = EventHandler<Event> { notIdle() }
+    private val userEventHandler = EventHandler<Event> { resetTimer() }
 
     /**
      * 指定された Scene にイベントフィルタを登録する
      */
     fun register(scene: Scene, eventType: EventType<Event> = Event.ANY) {
         scene.addEventFilter(eventType, userEventHandler)
-        start()
+        startTimer()
     }
 
     /**
@@ -41,14 +41,14 @@ class GvIdleTimer(idleTime: Int, handler: () -> Unit ) {
      */
     fun register(node: Node, eventType: EventType<Event> = Event.ANY) {
         node.addEventFilter(eventType, userEventHandler)
-        start()
+        startTimer()
     }
 
     /**
      * 指定された Scene のイベントフィルタを削除する
      */
     fun unregister(scene: Scene, eventType: EventType<Event> = Event.ANY) {
-        stop()
+        stopTimer()
         scene.removeEventFilter(eventType, userEventHandler)
     }
 
@@ -56,21 +56,21 @@ class GvIdleTimer(idleTime: Int, handler: () -> Unit ) {
      * 指定された Node のイベントフィルタを削除する
      */
     fun unregister(node: Node, eventType: EventType<Event> = Event.ANY) {
-        stop()
+        stopTimer()
         node.removeEventFilter(eventType, userEventHandler)
     }
 
     /**
      * イベントを受信したならばタイマをリセットする
      */
-    private fun notIdle() {
+    private fun resetTimer() {
         idleTimeline.playFromStart()
     }
 
     /**
      * タイマを起動する
      */
-    private fun start() {
+    private fun startTimer() {
         idleTimeline.cycleCount = 1;
         idleTimeline.playFromStart()
     }
@@ -78,7 +78,7 @@ class GvIdleTimer(idleTime: Int, handler: () -> Unit ) {
     /**
      * タイマを停止する
      */
-    private fun stop() {
+    private fun stopTimer() {
         idleTimeline.stop( ) 
     }
 }

@@ -11,6 +11,7 @@ import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.stage.Stage
+import java.util.*
 import kotlin.system.exitProcess
 
 /**
@@ -19,10 +20,11 @@ import kotlin.system.exitProcess
 class GvApplication: Application() {
 
     companion object {
-        /**
-         * アプリケーションインスタンス
-         */
         lateinit var instance : GvApplication
+    }
+
+    init {
+        instance = this
     }
 
     /**
@@ -35,21 +37,11 @@ class GvApplication: Application() {
      */
     val currentRepository = GviewRepositoryModel()
 
-    /**
-     * 起動時にインスタンスを設定する
-     */
-    init {
-        instance = this
-    }
-
-    /**
-     * アプリケーション起動
-     */
     override fun start(stage: Stage) {
         try {
             //Main Windowsのセットアップ
             mainStage = stage
-            mainStage.title = "G/View"
+            mainStage.title = "GView"
             mainStage.scene = Scene(
                     MainWindow.root,
                     SystemModal.mainWidthProperty.value,
@@ -67,7 +59,7 @@ class GvApplication: Application() {
             }
 
             //IDLE状態モニタ設定
-            monitor.register(stage.scene)
+            monitor.register(mainStage.scene)
 
             //Main WindowサイズをModal Informationにバインドする
             with(SystemModal) {
@@ -89,7 +81,7 @@ class GvApplication: Application() {
      * アプリ終了確認ダイアログ
      */
     fun confirmToQuit() {
-        val message = "アプリケーションを終了しますか？"
+        val message = ResourceBundle.getBundle("Gview").getString("QuitConformation")
         if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
             exitProcess(0)
         }
