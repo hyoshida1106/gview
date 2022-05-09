@@ -1,7 +1,7 @@
 package gview.model.workfile
 
 import gview.view.dialog.InformationDialog
-import gview.model.GviewRepositoryModel
+import gview.model.GvRepository
 import gview.model.commit.GviewConflictEntryModel
 import gview.model.commit.GviewGitDiffEntryModel
 import gview.model.commit.GviewGitFileEntryModel
@@ -22,8 +22,8 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter
 /*
     ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
-    : ModelObservable<GviewWorkFilesModel>() {
+class GvWorkFilesModel(private val repository: GvRepository)
+    : ModelObservable<GvWorkFilesModel>() {
 
     //ステージングされているファイルを保持するリスト
     val stagedFiles = mutableListOf<GviewGitFileEntryModel>()
@@ -51,17 +51,16 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
         changedFiles.clear()
         conflictedFiles.clear()
 
-        if(repository.isValid) {
-            val jgitRepository = repository.getJgitRepository()
-            val cache = jgitRepository.lockDirCache()
+//        if(repository.isValid) {
+            val cache = repository.jgitRepository.lockDirCache()
             try {
-                updateStagedFiles(jgitRepository, cache)
-                updateChangedFiles(jgitRepository, cache)
+                updateStagedFiles(repository.jgitRepository, cache)
+                updateChangedFiles(repository.jgitRepository, cache)
                 updateConflictedFiles(cache)
             } finally {
                 cache.unlock()
             }
-        }
+//        }
 
         fireCallback(this)
     }
@@ -138,7 +137,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
     fun stageFiles(
             files: List<GviewGitFileEntryModel>) {
 
-        val git = Git(repository.getJgitRepository())
+        val git = Git(repository.jgitRepository)
         var count = 0
         files.forEach {
             when(it.getType()) {
@@ -168,7 +167,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             files: List<GviewGitFileEntryModel>) {
 
         if(files.isNotEmpty()) {
-            val reset = Git(repository.getJgitRepository())
+            val reset = Git(repository.jgitRepository)
                     .reset()
                     .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.getPath()) }
@@ -187,7 +186,7 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             mailAddr:String) {
 
         if(files.isNotEmpty()) {
-            val commit = Git(repository.getJgitRepository())
+            val commit = Git(repository.jgitRepository)
                     .commit()
                     .setCommitter(userName, mailAddr)
                     .setMessage(message)
@@ -195,7 +194,6 @@ class GviewWorkFilesModel(private val repository: GviewRepositoryModel)
             commit.call()
             InformationDialog("${files.size} ファイルをコミットしました").showDialog()
             update()
-            repository.branches.update()
         }
     }
 }

@@ -1,7 +1,7 @@
 package gview.view.commitlist
 
 import gview.view.util.GvTextMessage
-import gview.model.workfile.GviewWorkFilesModel
+import gview.model.workfile.GvWorkFilesModel
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.ContextMenu
@@ -11,9 +11,9 @@ import java.text.DateFormat
 import java.util.*
 
 class HeaderRowData(
-        commitList: CommitListCtrl,
-        val model: GviewWorkFilesModel,
-        val laneNumber: Int?)
+    commitList: CommitListCtrl,
+    val model: GvWorkFilesModel,
+    val laneNumber: Int?)
     : AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
@@ -24,7 +24,7 @@ class HeaderRowData(
     //コミットツリーセル
     inner class HeaderTreeCellData(
             private val commitList: CommitListCtrl,
-            val model: GviewWorkFilesModel)
+            val model: GvWorkFilesModel)
         : CommitListCtrl.CellData {
 
         override fun update(tableCell: CommitListCtrl.Cell): Pair<Node?, String?> {
@@ -60,7 +60,7 @@ class HeaderRowData(
 
     //コミット情報セル
     inner class HeaderInfoCellData(
-            private val model: GviewWorkFilesModel)
+            private val model: GvWorkFilesModel)
         : CommitListCtrl.CellData {
 
         override fun update(tableCell: CommitListCtrl.Cell)

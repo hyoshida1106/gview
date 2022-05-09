@@ -1,6 +1,7 @@
 package gview.view.main
 
 import gview.conf.SystemModal
+import gview.model.GvRepository
 import gview.view.branchlist.BranchList
 import gview.view.commitinfo.CommitInfo
 import gview.view.commitlist.CommitList

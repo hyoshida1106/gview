@@ -1,8 +1,8 @@
 package gview.view.dialog
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
-import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GvLocalBranch
 import gview.model.commit.GviewCommitDataModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
@@ -20,7 +20,7 @@ class CreateBranchDialogCtrl
     @FXML private lateinit var checkout: CheckBox
     private val selectorGroup = ToggleGroup()
 
-    private lateinit var branchMap: Map<String,GviewLocalBranchModel>
+    private lateinit var branchMap: Map<String,GvLocalBranch>
     private lateinit var tagMap: Map<String, GviewCommitDataModel>
 
     //OKボタンの無効を指示するプロパティ
@@ -40,7 +40,7 @@ class CreateBranchDialogCtrl
     }
 
     //選択されたブランチ
-    val selectedBranch: GviewLocalBranchModel? get() = branchMap[branchList.selectionModel.selectedItem]
+    val selectedBranch: GvLocalBranch? get() = branchMap[branchList.selectionModel.selectedItem]
 
     //選択されたタグ
     val selected: GviewCommitDataModel? get() = tagMap[tagList.selectionModel.selectedItem]
@@ -57,7 +57,11 @@ class CreateBranchDialogCtrl
 
         checkout.isSelected = true
 
-        branchMap = GvApplication.instance.currentRepository.branches.localBranches.map { it.name to it }.toMap()
+        val currentRepository = GvRepository.currentRepository
+
+        if(currentRepository != null) {
+            branchMap = currentRepository.branches.localBranchList.value.associateBy { it.name }
+        }
         if(branchMap.isNotEmpty()) {
             branchList.items.addAll(branchMap.keys)
             branchList.selectionModel.select(0)
@@ -67,7 +71,9 @@ class CreateBranchDialogCtrl
             branchList.isDisable = true
         }
 
-        tagMap = GvApplication.instance.currentRepository.commits.commitTagMap
+        if(currentRepository != null) {
+            tagMap = currentRepository.commits.commitTagMap
+        }
         if(tagMap.isNotEmpty()) {
             tagList.items.addAll(tagMap.keys)
             tagList.selectionModel.select(0)

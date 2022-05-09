@@ -1,11 +1,11 @@
 package gview.view.menu
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.dialog.BranchNameDialog
 import gview.view.dialog.ErrorDialog
 import gview.view.dialog.RemoveLocalBranchDialog
 import gview.view.main.MainWindow
-import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GvLocalBranch
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ContextMenu
@@ -13,7 +13,7 @@ import javafx.scene.control.SeparatorMenuItem
 import java.lang.Exception
 
 
-class LocalBranchContextMenu(private val model: GviewLocalBranchModel)
+class LocalBranchContextMenu(private val model: GvLocalBranch)
     : ContextMenu() {
 
     private val checkOutMenuItem = GviewMenuItem(
@@ -56,7 +56,7 @@ class LocalBranchContextMenu(private val model: GviewLocalBranchModel)
         val dialog = BranchNameDialog()
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                GvApplication.instance.currentRepository.branches.createNewBranchFromOtherBranch(
+                GvRepository.currentRepository?.branches?.createNewBranchFromOtherBranch(
                         dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
             } catch(e: Exception) {
                 ErrorDialog(e).showDialog()

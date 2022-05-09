@@ -1,7 +1,7 @@
 package gview.view.branchlist
 
 import gview.view.menu.LocalBranchContextMenu
-import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GvLocalBranch
 import javafx.scene.Node
 import javafx.scene.control.*
 import javafx.scene.layout.HBox
@@ -9,8 +9,7 @@ import javafx.scene.layout.HBox
 /*
     ローカルブランチTree Item
  */
-class LocalBranchItem(val model: GviewLocalBranchModel)
-    : BranchListCtrl.BranchTreeItem(model) {
+class LocalBranchItem(val model: GvLocalBranch) : BranchListCtrl.BranchTreeItem(model) {
 
     private  val branchName = Label(model.name)
     private  val showInTree = CheckBox()
@@ -21,20 +20,19 @@ class LocalBranchItem(val model: GviewLocalBranchModel)
     //初期化
     init {
         if(model.isCurrentBranch) {
-            branchName.style = CSS.currentBranchLabelStyle
+            branchName.style = Style.currentBranchLabelStyle
             showInTree.isSelected = true
         }
-        showInTree.style = CSS.checkBoxStyle
-        showInTree.isSelected = model.selected
-        showInTree.selectedProperty().addListener { _, _, newVal -> model.selected = newVal }
+        showInTree.style = Style.checkBoxStyle
+        showInTree.isSelected = model.selectedFlagProperty.value
+        showInTree.selectedProperty().addListener {
+                _, _, newVal -> model.selectedFlagProperty.set(newVal) }
     }
 
-    private object CSS {
-        val currentBranchLabelStyle = """
-            -fx-font-weight: bold;
-        """.trimIndent()
-        val checkBoxStyle = """
-            -fx-padding: 0 0 0 2;
-        """.trimIndent()
+    private object Style {
+        val currentBranchLabelStyle =
+            "-fx-font-weight: bold;"
+        val checkBoxStyle =
+            "-fx-padding: 0 0 0 2;"
     }
 }

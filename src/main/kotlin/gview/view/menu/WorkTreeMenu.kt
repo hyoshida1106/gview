@@ -1,7 +1,7 @@
 package gview.view.menu
 
-import gview.GvApplication
 import gview.conf.GitConfigInfo
+import gview.model.GvRepository
 import gview.view.dialog.*
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
@@ -49,9 +49,9 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
     }
 
     private fun onShowingMenu() {
-        val headerData = GvApplication.instance.currentRepository.workFileInfo
-        val stagedFileNumber = headerData.stagedFiles.size
-        val changedFileNumber = headerData.changedFiles.size
+        val headerData = GvRepository.currentRepository?.workFiles
+        val stagedFileNumber = headerData?.stagedFiles?.size
+        val changedFileNumber = headerData?.changedFiles?.size
         stageMenu.isDisable = changedFileNumber == 0
         unstageMenu.isDisable = stagedFileNumber == 0
         commitMenu.isDisable = stagedFileNumber == 0
@@ -63,7 +63,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GvApplication.instance.currentRepository.workFileInfo.stageFiles(dialog.selectedFiles)
+                    GvRepository.currentRepository?.workFiles?.stageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -74,7 +74,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectUnStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GvApplication.instance.currentRepository.workFileInfo.unStageFiles(dialog.selectedFiles)
+                    GvRepository.currentRepository?.workFiles?.unStageFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }
@@ -96,7 +96,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             if (dialog.showDialog() != ButtonType.OK) return
             //コミットを実行する
             try {
-                GvApplication.instance.currentRepository.workFileInfo.commitFiles(
+                GvRepository.currentRepository?.workFiles?.commitFiles(
                         dialog.selectedFiles,
                         dialog.message,
                         userName,

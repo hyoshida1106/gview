@@ -6,7 +6,7 @@ import gview.view.dialog.ConfirmationDialog.ConfirmationType
 import gview.view.main.MainWindow
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvIdleTimer
-import gview.model.GviewRepositoryModel
+import gview.model.GvRepository
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Scene
@@ -19,23 +19,10 @@ import kotlin.system.exitProcess
  */
 class GvApplication: Application() {
 
-    companion object {
-        lateinit var instance : GvApplication
-    }
-
-    init {
-        instance = this
-    }
-
     /**
      * MainWindowのステージを保持する
      */
     private lateinit var mainStage: Stage
-
-    /**
-     * 現在のリポジトリ情報を保持する
-     */
-    val currentRepository = GviewRepositoryModel()
 
     override fun start(stage: Stage) {
         try {
@@ -78,20 +65,22 @@ class GvApplication: Application() {
     }
 
     /**
-     * アプリ終了確認ダイアログ
-     */
-    fun confirmToQuit() {
-        val message = ResourceBundle.getBundle("Gview").getString("QuitConformation")
-        if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
-            exitProcess(0)
-        }
-    }
-
-    /**
      * 1秒のIDLE状態タイマ
      */
     private val monitor = GvIdleTimer(1000) {
         GvBaseWindowCtrl.updateConfigInfo()
         SystemModal.saveToFile()
+    }
+
+    companion object {
+        /**
+         * アプリ終了確認ダイアログ
+         */
+        fun confirmToQuit() {
+            val message = ResourceBundle.getBundle("Gview").getString("QuitConformation")
+            if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
+                exitProcess(0)
+            }
+        }
     }
 }

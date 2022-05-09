@@ -1,6 +1,6 @@
 package gview.view.dialog
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
 import gview.view.util.GvColumnAdjuster
 import gview.model.commit.GviewGitFileEntryModel
@@ -45,9 +45,11 @@ class SelectStageFilesDialogCtrl
         filePathColumn.style = CSS.filePathStyle
         fileCheckColumn.style = CSS.fileCheckStyle
 
-        val files = GvApplication.instance.currentRepository.workFileInfo.changedFiles
-        fileList.items.addAll(files.map { RowData(it) })
-
+        val currentRepository = GvRepository.currentRepository
+        if(currentRepository != null) {
+            val files = currentRepository.workFiles.changedFiles
+            fileList.items.addAll(files.map { RowData(it) })
+        }
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->
             fileList.items.forEach { it.check.value= newValue }
         }

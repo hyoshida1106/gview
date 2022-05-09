@@ -1,6 +1,6 @@
 package gview.view.commitinfo
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.menu.WorkTreeMenu
 import gview.view.util.GvColumnAdjuster
@@ -80,7 +80,7 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GvApplication.instance.currentRepository.workFileInfo.addListener {
+        GvRepository.currentRepository?.workFiles?.addListener {
             updateStagedFiles(it.stagedFiles)
             updateChangedFiles(it.changedFiles)
         }

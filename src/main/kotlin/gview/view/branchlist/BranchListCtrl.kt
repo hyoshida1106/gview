@@ -1,10 +1,10 @@
 package gview.view.branchlist
 
-import gview.GvApplication
 import gview.view.framework.GvBaseWindowCtrl
-import gview.model.branch.GviewBranchModel
-import gview.model.branch.GviewLocalBranchModel
-import gview.model.branch.GviewRemoteBranchModel
+import gview.model.GvRepository
+import gview.model.branch.GvBranch
+import gview.model.branch.GvBranchList
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
@@ -12,7 +12,7 @@ import javafx.scene.control.*
 class BranchListCtrl: GvBaseWindowCtrl() {
 
     //ブランチ一覧Tree
-    @FXML private lateinit var branchTree: TreeView<GviewBranchModel>
+    @FXML private lateinit var branchTree: TreeView<GvBranch>
 
     //ローカルブランチTree
     private var localTreeRoot = RootItem("Local")
@@ -30,7 +30,11 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.isShowRoot = false
         branchTree.setCellFactory { BranchTreeCell() }
         branchTree.selectionModel.clearSelection()
-        branchTree.style = CSS.treeStyle
+        branchTree.style = Style.treeStyle
+        GvRepository.currentRepositoryProperty.addListener { _, _, repository
+            -> Platform.runLater { updateRepository(repository) }
+        }
+
         //Focusを失った時に選択解除する
         branchTree.focusedProperty().addListener { _, _, newValue ->
             if(!newValue) branchTree.selectionModel.clearSelection() }
@@ -38,26 +42,24 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.isVisible = false
     }
 
-    //表示完了時にListenerを設定する
-    override fun displayCompleted() {
-        val branchList = GvApplication.instance.currentRepository.branches
-        //リポジトリ内のLocal/Remoteブランチ情報更新時に再描画する
-        branchList.addListener {
-            updateLocalBranches (it.localBranches)
-            updateRemoteBranches(it.remoteBranches)
-            branchTree.selectionModel.clearSelection()
-        }
+    private fun updateRepository(repository: GvRepository) {
+        val branchList = repository.branches
+        branchList.localBranchList.addListener  { _ -> updateLocalBranches (branchList) }
+        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList) }
+        branchList.currentBranch.addListener    { _ -> updateLocalBranches (branchList) }
+        updateLocalBranches (branchList)
+        updateRemoteBranches(branchList)
+        branchTree.selectionModel.clearSelection()
     }
 
-    val selectedBranch: GviewBranchModel? get() {
+    val selectedBranch: GvBranch? get() {
         return branchTree.selectionModel.selectedItem?.value
     }
 
     //BranchTreeに描画するTreeCellクラス
-    private class BranchTreeCell
-        : TreeCell<GviewBranchModel>() {
+    private class BranchTreeCell: TreeCell<GvBranch>() {
 
-        override fun updateItem(model: GviewBranchModel?, empty: Boolean) {
+        override fun updateItem(model: GvBranch?, empty: Boolean) {
             super.updateItem(model, empty)
             if(!empty) {
                 graphic = (treeItem as? BranchTreeItem)?.cellImage
@@ -67,62 +69,43 @@ class BranchListCtrl: GvBaseWindowCtrl() {
                 contextMenu = null
             }
             text = null
-            style = CSS.cellStyle
+            style = Style.cellStyle
         }
     }
 
     //ローカルブランチツリーを更新する
-    private fun updateLocalBranches(
-            branches: List<GviewLocalBranchModel>) {
-
-        //ローカルブランチ一覧からツリー項目を生成
+    private fun updateLocalBranches(branchList: GvBranchList) {
         localTreeRoot.children.clear()
-        branches.forEach {
-            val item = LocalBranchItem(it)
-            localTreeRoot.children.add(item)
-        }
-
-        //表示対象のローカルブランチ一覧を初期化
+        branchList.localBranchList.value.forEach { localTreeRoot.children.add(LocalBranchItem(it)) }
         branchTree.isVisible = true
     }
 
     //リモートブランチツリーを更新する
-    private fun updateRemoteBranches(
-            branches: List<GviewRemoteBranchModel>) {
-
+    private fun updateRemoteBranches(branchList: GvBranchList) {
         remoteTreeRoot.children.clear()
-        branches.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
+        branchList.remoteBranchList.value.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
         branchTree.isVisible = true
     }
 
     //ブランチツリーの基本クラス
-    abstract class BranchTreeItem(
-            model: GviewBranchModel?)
-        : TreeItem<GviewBranchModel>(model) {
-
+    abstract class BranchTreeItem(model: GvBranch?) : TreeItem<GvBranch>(model) {
         abstract val cellImage: Node                    //表示イメージ
         abstract val contextMenu: ContextMenu?          //コンテキストメニュー
         abstract override fun isLeaf(): Boolean         //末端か
     }
 
     //Remote/Localそれぞれのルートになるコンポーネント
-    class RootItem(name: String)
-        : BranchTreeItem(null) {
-
+    class RootItem(name: String) : BranchTreeItem(null) {
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
         override fun isLeaf(): Boolean = false
         init { isExpanded = true }
     }
 
-    private object CSS {
-        val treeStyle = """
-            -fx-font-family: "Meiryo UI", sans-serif;
-            -fx-background-color: -background-color;
-            -fx-padding: 0;
-        """.trimIndent()
-        val cellStyle = """
-            -fx-padding: 2 0 2 0;
-        """.trimIndent()
+    private object Style {
+        val treeStyle =
+            "-fx-padding: 0;"
+        val cellStyle =
+            "-fx-padding: 2 0;"
     }
 }

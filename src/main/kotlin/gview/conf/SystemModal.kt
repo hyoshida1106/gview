@@ -2,7 +2,6 @@ package gview.conf
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleDoubleProperty
-import javafx.beans.property.SimpleObjectProperty
 import kotlinx.serialization.Serializable
 
 /*
@@ -20,7 +19,6 @@ object SystemModal: SerializableData("ModalInfo.json") {
     val mainWidthProperty: SimpleDoubleProperty
 
     //メインウィンドウ分割位置
-//    val mainSplitPosProperty: SimpleObjectProperty<DoubleArray>
     val mainSplitPos: DoubleArray
 
     //前回オープンしたファイル一覧

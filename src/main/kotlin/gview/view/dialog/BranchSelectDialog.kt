@@ -2,14 +2,14 @@ package gview.view.dialog
 
 import gview.view.framework.GvDialogInterface
 import gview.view.main.MainWindow
-import gview.model.branch.GviewLocalBranchModel
+import gview.model.branch.GvLocalBranch
 import javafx.scene.control.ChoiceDialog
 
-class BranchSelectDialog(private val list: List<GviewLocalBranchModel>)
+class BranchSelectDialog(private val list: List<GvLocalBranch>)
 	: ChoiceDialog<String>(),
-		GvDialogInterface<GviewLocalBranchModel?> {
+		GvDialogInterface<GvLocalBranch?> {
 
-	private val branchMap: Map<String, GviewLocalBranchModel>
+	private val branchMap: Map<String, GvLocalBranch>
 
 	init {
 		initOwner(MainWindow.root.scene.window)
@@ -23,7 +23,7 @@ class BranchSelectDialog(private val list: List<GviewLocalBranchModel>)
 		items.addAll( branchMap.keys )
 	}
 
-	override fun showDialog(): GviewLocalBranchModel? {
+	override fun showDialog(): GvLocalBranch? {
 		val result = showAndWait()
 		return if (result.isPresent) branchMap[result.get()] else null
 	}

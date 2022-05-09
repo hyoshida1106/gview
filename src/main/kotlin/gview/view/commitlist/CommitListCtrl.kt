@@ -1,10 +1,10 @@
 package gview.view.commitlist
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GviewCommitListModel
-import gview.model.workfile.GviewWorkFilesModel
+import gview.model.commit.GvCommitListModel
+import gview.model.workfile.GvWorkFilesModel
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
@@ -116,14 +116,15 @@ class CommitListCtrl
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
 
-        //データ更新時の再表示
-        val repository = GvApplication.instance.currentRepository
-        val headers = repository.workFileInfo
-        val commits = repository.commits
+        val currentRepository = GvRepository.currentRepository;
+        if(currentRepository != null) {
+            //データ更新時の再表示
+            val headers = currentRepository.workFiles
+            val commits = currentRepository.commits
 
-        //コミット情報が更新されたら再描画
-        commits.addListener { update(headers, commits) }
-
+            //コミット情報が更新されたら再描画
+            commits.addListener { update(headers, commits) }
+        }
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             selectedRowProperty.value = newValue
@@ -131,7 +132,7 @@ class CommitListCtrl
 
         //Treeカラム幅変更時の描画更新
         treeColumn.widthProperty().addListener { _ ->
-            xPitch = treeColumn.width / ( maxLaneNumber + 2 )
+            xPitch = treeColumn.width / (maxLaneNumber + 2)
         }
 
         //カラム幅の調整
@@ -140,8 +141,8 @@ class CommitListCtrl
 
     //表示更新
     private fun update(
-            header: GviewWorkFilesModel,
-            commits: GviewCommitListModel) {
+        header: GvWorkFilesModel,
+        commits: GvCommitListModel) {
 
         //最初に全削除
         commitListTable.items.clear()

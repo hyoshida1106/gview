@@ -1,6 +1,7 @@
 package gview.view.menu
 
 import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.dialog.CreateBranchDialog
 import gview.view.dialog.CreateBranchDialogCtrl
 import javafx.event.EventHandler
@@ -52,9 +53,6 @@ class BranchMenu
             iconLiteral = "mdi-folder-remove"
     ) { onRemove() }
 
-
-    private val branches = GvApplication.instance.currentRepository.branches
-
     init {
         items.setAll(
                 checkoutMenu,
@@ -70,7 +68,7 @@ class BranchMenu
 
     //メニュー表示
     private fun onShowingMenu() {
-        val repositoryInvalid = !GvApplication.instance.currentRepository.isValid
+        val repositoryInvalid = ( GvRepository.currentRepository == null )
         checkoutMenu.isDisable = repositoryInvalid
         pushMenu.isDisable = repositoryInvalid
         pullMenu.isDisable = repositoryInvalid
@@ -89,26 +87,30 @@ class BranchMenu
     }
 
     private fun onCreate() {
-        val dialog = CreateBranchDialog()
-        if(dialog.showDialog() == ButtonType.OK) {
-            val branches = GvApplication.instance.currentRepository.branches
-            val branchName = dialog.controller.newBranchName
-            val checkout = dialog.controller.checkoutFlag
-            when (dialog.controller.startPoint) {
-                CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
-                    branches.createNewBranchFromHead(branchName, checkout)
-                }
-                CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
-                    branches.createNewBranchFromOtherBranch(
+        val branches = GvRepository.currentRepository?.branches
+        if(branches != null) {
+            val dialog = CreateBranchDialog()
+            if (dialog.showDialog() == ButtonType.OK) {
+                val branchName = dialog.controller.newBranchName
+                val checkout = dialog.controller.checkoutFlag
+                when (dialog.controller.startPoint) {
+                    CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
+                        branches.createNewBranchFromHead(branchName, checkout)
+                    }
+                    CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
+                        branches.createNewBranchFromOtherBranch(
                             branchName,
                             dialog.controller.selectedBranch!!,
-                            checkout)
-                }
-                CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
-                    branches.createNewBranchFromCommit(
+                            checkout
+                        )
+                    }
+                    CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
+                        branches.createNewBranchFromCommit(
                             branchName,
                             dialog.controller.selected!!,
-                            checkout)
+                            checkout
+                        )
+                    }
                 }
             }
         }

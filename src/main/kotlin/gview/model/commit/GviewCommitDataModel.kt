@@ -1,7 +1,7 @@
 package gview.model.commit
 
-import gview.model.branch.GviewLocalBranchModel
-import gview.model.branch.GviewRemoteBranchModel
+import gview.model.branch.GvLocalBranch
+import gview.model.branch.GvRemoteBranch
 import gview.model.util.ByteArrayDiffFormatter
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
@@ -14,7 +14,7 @@ import java.text.DateFormat
     CommitDiffModel
  */
 class GviewCommitDataModel(private val repo: Repository,
-                           private val commitList: GviewCommitListModel,
+                           private val commitList: GvCommitListModel,
                            private val commit: PlotCommit<PlotLane>,
                            private val prevCommit: GviewCommitDataModel?) {
 
@@ -24,10 +24,10 @@ class GviewCommitDataModel(private val repo: Repository,
     var nextCommit: GviewCommitDataModel? = null
 
     //ローカルブランチとのリンク
-    val localBranches: MutableList<GviewLocalBranchModel> = mutableListOf()
+    val localBranches: MutableList<GvLocalBranch> = mutableListOf()
 
     //リモートブランチとのリンク
-    val remoteBranches: MutableList<GviewRemoteBranchModel> = mutableListOf()
+    val remoteBranches: MutableList<GvRemoteBranch> = mutableListOf()
 
     //タグ、当面は名称のみ
     val tags: MutableList<String> = mutableListOf()

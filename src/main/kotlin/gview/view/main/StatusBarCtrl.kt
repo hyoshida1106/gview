@@ -1,31 +1,28 @@
 package gview.view.main
 
-import gview.GvApplication
+import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvTextMessage
+import javafx.application.Platform
 import javafx.fxml.FXML
-import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
 
-class StatusBarCtrl
-    : GvBaseWindowCtrl() {
+class StatusBarCtrl: GvBaseWindowCtrl() {
 
-    @FXML private lateinit var statusBar: HBox
+//  @FXML private lateinit var statusBar: HBox
     @FXML private lateinit var repositoryPath: Pane
     @FXML private lateinit var currentBranch: Pane
 
     fun initialize() {
-        statusBar.style = CSS.statusBarStyle
+        GvRepository.currentRepositoryProperty.addListener { _, _, repository
+            -> Platform.runLater { updateRepository(repository) }
+        }
     }
 
-    //表示完了時にListenerを設定する
-    override fun displayCompleted() {
-        //リポジトリのパスを表示
-        GvApplication.instance.currentRepository.addListener {
-            setCurrentRepositoryPath(if(it.isValid) it.getJgitRepository().directory.absolutePath else "")
-            setCurrentBranch( it.branches.currentBranch )
-            it.branches.addListener { branches -> setCurrentBranch( branches.currentBranch ) }
-        }
+    private fun updateRepository(repository: GvRepository?) {
+        setCurrentRepositoryPath( repository?.jgitRepository?.directory?.absolutePath )
+        setCurrentBranch( repository?.branches?.currentBranch?.value )
+        repository?.branches?.currentBranch?.addListener { _, _, new -> setCurrentBranch( new ) }
     }
 
     private fun setCurrentRepositoryPath(path: String?) {
@@ -34,14 +31,5 @@ class StatusBarCtrl
 
     private fun setCurrentBranch(branchName: String?) {
         currentBranch.children.setAll(GvTextMessage("Current Branch:", branchName ?: "" ))
-    }
-
-    private object CSS {
-        val statusBarStyle = """
-            -fx-background-color: -background-color;
-            -fx-effect: innerShadow(three-pass-box, gray, 3, 0.5, 1, 1); 
-            -fx-padding: 3 10;
-            -fx-spacing: 10;
-        """.trimIndent()
     }
 }

@@ -1,13 +1,13 @@
 package gview.view.menu
 
 import gview.view.main.MainWindow
-import gview.model.branch.GviewRemoteBranchModel
+import gview.model.branch.GvRemoteBranch
 import javafx.event.EventHandler
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
 
 
-class RemoteBranchContextMenu(val model: GviewRemoteBranchModel)
+class RemoteBranchContextMenu(val model: GvRemoteBranch)
     : ContextMenu() {
 
     private val checkOutMenuItem = GviewMenuItem(
@@ -30,7 +30,7 @@ class RemoteBranchContextMenu(val model: GviewRemoteBranchModel)
     }
 
     private fun onMyShowing() {
-        checkOutMenuItem.isDisable = (model.localBranch != null)
+        checkOutMenuItem.isDisable = (model.localBranch.get() != null)
     }
 
     private fun onCheckOut() {

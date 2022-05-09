@@ -1,7 +1,9 @@
 package gview.model.commit
 
-import gview.model.GviewRepositoryModel
+import gview.model.GvRepository
+import gview.model.branch.GvLocalBranch
 import gview.model.util.ModelObservable
+import javafx.beans.value.WeakChangeListener
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.ObjectId
@@ -13,8 +15,8 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
 import org.eclipse.jgit.revwalk.RevWalk
 
-class GviewCommitListModel(private val repository: GviewRepositoryModel)
-    : ModelObservable<GviewCommitListModel>() {
+class GvCommitListModel(private val repository: GvRepository)
+    : ModelObservable<GvCommitListModel>() {
 
     //Commit情報のリスト
     val commitList = mutableListOf<GviewCommitDataModel>()
@@ -37,16 +39,19 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
     //Commit一覧表示サイズ(暫定)
     private val commitSize = 1000
 
+    private val branchSelectionChangeListener = WeakChangeListener<Boolean> { _, _, _ -> update() }
+
     init {
-        repository.branches.addListener { update() }
+        repository.branches.localBranchList.addListener(
+            WeakChangeListener<List<GvLocalBranch>> { _, _, _ -> update() })
     }
 
     //リポジトリ変更時の処理
-    fun update() {
+    private fun update() {
         //ローカルブランチの選択が変更された場合のリスナを設定
-        repository.branches.localBranches.forEach {
-            it.clearListeners()
-            it.addListener { refresh() }
+        repository.branches.localBranchList.value.forEach {
+            it.selectedFlagProperty.removeListener(branchSelectionChangeListener)
+            it.selectedFlagProperty.addListener(branchSelectionChangeListener)
         }
         refresh()
     }
@@ -58,17 +63,15 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
         plotCommitList.clear()
         commitIdMap.clear()
 
-        if(repository.isValid) {
-
-            val jgitRepository = repository.getJgitRepository()
-
-            headId = jgitRepository.resolve(Constants.HEAD)
+//        if(repository.isValid) {
+//
+            headId = repository.jgitRepository.resolve(Constants.HEAD)
 
             //PlotCommitListインスタンスを生成
-            val plotWalk = PlotWalk(jgitRepository)
-            repository.branches.localBranches
-                    .filter { it.selected }
-                    .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
+            val plotWalk = PlotWalk(repository.jgitRepository)
+            repository.branches.localBranchList.value
+                .filter { it.selectedFlagProperty.value }
+                .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
             plotCommitList.source(plotWalk)
             plotCommitList.fillTo(this.commitSize)
             plotWalk.close()
@@ -76,7 +79,7 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
             //Commitモデルに変換
             var prev: GviewCommitDataModel? = null
             plotCommitList.forEach {
-                val commit = GviewCommitDataModel(jgitRepository, this, it, prev)
+                val commit = GviewCommitDataModel(repository.jgitRepository, this, it, prev)
                 commitList.add(commit)
                 prev = commit
             }
@@ -86,50 +89,54 @@ class GviewCommitListModel(private val repository: GviewRepositoryModel)
 
             //WorkFileからHEADまでの線を描く
             val head = commitIdMap[headId]
-            if(head != null) {
+            if (head != null) {
                 //HEAD直前までのパスを重複しないように描く
                 var lane = head.laneNumber
                 val headerPath = commitList.subList(0, commitList.indexOf(head))
                 val maxLineNumber = headerPath.maxOfOrNull { it.maxLaneNumber } ?: -1
-                if(lane <= maxLineNumber) { lane = maxLineNumber + 1 }
+                if (lane <= maxLineNumber) {
+                    lane = maxLineNumber + 1
+                }
                 headerPath.forEach { it.passLanes.add(lane) }
                 //HEADからの分岐線を描く
-                if(!head.exitTo.contains(lane)) { head.exitTo.add(lane) }
+                if (!head.exitTo.contains(lane)) {
+                    head.exitTo.add(lane)
+                }
                 //WorkFileのレーン番号を更新
                 headerLaneNumber = lane
             }
 
             //コミット情報からローカルブランチへのリンクを設定
-            repository.branches.localBranches
-                    .forEach { commitIdMap[it.ref.objectId]?.localBranches?.add(it) }
+            repository.branches.localBranchList.value
+                .forEach { commitIdMap[it.ref.objectId]?.localBranches?.add(it) }
 
             //コミット情報からリモートブランチへのリンクを設定
-            repository.branches.remoteBranches
-                    .forEach { commitIdMap[it.ref.objectId]?.remoteBranches?.add(it) }
+            repository.branches.remoteBranchList.value
+                .forEach { commitIdMap[it.ref.objectId]?.remoteBranches?.add(it) }
 
             //コミット情報にタグを設定
             commitTagMap.clear()
-            val revWalk = RevWalk(jgitRepository)
+            val revWalk = RevWalk(repository.jgitRepository)
             try {
-                Git(jgitRepository)
-                        .tagList()
-                        .call()
-                        .forEach {
-                            val tagName = Repository.shortenRefName(it.name)
-                            val commit = when (val obj = revWalk.parseAny(it.objectId)) {
-                                is RevTag -> commitIdMap[obj.getObject().id]
-                                is RevCommit -> commitIdMap[obj.id]
-                                else -> null
-                            }
-                            if (commit != null) {
-                                commit.tags.add(tagName)
-                                commitTagMap[tagName] = commit
-                            }
+                Git(repository.jgitRepository)
+                    .tagList()
+                    .call()
+                    .forEach {
+                        val tagName = Repository.shortenRefName(it.name)
+                        val commit = when (val obj = revWalk.parseAny(it.objectId)) {
+                            is RevTag -> commitIdMap[obj.getObject().id]
+                            is RevCommit -> commitIdMap[obj.id]
+                            else -> null
                         }
+                        if (commit != null) {
+                            commit.tags.add(tagName)
+                            commitTagMap[tagName] = commit
+                        }
+                    }
             } finally {
                 revWalk.close()
             }
-        }
+//        }
 
         fireCallback(this)
     }
