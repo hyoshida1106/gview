@@ -3,7 +3,7 @@ package gview.view.dialog
 import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
 import gview.model.branch.GvLocalBranch
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -21,7 +21,7 @@ class CreateBranchDialogCtrl
     private val selectorGroup = ToggleGroup()
 
     private lateinit var branchMap: Map<String,GvLocalBranch>
-    private lateinit var tagMap: Map<String, GviewCommitDataModel>
+    private lateinit var tagMap: Map<String, GvCommit>
 
     //OKボタンの無効を指示するプロパティ
     val btnOkDisable = SimpleBooleanProperty(true)
@@ -43,7 +43,7 @@ class CreateBranchDialogCtrl
     val selectedBranch: GvLocalBranch? get() = branchMap[branchList.selectionModel.selectedItem]
 
     //選択されたタグ
-    val selected: GviewCommitDataModel? get() = tagMap[tagList.selectionModel.selectedItem]
+    val selected: GvCommit? get() = tagMap[tagList.selectionModel.selectedItem]
 
     //チェックアウトフラグ
     val checkoutFlag: Boolean get() = checkout.isSelected

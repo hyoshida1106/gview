@@ -4,7 +4,7 @@ import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvBranchTagLabels
 import gview.view.util.GvColumnAdjuster
 import gview.view.util.GvTextMessage
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import gview.model.commit.GviewGitFileEntryModel
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn
@@ -51,14 +51,14 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
         commitFileListAdjuster.adjustColumnWidth()
     }
 
-    private fun update(model: GviewCommitDataModel?) {
+    private fun update(model: GvCommit?) {
 
         updateFileInfo(model)
         updateFileList(model)
         commitFileList.selectionModel.clearSelection()
     }
 
-    private fun updateFileInfo(model: GviewCommitDataModel?) {
+    private fun updateFileInfo(model: GvCommit?) {
 
         commitProps.children.clear()
 
@@ -80,7 +80,7 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
         }
     }
 
-    private fun updateFileList(model: GviewCommitDataModel?) {
+    private fun updateFileList(model: GvCommit?) {
         if(model != null) {
             commitFileList.items.setAll(model.diffEntries.map { RowData(it) })
         } else {

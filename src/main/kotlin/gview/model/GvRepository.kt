@@ -1,7 +1,7 @@
 package gview.model
 
 import gview.model.branch.GvBranchList
-import gview.model.commit.GvCommitListModel
+import gview.model.commit.GvCommitList
 import gview.model.workfile.GvWorkFilesModel
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
@@ -15,13 +15,12 @@ class GvRepository private constructor(val jgitRepository: Repository) {
 
     val workFiles = GvWorkFilesModel(this)
     val branches = GvBranchList(this)
-    val commits = GvCommitListModel(this)
+    val commits = GvCommitList(this)
 
     companion object {
         val currentRepositoryProperty = SimpleObjectProperty<GvRepository>()
         val currentRepository: GvRepository? get() = currentRepositoryProperty.value
 
-        //リポジトリ新規作成
         fun init(directoryPath: String, isBare: Boolean = false) {
             currentRepositoryProperty.set(GvRepository(
                 Git.init()
@@ -33,7 +32,6 @@ class GvRepository private constructor(val jgitRepository: Repository) {
             ))
         }
 
-        //既存リポジトリのオープン
         fun open(directoryPath: String) {
             currentRepositoryProperty.set(GvRepository(
                 Git.open(File(directoryPath))
@@ -41,7 +39,6 @@ class GvRepository private constructor(val jgitRepository: Repository) {
             ))
         }
 
-        //リモートリポジトリのクローン
         fun clone(directoryPath: String, remoteUrl: String, isBare: Boolean = false) {
             currentRepositoryProperty.set(GvRepository(
                 Git.cloneRepository()

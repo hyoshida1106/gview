@@ -5,7 +5,7 @@ import gview.view.commitlist.CommitListCtrl
 import gview.view.commitlist.CommitRowData
 import gview.view.commitlist.HeaderRowData
 import gview.view.framework.GvBaseWindowCtrl
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
@@ -18,7 +18,7 @@ class CommitInfoCtrl
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
 
-    val commitDataProperty = SimpleObjectProperty<GviewCommitDataModel?>()
+    val commitDataProperty = SimpleObjectProperty<GvCommit?>()
 
     private val commitFileListView = CommitFileList.root
     private val headerFileListView = WorkFileList.root

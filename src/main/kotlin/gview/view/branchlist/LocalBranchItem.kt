@@ -25,8 +25,12 @@ class LocalBranchItem(val model: GvLocalBranch) : BranchListCtrl.BranchTreeItem(
         }
         showInTree.style = Style.checkBoxStyle
         showInTree.isSelected = model.selectedFlagProperty.value
-        showInTree.selectedProperty().addListener {
-                _, _, newVal -> model.selectedFlagProperty.set(newVal) }
+        if(model.isCurrentBranch) {
+            showInTree.isDisable = true
+        } else {
+            showInTree.isDisable = false
+            showInTree.selectedProperty().addListener { _, _, newVal -> model.selectedFlagProperty.set(newVal) }
+        }
     }
 
     private object Style {

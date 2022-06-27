@@ -1,6 +1,6 @@
 package gview.view.util
 
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.scene.control.Label
 
 /**
@@ -8,7 +8,7 @@ import javafx.scene.control.Label
  *
  * @param model     表示するCommit情報
  */
-class GvBranchTagLabels(model: GviewCommitDataModel): ArrayList<Label>() {
+class GvBranchTagLabels(model: GvCommit): ArrayList<Label>() {
 
     init {
         // ローカルブランチ、リモートブランチ、タグの順で表示する

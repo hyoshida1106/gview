@@ -1,18 +1,17 @@
 package gview.view.menu
 
-import gview.GvApplication
 import gview.model.GvRepository
 import gview.view.dialog.BranchNameDialog
 import gview.view.dialog.BranchSelectDialog
 import gview.view.dialog.ErrorDialog
 import gview.view.dialog.MergeDialog
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ContextMenu
 import java.lang.Exception
 
-class CommitRowContextMenu(private val model: GviewCommitDataModel)
+class CommitRowContextMenu(private val model: GvCommit)
     : ContextMenu() {
 
     private val checkoutMenu = GviewMenuItem(

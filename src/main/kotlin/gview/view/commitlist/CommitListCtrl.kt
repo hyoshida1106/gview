@@ -3,8 +3,9 @@ package gview.view.commitlist
 import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GvCommitListModel
+import gview.model.commit.GvCommitList
 import gview.model.workfile.GvWorkFilesModel
+import javafx.application.Platform
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
@@ -109,22 +110,23 @@ class CommitListCtrl
 
         commitListAdjuster = GvColumnAdjuster(commitListTable, infoColumn)
 
+        GvRepository.currentRepositoryProperty.addListener { _, _, repository
+            -> Platform.runLater { updateRepository(repository) }
+        }
+
         //初期状態はinvisible
         commitListTable.isVisible = false
     }
 
+    private fun updateRepository(repository: GvRepository) {
+        val headers = repository.workFiles
+        val commits = repository.commits
+        commits.commitList.addListener { _, _, _ -> update(headers, commits) }
+        update(headers, commits)
+    }
+
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-
-        val currentRepository = GvRepository.currentRepository;
-        if(currentRepository != null) {
-            //データ更新時の再表示
-            val headers = currentRepository.workFiles
-            val commits = currentRepository.commits
-
-            //コミット情報が更新されたら再描画
-            commits.addListener { update(headers, commits) }
-        }
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             selectedRowProperty.value = newValue
@@ -142,7 +144,7 @@ class CommitListCtrl
     //表示更新
     private fun update(
         header: GvWorkFilesModel,
-        commits: GvCommitListModel) {
+        commits: GvCommitList) {
 
         //最初に全削除
         commitListTable.items.clear()
@@ -158,7 +160,7 @@ class CommitListCtrl
 //        }
 
         //コミット情報行を追加
-        commits.commitList.forEach {
+        commits.commitList.value.forEach {
             commitListTable.items.add(CommitRowData(this, it))
         }
 
@@ -166,8 +168,8 @@ class CommitListCtrl
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        if(commits.commitList.isNotEmpty()) {
-            maxLaneNumber = commits.commitList.maxOf { it.laneNumber }
+        if(commits.commitList.value.isNotEmpty()) {
+            maxLaneNumber = commits.commitList.value.maxOf { it.laneNumber }
             if (headerLaneNumber != null && maxLaneNumber < headerLaneNumber) {
                 maxLaneNumber = headerLaneNumber
             }

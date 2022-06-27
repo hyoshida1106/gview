@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
     id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
@@ -11,7 +11,7 @@ repositories { mavenCentral() }
 
 dependencies {
     // Use the Kotlin JDK standard library.
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
     // JGit
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.9.0.202009080501-r")

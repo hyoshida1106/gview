@@ -3,7 +3,7 @@ package gview.view.commitlist
 import gview.view.menu.CommitRowContextMenu
 import gview.view.util.GvBranchTagLabels
 import gview.view.util.GvTextMessage
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas
 import javafx.scene.layout.Pane
@@ -13,7 +13,7 @@ import javafx.scene.shape.ArcType
 
 class CommitRowData(
         private val commitList: CommitListCtrl,
-        val model: GviewCommitDataModel)
+        val model: GvCommit)
     : AbstractRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = CommitTreeCellData(commitList, model)
@@ -24,7 +24,7 @@ class CommitRowData(
     //コミットツリーセル
     inner class CommitTreeCellData(
             private val commitList: CommitListCtrl,
-            private val model: GviewCommitDataModel)
+            private val model: GvCommit)
         : CommitListCtrl.CellData {
 
         //コンテキストメニュー
@@ -39,19 +39,19 @@ class CommitRowData(
             val canvas = Canvas(tableCell.width, tableCell.height)
             val ys = 0.0
             val ye = tableCell.height
-            model.passLanes.forEach { p -> drawPassingWay(canvas, p, ys, ye)}
-            model.exitTo.forEach { b -> drawBranchLine(canvas, model.laneNumber, b, ys, ye) }
-            model.enterFrom.forEach { b -> drawMergeLine(canvas, model.laneNumber, b, ys, ye) }
+            model.passThroughLanes.forEach { p -> drawPassingWay(canvas, p, ys, ye)}
+            model.exitingLanes.forEach { b -> drawBranchLine(canvas, model.laneNumber, b, ys, ye) }
+            model.enteringLanes.forEach { b -> drawMergeLine(canvas, model.laneNumber, b, ys, ye) }
             drawLane(canvas, model, ys, ye)
             tableCell.graphic = Pane(canvas)
             tableCell.text = null
         }
 
         private fun drawLane(
-                canvas: Canvas,
-                commit: GviewCommitDataModel,
-                ys: Double,
-                ye: Double) {
+            canvas: Canvas,
+            commit: GvCommit,
+            ys: Double,
+            ye: Double) {
 
             val lane = commit.laneNumber
             val gc = setColor(canvas, lane)
@@ -144,7 +144,7 @@ class CommitRowData(
 
     //コミット情報セル
     inner class CommitInfoCellData(
-            private val model: GviewCommitDataModel)
+            private val model: GvCommit)
         : CommitListCtrl.CellData {
 
         //コンテキストメニュー

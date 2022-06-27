@@ -1,7 +1,7 @@
 package gview.model.branch
 
 import gview.model.GvRepository
-import gview.model.commit.GviewCommitDataModel
+import gview.model.commit.GvCommit
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
@@ -14,17 +14,10 @@ import java.lang.ref.WeakReference
 
 
 class GvBranchList(private val repository: GvRepository){
-
-    //ローカルブランチリスト
-    val localBranchList = SimpleObjectProperty<List<GvLocalBranch>>()
-
-    //リモートブランチリスト
+    val localBranchList  = SimpleObjectProperty<List<GvLocalBranch>>()
     val remoteBranchList = SimpleObjectProperty<List<GvRemoteBranch>>()
+    val currentBranch    = SimpleStringProperty("")
 
-    //現在チェックアウトされているブランチ名
-    val currentBranch = SimpleStringProperty("")
-
-    //初期化
     init {
         update()
     }
@@ -36,14 +29,9 @@ class GvBranchList(private val repository: GvRepository){
         return Repository.shortenRefName(name)
     }
 
-    //更新
     private fun update() {
-
-        //Gitインスタンスを共用する
         val git = Git(repository.jgitRepository)
 
-        //リモートブランチの一覧を取得
-        //後でローカルブランチと紐付けるためのマップも同時に作成する
         val remoteBranches = mutableListOf<GvRemoteBranch>()
         val remoteBranchMap = mutableMapOf<String, GvRemoteBranch>()
         git.branchList()
@@ -56,15 +44,12 @@ class GvBranchList(private val repository: GvRepository){
             }
         remoteBranchList.value = remoteBranches
 
-        //ローカルブランチの一覧を取得
         val localBranches = mutableListOf<GvLocalBranch>()
         git.branchList()
             .call()
             .forEach {
-                //ローカルブランチ一覧に追加
                 val localBranch = GvLocalBranch(this, it)
                 localBranches.add(localBranch)
-                //リモートブランチが存在する場合、双方向参照を設定する
                 val trackingStatus = BranchTrackingStatus.of(repository.jgitRepository, localBranch.path)
                 if (trackingStatus != null) {
                     val remoteBranch = remoteBranchMap[trackingStatus.remoteTrackingBranch]
@@ -75,12 +60,9 @@ class GvBranchList(private val repository: GvRepository){
                 }
             }
         localBranchList.value = localBranches
-
-        //現在チェックアウトされているブランチ名
         currentBranch.value = repository.jgitRepository.branch
     }
 
-    //リモートブランチをローカルへチェックアウトする
     fun checkoutRemoteBranch(model: GvRemoteBranch) {
         Git(repository.jgitRepository)
                 .checkout()
@@ -92,7 +74,6 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //ローカルブランチをチェックアウトしてカレントブランチにする
     fun checkoutLocalBranch(model: GvLocalBranch) {
         Git(repository.jgitRepository)
                 .checkout()
@@ -101,7 +82,6 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //ローカルブランチを削除する
     fun removeLocalBranch(model: GvLocalBranch, force: Boolean) {
         Git(repository.jgitRepository)
                 .branchDelete()
@@ -111,7 +91,6 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //HEADからブランチを作成する
     fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
         if(checkout) {
             Git(repository.jgitRepository)
@@ -128,8 +107,7 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //指定したコミットからブランチを作成する
-    fun createNewBranchFromCommit(newBranch: String, commit: GviewCommitDataModel, checkout: Boolean) {
+    fun createNewBranchFromCommit(newBranch: String, commit: GvCommit, checkout: Boolean) {
         if(checkout) {
             Git(repository.jgitRepository)
                     .checkout()
@@ -147,7 +125,6 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //指定したブランチから新しいブランチを作成する
     fun createNewBranchFromOtherBranch(newBranch: String, model: GvLocalBranch, checkout: Boolean) {
         if(checkout) {
             Git(repository.jgitRepository)
@@ -166,8 +143,7 @@ class GvBranchList(private val repository: GvRepository){
         Platform.runLater { update() }
     }
 
-    //指定したコミットをHEADへマージする
-	fun mergeCommit(model: GviewCommitDataModel, message: String) {
+	fun mergeCommit(model: GvCommit, message: String) {
         Git(repository.jgitRepository)
                 .merge()
                 .include(model.id)
