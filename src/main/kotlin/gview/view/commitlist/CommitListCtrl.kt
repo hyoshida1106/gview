@@ -12,48 +12,37 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 
-class CommitListCtrl
-    : GvBaseWindowCtrl() {
-
-    //FXML内のエレメント選言
+class CommitListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var commitListTable: TableView<RowData>
     @FXML private lateinit var treeColumn: TableColumn<RowData, CellData>
     @FXML private lateinit var infoColumn: TableColumn<RowData, CellData>
 
-    //選択行
     val selectedRowProperty = SimpleObjectProperty<RowData>()
 
-    //行データ(インターフェース)
     interface RowData {
         val styleClassName: String
         val treeCellValue: CellData
         val infoCellValue: CellData
     }
 
-    //カラム単位データの基本クラス
     interface CellData {
-        fun update(tableCell: Cell): Pair<Node?, String?>
+        fun update(): Pair<Node?, String?>
         fun layout(tableCell: Cell)
         val contextMenu: ContextMenu?
     }
 
-    //コミットテーブル用セルファクトリクラス
-    //行データとカラムデータを受けて描画処理をコールする
     class Cell: TableCell<RowData, CellData>() {
-
-        //カラム情報 - updateItemで受信する
         private var cellData: CellData? = null
 
         init {
-            style = CSS.cellStyle
+            style = Style.cellStyle
         }
 
-        //データ更新通知
         override fun updateItem(data: CellData?, empty: Boolean) {
             super.updateItem(data, empty)
             cellData = data
             if(data != null && !empty) {
-                val( graphic, text ) = data.update(this )
+                val( graphic, text ) = data.update()
                 this.graphic = graphic
                 this.text = text
             } else {
@@ -63,20 +52,16 @@ class CommitListCtrl
             contextMenu = data?.contextMenu
         }
 
-        //描画コンポーネント配置通知
         override fun layoutChildren() {
             super.layoutChildren()
             cellData?.layout(this)
         }
     }
 
-    companion object {
-        //レーンピッチの既定値
-        private const val defaultXPitch = 15.0
-    }
+    private val defaultXPitch = 12.0
 
-    //レーン数からツリーカラムの幅を求める
     var xPitch = defaultXPitch
+
     fun treeColumnWidth(laneNumber: Int) =  xPitch * ( laneNumber + 1.0 )
 
     //レーン幅が大きくなり過ぎると表示が壊れるので、制限する
@@ -88,9 +73,8 @@ class CommitListCtrl
     /* テーブルのカラム幅を調整する処理クラス */
     private lateinit var commitListAdjuster: GvColumnAdjuster
 
-    //初期化
     fun initialize() {
-        commitListTable.style = CSS.commitListStyle
+        commitListTable.style = Style.commitListStyle
         commitListTable.placeholder = Label("")
 
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.treeCellValue) }
@@ -131,12 +115,10 @@ class CommitListCtrl
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             selectedRowProperty.value = newValue
         }
-
         //Treeカラム幅変更時の描画更新
         treeColumn.widthProperty().addListener { _ ->
             xPitch = treeColumn.width / (maxLaneNumber + 2)
         }
-
         //カラム幅の調整
         commitListAdjuster.adjustColumnWidth()
     }
@@ -149,15 +131,9 @@ class CommitListCtrl
         //最初に全削除
         commitListTable.items.clear()
 
-        val headerLaneNumber = commits.headerLaneNumber
-
         //ヘッダ情報業を追加
-//        if(commits.headId != null) {
-//            val commitData = commits.commitIdMap[commits.headId]
-//            if(commitData != null) {
-                commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber))
-//            }
-//        }
+        val headerLaneNumber = commits.headerLaneNumber
+        commitListTable.items.add(HeaderRowData(this, header, headerLaneNumber))
 
         //コミット情報行を追加
         commits.commitList.value.forEach {
@@ -186,14 +162,12 @@ class CommitListCtrl
         commitListTable.isVisible = true
     }
 
-    private object CSS {
-        val cellStyle = """
-            -fx-border-width: 0;
-            -fx-padding: 0;
-        """.trimIndent()
+    private object Style {
+        const val cellStyle =
+            "-fx-border-width: 0;" +
+            "-fx-padding: 0;"
 
-        val commitListStyle = """
-            -fx-padding: 0;
-        """.trimIndent()
+        const val commitListStyle =
+            "-fx-padding: 0;"
     }
 }

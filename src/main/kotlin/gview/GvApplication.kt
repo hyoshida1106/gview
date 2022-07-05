@@ -13,9 +13,6 @@ import javafx.stage.Stage
 import java.util.*
 import kotlin.system.exitProcess
 
-/**
- * Gviewアプリケーションクラス
- */
 class GvApplication: Application() {
 
     private lateinit var mainStage: Stage
@@ -28,11 +25,9 @@ class GvApplication: Application() {
                     MainWindow.root,
                     SystemModal.mainWidthProperty.value,
                     SystemModal.mainHeightProperty.value)
-
             mainStage.onShown = EventHandler {
                 GvBaseWindowCtrl.displayCompleted()
             }
-
             mainStage.onCloseRequest = EventHandler {
                 confirmToQuit()
                 it.consume()
@@ -54,23 +49,23 @@ class GvApplication: Application() {
         }
     }
 
-    /**
-     * 1秒のIDLE状態タイマ
-     */
     private val monitor = GvIdleTimer(1000) {
         GvBaseWindowCtrl.updateConfigInfo()
         SystemModal.saveToFile()
     }
 
     companion object {
-        /**
-         * アプリ終了確認ダイアログ
-         */
         fun confirmToQuit() {
-            val message = ResourceBundle.getBundle("Gview").getString("QuitConformation")
+            val message = resourceBundle().getString("QuitConformation")
             if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
                 exitProcess(0)
             }
         }
     }
 }
+
+fun main(args: Array<String>) {
+    Application.launch(GvApplication::class.java, *args)
+}
+
+fun resourceBundle() = ResourceBundle.getBundle("Gview")

@@ -1,7 +1,6 @@
 package gview.view.main
 
 import gview.conf.SystemModal
-import gview.model.GvRepository
 import gview.view.branchlist.BranchList
 import gview.view.commitinfo.CommitInfo
 import gview.view.commitlist.CommitList
@@ -24,7 +23,6 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var statusBar: AnchorPane
     @FXML private lateinit var masker: MaskerPane
 
-    //初期化処理
     fun initialize() {
         mainSplit.setDividerPositions(
             SystemModal.mainSplitPos[0], SystemModal.mainSplitPos[1])
@@ -40,14 +38,13 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
         statusBar.children.add(StatusBar.root)
     }
 
-    //「実行中」を表示して処理を行う
-    fun runTask(proc: () -> Unit) {
+    fun runTask(function: () -> Unit) {
         val scene = MainWindow.root.scene
         scene.cursor = Cursor.WAIT
         val task = object: Task<Unit>() {
             override fun call() {
                 try {
-                    proc()
+                    function()
                 } catch(e: Exception) {
                     Platform.runLater { ErrorDialog(e).showDialog() }
                 }

@@ -4,28 +4,26 @@ import gview.view.framework.GvBaseWindowCtrl
 import gview.model.GvRepository
 import gview.model.branch.GvBranch
 import gview.model.branch.GvBranchList
+import gview.model.branch.GvLocalBranch
+import gview.model.branch.GvRemoteBranch
+import gview.view.menu.LocalBranchContextMenu
+import gview.view.menu.RemoteBranchContextMenu
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
+import javafx.scene.layout.HBox
 
 class BranchListCtrl: GvBaseWindowCtrl() {
-
-    //ブランチ一覧Tree
     @FXML private lateinit var branchTree: TreeView<GvBranch>
 
-    //ローカルブランチTree
-    private var localTreeRoot = RootItem("Local")
-
-    //リモートブランチTree
+    private var localTreeRoot  = RootItem("Local")
     private var remoteTreeRoot = RootItem("Remote")
 
-    //View初期化
     fun initialize() {
-        //Root Treeを作成
         val root = RootItem("Branch Root" )
         root.children.setAll(localTreeRoot, remoteTreeRoot)
-        //ブランチTreeの初期設定
+
         branchTree.root = root
         branchTree.isShowRoot = false
         branchTree.setCellFactory { BranchTreeCell() }
@@ -35,10 +33,9 @@ class BranchListCtrl: GvBaseWindowCtrl() {
             -> Platform.runLater { updateRepository(repository) }
         }
 
-        //Focusを失った時に選択解除する
         branchTree.focusedProperty().addListener { _, _, newValue ->
             if(!newValue) branchTree.selectionModel.clearSelection() }
-        //初期状態では不可視
+
         branchTree.isVisible = false
     }
 
@@ -56,9 +53,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         return branchTree.selectionModel.selectedItem?.value
     }
 
-    //BranchTreeに描画するTreeCellクラス
     private class BranchTreeCell: TreeCell<GvBranch>() {
-
         override fun updateItem(model: GvBranch?, empty: Boolean) {
             super.updateItem(model, empty)
             if(!empty) {
@@ -73,28 +68,24 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         }
     }
 
-    //ローカルブランチツリーを更新する
     private fun updateLocalBranches(branchList: GvBranchList) {
         localTreeRoot.children.clear()
         branchList.localBranchList.value.forEach { localTreeRoot.children.add(LocalBranchItem(it)) }
         branchTree.isVisible = true
     }
 
-    //リモートブランチツリーを更新する
     private fun updateRemoteBranches(branchList: GvBranchList) {
         remoteTreeRoot.children.clear()
         branchList.remoteBranchList.value.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
         branchTree.isVisible = true
     }
 
-    //ブランチツリーの基本クラス
     abstract class BranchTreeItem(model: GvBranch?) : TreeItem<GvBranch>(model) {
         abstract val cellImage: Node                    //表示イメージ
         abstract val contextMenu: ContextMenu?          //コンテキストメニュー
         abstract override fun isLeaf(): Boolean         //末端か
     }
 
-    //Remote/Localそれぞれのルートになるコンポーネント
     class RootItem(name: String) : BranchTreeItem(null) {
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
@@ -102,10 +93,43 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         init { isExpanded = true }
     }
 
+    class RemoteBranchItem(val model: GvRemoteBranch) : BranchTreeItem(model) {
+        override val cellImage: Node = Label(model.name)
+        override val contextMenu: ContextMenu? = RemoteBranchContextMenu(model)
+        override fun isLeaf(): Boolean = true
+    }
+
+    class LocalBranchItem(val model: GvLocalBranch) : BranchTreeItem(model) {
+        private val branchName = Label(model.name)
+        private val showInTree = CheckBox()
+        override val cellImage: Node = HBox(branchName, showInTree)
+        override val contextMenu: ContextMenu? = LocalBranchContextMenu(model)
+        override fun isLeaf(): Boolean = true
+
+        init {
+            if (model.isCurrentBranch) {
+                branchName.style = Style.currentBranchLabelStyle
+                showInTree.isSelected = true
+            }
+            showInTree.style = Style.checkBoxStyle
+            showInTree.isSelected = model.selectedFlagProperty.value
+            if (model.isCurrentBranch) {
+                showInTree.isDisable = true
+            } else {
+                showInTree.isDisable = false
+                showInTree.selectedProperty().addListener { _, _, newVal -> model.selectedFlagProperty.set(newVal) }
+            }
+        }
+    }
+
     private object Style {
-        val treeStyle =
-            "-fx-padding: 0;"
-        val cellStyle =
-            "-fx-padding: 2 0;"
+    val treeStyle =
+        "-fx-padding: 0;"
+    val cellStyle =
+        "-fx-padding: 2 0;"
+    val currentBranchLabelStyle =
+        "-fx-font-weight: bold;"
+    val checkBoxStyle =
+        "-fx-padding: 0 0 0 2;"
     }
 }

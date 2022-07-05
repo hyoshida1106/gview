@@ -18,18 +18,11 @@ class GvCommit(private val repo: Repository,
                private val commitList: GvCommitList,
                private val prevCommit: GvCommit?) {
 
-    //以下のプロパティは、インスタンス生成後に外部から設定する
-
-    //次のコミット
     private var nextCommit: GvCommit? = null
 
-    //ローカルブランチとのリンク
-    val localBranches: MutableList<GvLocalBranch> = mutableListOf()
-
-    //リモートブランチとのリンク
+    val localBranches:  MutableList<GvLocalBranch>  = mutableListOf()
     val remoteBranches: MutableList<GvRemoteBranch> = mutableListOf()
 
-    //タグ、当面は名称のみ
     val tags: MutableList<String> = mutableListOf()
 
     val revCommit: PlotCommit<PlotLane> get() = thisCommit
@@ -48,31 +41,28 @@ class GvCommit(private val repo: Repository,
         prevCommit?.nextCommit = this
     }
 
-    //親コミットの一覧を取得する
     private val parents: List<GvCommit> by lazy {
         thisCommit.parents.mapNotNull { commitList.commitIdMap[it.id] }
     }
 
-    //通過レーン(このコミットの前後でつながるレーン)
+    private val children: List<GvCommit> by lazy {
+        (0 until thisCommit.childCount).mapNotNull { commitList.commitIdMap[thisCommit.getChild(it)] }
+    }
+
     val passThroughLanes : MutableList<Int> by lazy {
         val result = mutableSetOf<PlotLane>()
         commitList.plotCommitList.findPassingThrough(thisCommit, result)
         result.map { it.position }.toMutableList()
     }
 
-    //このコミットから出るレーン
     val exitingLanes: MutableList<Int> by lazy {
-        (prevCommit?.enteringLanes?.plus(prevCommit.passThroughLanes)?.minus(passThroughLanes.toSet())
-            ?: emptyList()).toMutableList()
+        (prevCommit?.passThroughLanes?.minus(passThroughLanes.toSet()) ?: emptyList())
+            .plus(children.map { if( it.isMerge ) laneNumber else it.laneNumber }).distinct().toMutableList()
     }
 
-    //このコミットに来るレーン
     val enteringLanes : List<Int> by lazy {
-        if(thisCommit.parentCount > 1) {
-            ( parents.map { it.laneNumber } ).plus( laneNumber ).distinct()
-        } else {
-            listOf( laneNumber )
-        }
+        (nextCommit?.exitingLanes?.plus(nextCommit!!.passThroughLanes)?.minus(passThroughLanes.toSet())
+            ?.plus(parents.filter { !it.exitingLanes.contains(laneNumber)}.map { it.laneNumber }) ?: emptyList())
     }
 
     //このコミットのレーン幅

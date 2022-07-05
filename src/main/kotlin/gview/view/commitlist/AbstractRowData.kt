@@ -7,8 +7,10 @@ import javafx.scene.paint.Paint
 /*
     コミットリスト行データの共通ベースクラス
  */
-abstract class AbstractRowData
-    : CommitListCtrl.RowData {
+abstract class AbstractRowData: CommitListCtrl.RowData {
+
+    protected val markRadius = 5.0
+    protected val lineWidth  = 3.0
 
     //表示色
     private val colors = arrayOf(
@@ -18,7 +20,7 @@ abstract class AbstractRowData
     fun setColor(canvas: Canvas, lane: Int): GraphicsContext {
         val gc = canvas.graphicsContext2D
         val p = Paint.valueOf(colors[lane % colors.size])
-        gc.lineWidth = 3.0
+        gc.lineWidth = lineWidth
         gc.fill = p
         gc.stroke = p
         return gc

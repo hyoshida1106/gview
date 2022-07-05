@@ -5,7 +5,6 @@ import javafx.scene.Parent
 
 open class GvBaseWindow<Controller>(formPath: String, controlClass: String)
         where Controller: GvBaseWindowCtrl {
-
     val root: Parent
     val controller: Controller
 
