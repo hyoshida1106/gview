@@ -50,8 +50,8 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
     private fun onShowingMenu() {
         val headerData = GvRepository.currentRepository?.workFiles
-        val stagedFileNumber = headerData?.stagedFiles?.size
-        val changedFileNumber = headerData?.changedFiles?.size
+        val stagedFileNumber = headerData?.stagedFiles?.value?.size ?: 0
+        val changedFileNumber = headerData?.changedFiles?.value?.size ?: 0
         stageMenu.isDisable = changedFileNumber == 0
         unstageMenu.isDisable = stagedFileNumber == 0
         commitMenu.isDisable = stagedFileNumber == 0
@@ -84,7 +84,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
         fun doCommitCommand() {
             //ユーザ名とメールアドレスが未入力ならば入力する
             var userName = GitConfigInfo.userName
-            var mailAddr = GitConfigInfo.mailAddr
+            var mailAddr = GitConfigInfo.mailAddress
             while (userName.isEmpty() || mailAddr.isEmpty()) {
                 val dialog = UserNameDialog(userName, mailAddr)
                 if (dialog.showDialog() != ButtonType.OK) return

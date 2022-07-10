@@ -3,7 +3,7 @@ package gview.view.dialog
 import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.commit.GvCommitFile
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
@@ -21,9 +21,9 @@ class SelectStageFilesDialogCtrl
     @FXML private lateinit var filePathColumn: TableColumn<RowData, String>
     @FXML private lateinit var fileCheckColumn: TableColumn<RowData, Boolean>
 
-    class RowData(val diffEntry: GviewGitFileEntryModel) {
-        val type: String = diffEntry.getTypeName()
-        val path: String = diffEntry.getPath()
+    class RowData(val diffEntry: GvCommitFile) {
+        val type: String = diffEntry.typeName
+        val path: String = diffEntry.path
         val check = SimpleBooleanProperty(true)
     }
 
@@ -47,7 +47,7 @@ class SelectStageFilesDialogCtrl
 
         val currentRepository = GvRepository.currentRepository
         if(currentRepository != null) {
-            val files = currentRepository.workFiles.changedFiles
+            val files = currentRepository.workFiles.changedFiles.value
             fileList.items.addAll(files.map { RowData(it) })
         }
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->
@@ -58,7 +58,7 @@ class SelectStageFilesDialogCtrl
     }
 
     //選択されたファイル一覧
-    val selectedFiles: List<GviewGitFileEntryModel> get() =
+    val selectedFiles: List<GvCommitFile> get() =
         fileList.items.filter { it.check.value }.map { it.diffEntry }
 
     //CSSスタイル定義

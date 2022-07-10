@@ -13,48 +13,73 @@ import javafx.stage.Stage
 import java.util.*
 import kotlin.system.exitProcess
 
-class GvApplication: Application() {
+/**
+ * アプリケーションクラス
+ */
+class GvApplication : Application() {
 
-    private lateinit var mainStage: Stage
-
+    /**
+     * アプリケーション起動処理
+     *
+     * @param[stage]    メイン画面
+     */
     override fun start(stage: Stage) {
         try {
-            mainStage = stage
-            mainStage.title = "GView"
-            mainStage.scene = Scene(
-                    MainWindow.root,
-                    SystemModal.mainWidthProperty.value,
-                    SystemModal.mainHeightProperty.value)
-            mainStage.onShown = EventHandler {
+            // タイトルとSceneを設定
+            stage.title = "GView"
+            stage.scene = Scene(
+                MainWindow.root,
+                SystemModal.mainWidthProperty.value,
+                SystemModal.mainHeightProperty.value
+            )
+            // 表示完了イベントハンドラ定義
+            stage.onShown = EventHandler {
+                // 全ウィンドウの``displayComplete()``メソッドを呼び出す
                 GvBaseWindowCtrl.displayCompleted()
             }
-            mainStage.onCloseRequest = EventHandler {
+            // ウィンドウクローズ要求
+            stage.onCloseRequest = EventHandler {
+                // ダイアログを表示して、クローズ確認を行う
                 confirmToQuit()
                 it.consume()
             }
-
-            monitor.register(mainStage.scene)
-
+            //アイドルタイマの登録
+            monitor.register(stage.scene)
+            //画面サイズ変更時、サイズを保存するためのbind定義
             with(SystemModal) {
-                mainHeightProperty.bind(mainStage.scene.heightProperty())
-                mainWidthProperty.bind(mainStage.scene.widthProperty())
-                maximumProperty.bind(mainStage.fullScreenProperty())
+                mainHeightProperty.bind(stage.scene.heightProperty())
+                mainWidthProperty.bind(stage.scene.widthProperty())
+                maximumProperty.bind(stage.fullScreenProperty())
             }
-
-            mainStage.show()
-
-        } catch(e: java.lang.Exception) {
+            //メイン画面の表示
+            stage.show()
+        } catch (e: java.lang.Exception) {
+            //例外発生時、StackTraceを表示して終了する
             e.printStackTrace()
             exitProcess(-1)
         }
     }
 
+    /**
+     * アイドルタイマインスタンス
+     *
+     * 画面操作が1秒間行われない場合、ハンドラが実行される。
+     * 表示情報を[SystemModal]に記録した後、ファイルへの書き込みを行う。
+     */
     private val monitor = GvIdleTimer(1000) {
         GvBaseWindowCtrl.updateConfigInfo()
         SystemModal.saveToFile()
     }
 
+    /**
+     * コンパニオンオブジェクト
+     */
     companion object {
+        /**
+         * アプリケーションの終了確認
+         *
+         * ダイアログを表示し、OKであればプロセスを終了する
+         */
         fun confirmToQuit() {
             val message = resourceBundle().getString("QuitConformation")
             if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
@@ -64,8 +89,14 @@ class GvApplication: Application() {
     }
 }
 
+/**
+ * アプリケーションエントリ
+ */
 fun main(args: Array<String>) {
     Application.launch(GvApplication::class.java, *args)
 }
 
-fun resourceBundle() = ResourceBundle.getBundle("Gview")
+/**
+ * リソースバンドルを参照するためのグローバルインスタンス
+ */
+fun resourceBundle(): ResourceBundle = ResourceBundle.getBundle("Gview")

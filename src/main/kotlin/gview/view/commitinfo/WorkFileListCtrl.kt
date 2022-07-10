@@ -4,7 +4,7 @@ import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.menu.WorkTreeMenu
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.commit.GvCommitFile
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -32,9 +32,9 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var commitButton: Button
 
     /* テーブルデータ */
-    class RowData(val diffEntry: GviewGitFileEntryModel) {
-        val type: String = diffEntry.getTypeName()
-        val path: String = diffEntry.getPath()
+    class RowData(val diffEntry: GvCommitFile) {
+        val type: String = diffEntry.typeName
+        val path: String = diffEntry.path
     }
 
     private val stagedFileNumber  = SimpleIntegerProperty(0)
@@ -80,10 +80,8 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GvRepository.currentRepository?.workFiles?.addListener {
-            updateStagedFiles(it.stagedFiles)
-            updateChangedFiles(it.changedFiles)
-        }
+        GvRepository.currentRepository?.workFiles?.stagedFiles?.addListener  { _, _, new -> updateStagedFiles(new)  }
+        GvRepository.currentRepository?.workFiles?.changedFiles?.addListener { _, _, new -> updateChangedFiles(new) }
 
         stagedFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->
             CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
@@ -96,7 +94,7 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
         changedFileListAdjuster.adjustColumnWidth()
     }
 
-    private fun updateStagedFiles(files: List<GviewGitFileEntryModel>?) {
+    private fun updateStagedFiles(files: List<GvCommitFile>?) {
         if(files != null) {
             stagedFileList.items.setAll(files.map { RowData(it) })
         } else {
@@ -105,7 +103,7 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
         stagedFileNumber.value = stagedFileList.items.size
     }
 
-    private fun updateChangedFiles(files: List<GviewGitFileEntryModel>?) {
+    private fun updateChangedFiles(files: List<GvCommitFile>?) {
         if(files != null) {
             changedFileList.items.setAll(files.map { RowData(it) })
         } else {

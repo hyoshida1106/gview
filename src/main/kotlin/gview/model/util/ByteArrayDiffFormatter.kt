@@ -6,22 +6,35 @@ import org.eclipse.jgit.lib.Repository
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 
-/*
-    diff出力をByteArrayとして取得可能なDiff Formatter
+/**
+ *  diff出力をByteArrayとして取得可能なDiff Formatter
+ *
+ *  @constructor        プライマリコンストラクタ
+ *  @param[repository]  リポジトリ
+ *  @param[output]      出力先として使用するOutputStream
  */
-class ByteArrayDiffFormatter(val repository: Repository,
-                             private val output: ByteArrayOutputStream): DiffFormatter(output), Closeable {
+class ByteArrayDiffFormatter(
+    private val repository: Repository,
+    private val output: ByteArrayOutputStream
+) : DiffFormatter(output), Closeable {
 
-    //出力先ByteArrayインスタンスを内部生成するコンストラクタ
-    constructor(repo:Repository) : this(repo, ByteArrayOutputStream())
+    /**
+     * @constructor         セカンダリコンストラクタ
+     * @param[repository]  リポジトリ
+     */
+    constructor(repo: Repository): this(repo, ByteArrayOutputStream())
 
-    //初期化
+    /**
+     * 初期化
+     */
     init {
         //参照リポジトリ設定
         super.setRepository(repository)
     }
 
-    //Diff出力をByteArrayとして取得
+    /**
+     *  Diff出力をByteArrayとして取得
+     */
     fun getText(entry: DiffEntry): ByteArray {
         output.reset()
         super.format(entry)

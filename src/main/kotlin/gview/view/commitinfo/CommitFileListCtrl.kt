@@ -5,7 +5,7 @@ import gview.view.util.GvBranchTagLabels
 import gview.view.util.GvColumnAdjuster
 import gview.view.util.GvTextMessage
 import gview.model.commit.GvCommit
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.commit.GvCommitFile
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -23,9 +23,9 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
     @FXML private lateinit var pathColumn: TableColumn<RowData, String>
 
     /* テーブルデータ */
-    class RowData(val diffEntry: GviewGitFileEntryModel) {
-        val type: String = diffEntry.getTypeName()
-        val path: String = diffEntry.getPath()
+    class RowData(val diffEntry: GvCommitFile) {
+        val type: String = diffEntry.typeName
+        val path: String = diffEntry.path
     }
 
     /* テーブルのカラム幅を調整する処理クラス */

@@ -39,9 +39,19 @@ class CommitRowData(
             val canvas = Canvas(tableCell.width, tableCell.height)
             val ys = 0.0
             val ye = tableCell.height
+
             model.passThroughLanes.forEach { p -> drawPassThroughLine(canvas, p, ys, ye)}
             model.exitingLanes.forEach { b -> drawBranchLine(canvas, model.laneNumber, b, ys, ye) }
             model.enteringLanes.forEach { b -> drawMergeLine(canvas, model.laneNumber, b, ys, ye) }
+
+            if(model.headerLane >= 0) {
+                if(model.isHead) {
+                    drawBranchLine(canvas, model.laneNumber, model.headerLane, ys, ye)
+                } else {
+                    drawPassThroughLine(canvas, model.headerLane, ys, ye)
+                }
+            }
+
             drawCommitMark(canvas, model, ys, ye)
             tableCell.graphic = Pane(canvas)
             tableCell.text = null

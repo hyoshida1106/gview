@@ -3,15 +3,33 @@ package gview.view.framework
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 
-open class GvBaseWindow<Controller>(formPath: String, controlClass: String)
-        where Controller: GvBaseWindowCtrl {
+/**
+ * 基本ウィンドウクラス
+ *
+ * @constructor             プライマリコンストラクタ
+ * @param[formPath]         FXMLファイルのパス
+ * @param[style]            スタイルクラス名称
+ */
+open class GvBaseWindow<Controller>(formPath: String, style: String) where Controller : GvBaseWindowCtrl {
+    /**
+     * ルートウィンドウ
+     */
     val root: Parent
+
+    /**
+     * コントローラインスタンス参照
+     */
     val controller: Controller
 
+    /**
+     * 初期化
+     */
     init {
+        //ウィンドウクラスをロードし、styleを登録する
         val loader = FXMLLoader(javaClass.getResource(formPath))
         root = loader.load()
-        root.styleClass.add(controlClass)
+        root.styleClass.add(style)
+        //コントローラインスタンスを取得する
         controller = loader.getController() as Controller
     }
 }

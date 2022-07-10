@@ -1,7 +1,7 @@
 package gview.view.commitinfo
 
 import gview.view.framework.GvBaseWindowCtrl
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.commit.GvCommitFile
 import javafx.fxml.FXML
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
@@ -22,7 +22,7 @@ class CommitDiffCtrl: GvBaseWindowCtrl() {
     }
 
     fun selectDiffEntry(
-            entry: GviewGitFileEntryModel?) {
+            entry: GvCommitFile?) {
 
         if(entry != null) {
             diffList.items.setAll(entry

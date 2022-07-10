@@ -59,8 +59,8 @@ class HeaderRowData(
         override fun update(): Pair<Node?, String?> {
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
             val row1 = GvTextMessage(resourceBundle().getString("HeaderRowTitle"), timeStamp)
-            val row2 = GvTextMessage(resourceBundle().getString("HeaderStagedTitle"), "${model.stagedFiles.size}")
-            val row3 = GvTextMessage(resourceBundle().getString("HeaderModifiedTitle"), "${model.changedFiles.size}")
+            val row2 = GvTextMessage(resourceBundle().getString("HeaderStagedTitle"), "${model.stagedFiles.value?.size ?: 0}")
+            val row3 = GvTextMessage(resourceBundle().getString("HeaderModifiedTitle"), "${model.changedFiles.value?.size ?: 0}")
             return Pair(VBox(row1, row2, row3), null)
         }
 

@@ -13,7 +13,9 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
 import org.eclipse.jgit.revwalk.RevWalk
 
-
+/**
+ * コミット情報リストモデル
+ */
 class GvCommitList(private val repository: GvRepository) {
 
     //Commit情報のリスト
@@ -37,24 +39,33 @@ class GvCommitList(private val repository: GvRepository) {
     //Commit一覧表示サイズ(暫定)
     private val commitSize = 1000
 
+    /**
+     * 初期化
+     */
     init {
+        //最初の表示
         update()
+        //ローカルブランチが変更された場合、表示を更新する
         repository.branches.localBranchList.addListener { _, _, _ -> update() }
     }
 
-    //リポジトリ変更時の処理
+    /**
+     * 表示更新処理
+     */
     private fun update() {
         refresh()
+        //ローカルブランチの表示状態が変更された場合、表示を更新する
         repository.branches.localBranchList.value.forEach {
             it.selectedFlagProperty.addListener { _, _, _ -> refresh() }
         }
     }
 
-    //表示更新
+    /**
+     * 表示の更新
+     */
     fun refresh() {
         //所持値を初期化
         headId = repository.jgitRepository.resolve(Constants.HEAD)
-
         //PlotCommitListインスタンスを生成
         plotCommitList.clear()
         val plotWalk = PlotWalk(repository.jgitRepository)
@@ -65,22 +76,19 @@ class GvCommitList(private val repository: GvRepository) {
             plotCommitList.source(plotWalk)
             plotCommitList.fillTo(this.commitSize)
         }
-
         //Commitモデルに変換
         val commits = mutableListOf<GvCommit>()
         var prev: GvCommit? = null
         plotCommitList.forEach {
-            val commit = GvCommit(repository.jgitRepository, it, this, prev)
-            commits.add( commit )
+            val commit = GvCommit(it, repository.jgitRepository, this, prev)
+            commits.add(commit)
             prev = commit
         }
-
         //IDをキーとするMapに変換
         commitIdMap.putAll(commits.associateBy { it.id })
-
         //WorkFileからHEADまでの線を描く
         val head = commitIdMap[headId]
-        if (head != null) {
+        if (head != null && commits.indexOf(head) >= 0) {
             //HEAD直前までのパスを重複しないように描く
             var lane = head.laneNumber
             val headerPath = commits.subList(0, commits.indexOf(head))
@@ -88,23 +96,17 @@ class GvCommitList(private val repository: GvRepository) {
             if (lane <= maxLineNumber) {
                 lane = maxLineNumber + 1
             }
-            headerPath.forEach { it.passThroughLanes.add(lane) }
-            //HEADからの分岐線を描く
-            if (!head.exitingLanes.contains(lane)) {
-                head.exitingLanes.add(lane)
-            }
+            headerPath.forEach { it.headerLane = lane }
+            head.headerLane = lane
             //WorkFileのレーン番号を更新
             headerLaneNumber = lane
         }
-
         //コミット情報からローカルブランチへのリンクを設定
         repository.branches.localBranchList.value
             .forEach { commitIdMap[it.ref.objectId]?.localBranches?.add(it) }
-
         //コミット情報からリモートブランチへのリンクを設定
         repository.branches.remoteBranchList.value
             .forEach { commitIdMap[it.ref.objectId]?.remoteBranches?.add(it) }
-
         //コミット情報にタグを設定
         commitTagMap.clear()
         val revWalk = RevWalk(repository.jgitRepository)
@@ -125,7 +127,7 @@ class GvCommitList(private val repository: GvRepository) {
                     }
                 }
         }
-
+        //コミットリストを保存
         commitList.value = commits
     }
 }

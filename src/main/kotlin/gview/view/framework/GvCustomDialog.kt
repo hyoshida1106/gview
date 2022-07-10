@@ -14,8 +14,8 @@ import javafx.scene.control.Dialog
  * @param form      FXMLファイルのパス
  * @param buttons   表示するボタン
  */
-open class GvCustomDialog<Controller>(title: String, form: String, vararg buttons: ButtonType)
-    : Dialog<ButtonType>(), GvDialogInterface<ButtonType?> where Controller: GvCustomDialogCtrl {
+open class GvCustomDialog<Controller>(title: String, form: String, vararg buttons: ButtonType) : Dialog<ButtonType>(),
+    GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
 
     /**
      * コントローラへの参照を保持する
@@ -50,15 +50,20 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
      *  @param disable      Disabledプロパティを関連付ける
      *  @param handler      ボタン押下ハンドラを関連付ける
      */
-    fun addButtonHandler(
-            buttonType: ButtonType,
-            disable: BooleanProperty?,
-            handler: EventHandler<ActionEvent>? = null) {
+    protected fun addButtonHandler(
+        buttonType: ButtonType,
+        disable: BooleanProperty?,
+        handler: EventHandler<ActionEvent>? = null
+    ) {
 
         val button = dialogPane.lookupButton(buttonType)
-        if(button != null) {
-            if (disable != null) { button.disableProperty().bind(disable) }
-            if (handler != null) { button.addEventFilter(ActionEvent.ACTION, handler) }
+        if (button != null) {
+            if (disable != null) {
+                button.disableProperty().bind(disable)
+            }
+            if (handler != null) {
+                button.addEventFilter(ActionEvent.ACTION, handler)
+            }
         }
     }
 
@@ -69,6 +74,6 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
      */
     override fun showDialog(): ButtonType? {
         val result = super.showAndWait()
-        return if(result.isPresent) result.get() else null
+        return if (result.isPresent) result.get() else null
     }
 }

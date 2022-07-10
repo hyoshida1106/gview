@@ -1,7 +1,7 @@
 package gview.view.dialog
 
 import gview.view.framework.GvCustomDialog
-import gview.model.commit.GviewGitFileEntryModel
+import gview.model.commit.GvCommitFile
 import javafx.scene.control.ButtonType
 
 class SelectUnStageFilesDialog
@@ -9,5 +9,5 @@ class SelectUnStageFilesDialog
         "アンステージするファイルを選択してください",
         "/dialog/SelectUnStageFilesDialog.fxml",
         ButtonType.OK, ButtonType.CANCEL) {
-    val selectedFiles: List<GviewGitFileEntryModel> get() = controller.selectedFiles
+    val selectedFiles: List<GvCommitFile> get() = controller.selectedFiles
 }
