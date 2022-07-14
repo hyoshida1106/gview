@@ -10,12 +10,12 @@ import javafx.scene.control.SeparatorMenuItem
 class RemoteBranchContextMenu(val model: GvRemoteBranch)
     : ContextMenu() {
 
-    private val checkOutMenuItem = GviewMenuItem(
+    private val checkOutMenuItem = GvMenuItem(
             text = "このリモートブランチをローカルへチェックアウトする",
             iconLiteral = "mdi-folder-star"
     ) { onCheckOut() }
 
-    private val removeMenuItem   = GviewMenuItem(
+    private val removeMenuItem   = GvMenuItem(
             text = "このリモートブランチを削除する",
             iconLiteral = "mdi-delete-forever"
     ) { onRemove() }

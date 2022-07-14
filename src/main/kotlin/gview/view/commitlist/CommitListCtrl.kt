@@ -34,10 +34,6 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     class Cell: TableCell<RowData, CellData>() {
         private var cellData: CellData? = null
 
-        init {
-            style = Style.cellStyle
-        }
-
         override fun updateItem(data: CellData?, empty: Boolean) {
             super.updateItem(data, empty)
             cellData = data
@@ -74,7 +70,6 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     private lateinit var commitListAdjuster: GvColumnAdjuster
 
     fun initialize() {
-        commitListTable.style = Style.commitListStyle
         commitListTable.placeholder = Label("")
 
         treeColumn.setCellValueFactory { row -> ReadOnlyObjectWrapper(row.value.treeCellValue) }
@@ -160,14 +155,5 @@ class CommitListCtrl: GvBaseWindowCtrl() {
 
         //リストを可視化
         commitListTable.isVisible = true
-    }
-
-    private object Style {
-        const val cellStyle =
-            "-fx-border-width: 0;" +
-            "-fx-padding: 0;"
-
-        const val commitListStyle =
-            "-fx-padding: 0;"
     }
 }

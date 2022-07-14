@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCombination
 
 class WorkTreeMenu: Menu("ワークツリー(_W)") {
 
-    private val stageMenu = GviewMenuItem(
+    private val stageMenu = GvMenuItem(
             text = "ステージ(_S)...",
             accelerator = KeyCodeCombination(
                     KeyCode.S,
@@ -21,7 +21,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             iconLiteral = "mdi-arrow-up-bold-circle-outline"
     ) { doStageCommand() }
 
-    private val unstageMenu = GviewMenuItem(
+    private val unstageMenu = GvMenuItem(
             text = "アンステージ(_U)...",
             accelerator = KeyCodeCombination(
                     KeyCode.S,
@@ -30,7 +30,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             iconLiteral = "mdi-arrow-down-bold-circle-outline"
     ) { doUnStageCommand() }
 
-    private val commitMenu = GviewMenuItem(
+    private val commitMenu = GvMenuItem(
             text = "コミット(_C)...",
             accelerator = KeyCodeCombination(
                     KeyCode.C,

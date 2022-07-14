@@ -12,7 +12,7 @@ import javafx.scene.input.KeyCombination
 class CommitMenu
     : Menu("コミット(_C)") {
 
-    private val tagSearchMenu = GviewMenuItem(
+    private val tagSearchMenu = GvMenuItem(
             text= "タグを検索(_F)...",
             accelerator = KeyCodeCombination(
                     KeyCode.F,
@@ -20,7 +20,7 @@ class CommitMenu
                     KeyCombination.SHIFT_DOWN)
     ) { onTagSearch() }
 
-    private val commentSearchMenu = GviewMenuItem(
+    private val commentSearchMenu = GvMenuItem(
             text = "コメントを検索(_S)...",
             accelerator = KeyCodeCombination(
                     KeyCode.S,
@@ -28,7 +28,7 @@ class CommitMenu
                     KeyCombination.SHIFT_DOWN)
     ) { onCommentSearch() }
 
-    private val branchMenu = GviewMenuItem(
+    private val branchMenu = GvMenuItem(
             text = "ブランチ...",
             accelerator = KeyCodeCombination(
                     KeyCode.B,
@@ -36,7 +36,7 @@ class CommitMenu
             iconLiteral = "mdi-source-branch"
     ) { onBranch() }
 
-    private val mergeMenu = GviewMenuItem(
+    private val mergeMenu = GvMenuItem(
             text = "マージ...",
             accelerator = KeyCodeCombination(
                     KeyCode.M,
@@ -44,7 +44,7 @@ class CommitMenu
             iconLiteral = "mdi-source-merge"
     ) { onMerge() }
 
-    private val cherryPickMenu = GviewMenuItem(
+    private val cherryPickMenu = GvMenuItem(
             text = "チェリーピック...",
             accelerator = KeyCodeCombination(
                     KeyCode.P,
@@ -52,11 +52,11 @@ class CommitMenu
             iconLiteral = "mdi-source-pull"
     ) { onCherryPick() }
 
-    private val newTagMenu = GviewMenuItem(
+    private val newTagMenu = GvMenuItem(
             text = "タグを作成..."
     ) { onNewTag() }
 
-    private val removeTagMenu = GviewMenuItem(
+    private val removeTagMenu = GvMenuItem(
             text = "タグを削除..."
     ) { onRemoveTag() }
 

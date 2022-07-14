@@ -56,6 +56,13 @@ class GvWorkFilesModel(private val repository: GvRepository) {
     }
 
     /**
+     * 初期化
+     */
+    init {
+        update()
+    }
+
+    /**
      * データ更新
      */
     private fun update() {
@@ -94,8 +101,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
         treeWalk.addTree(getHeadIterator(repository))
         treeWalk.addTree(DirCacheIterator(cache))
         treeWalk.filter = NonconflictingFileFilter(1)
-        ByteArrayDiffFormatter(repository).use() { formatter ->
-            stagedFiles.value = DiffEntry.scan(treeWalk).map { it ->GvModifiedFile(formatter, it) }
+        ByteArrayDiffFormatter(repository).use { formatter ->
+            stagedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
         }
     }
 
@@ -117,7 +124,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
             NonconflictingFileFilter(0),
             IndexDiffFilter(0, 1)
         )
-        ByteArrayDiffFormatter(repository).use() { formatter ->
+        ByteArrayDiffFormatter(repository).use { formatter ->
             // 1度SCANしないとFormatter内の"source"に情報が設定されないらしい
             formatter.scan(DirCacheIterator(cache), FileTreeIterator(repository))
             changedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
@@ -146,11 +153,11 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     private fun updateConflictedFiles(cache: DirCache) {
         val files = mutableListOf<GvConflictFile>()
-        val cacheIterator = DirCacheIterator(cache)
-        while (!cacheIterator.eof()) {
-            files.add(GvConflictFile(DirCacheEntry(cacheIterator.dirCacheEntry)))
-            cacheIterator.next(1)
-        }
+//        val cacheIterator = DirCacheIterator(cache)
+//        while (!cacheIterator.eof()) {
+//            files.add(GvConflictFile(DirCacheEntry(cacheIterator.dirCacheEntry)))
+//            cacheIterator.next(1)
+//        }
         conflictedFiles.value = files
     }
 
@@ -160,8 +167,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      * @param[files]    対象ファイルのリスト
      */
     fun stageFiles(files: List<GvCommitFile>) {
-        var addCount: Int = 0
-        var delCount: Int = 0
+        var addCount = 0
+        var delCount = 0
 
         val git = Git(repository.jgitRepository)
         val addCommand = git.add()

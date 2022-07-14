@@ -16,17 +16,17 @@ import java.lang.Exception
 class LocalBranchContextMenu(private val model: GvLocalBranch)
     : ContextMenu() {
 
-    private val checkOutMenuItem = GviewMenuItem(
+    private val checkOutMenuItem = GvMenuItem(
             text = "このブランチをカレントブランチにする" ,
             iconLiteral = "mdi-download"
     ) { onCheckOut() }
 
-    private val createBranchMenuItem = GviewMenuItem(
+    private val createBranchMenuItem = GvMenuItem(
             text = "このブランチから新たなブランチを作成する..." ,
             iconLiteral = "mdi-source-branch"
     ) { onCreateNewBranch() }
 
-    private val removeMenuItem   = GviewMenuItem(
+    private val removeMenuItem   = GvMenuItem(
             text = "このブランチを削除する",
             iconLiteral = "mdi-delete-forever"
     ) { onRemove() }

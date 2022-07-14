@@ -18,7 +18,7 @@ import javafx.stage.DirectoryChooser
 class FileMenu
     : Menu("ファイル(_F)") {
 
-    private val openMenu = GviewMenuItem(
+    private val openMenu = GvMenuItem(
             text= "リポジトリを開く(_O)...",
             accelerator = KeyCodeCombination(
                     KeyCode.O,
@@ -26,7 +26,7 @@ class FileMenu
             iconLiteral = "mdi-folder"
     ) { onFileOpenRepo() }
 
-    private val createMenu = GviewMenuItem(
+    private val createMenu = GvMenuItem(
             text = "新規リポジトリ(_N)...",
             accelerator = KeyCodeCombination(
                     KeyCode.N,
@@ -34,7 +34,7 @@ class FileMenu
             iconLiteral = "mdi-folder-plus"
     ) { onFileCreateRepo() }
 
-    private val cloneMenu = GviewMenuItem(
+    private val cloneMenu = GvMenuItem(
             text = "クローン(_C)...",
             accelerator = KeyCodeCombination(
                     KeyCode.C,
@@ -42,17 +42,17 @@ class FileMenu
             iconLiteral = "mdi-cloud-download"
     ) { onFileCloneRepo() }
 
-    private val quitMenu = GviewMenuItem(
+    private val quitMenu = GvMenuItem(
             text = "終了(_X)"
     ) { onFileQuit() }
 
     //以前に開いたファイル用メニューのプレースホルダ
     private val lastFileMenuArray = listOf(
-        GviewMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
-        GviewMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
-        GviewMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
-        GviewMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
-        GviewMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) }
+        GvMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
+        GvMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
+        GvMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
+        GvMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) },
+        GvMenuItem(text = "") { onLastFileMenu(it.source as MenuItem) }
     )
 
     init {

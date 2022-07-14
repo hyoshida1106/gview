@@ -1,10 +1,12 @@
 package gview.view.commitinfo
 
+import gview.conf.SystemModal
 import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.menu.WorkTreeMenu
 import gview.view.util.GvColumnAdjuster
 import gview.model.commit.GvCommitFile
+import gview.resourceBundle
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -13,15 +15,16 @@ import javafx.scene.layout.AnchorPane
 
 class WorkFileListCtrl: GvBaseWindowCtrl() {
 
+    @FXML private lateinit var stageLabel: Label
+    @FXML private lateinit var changeLabel: Label
+
     @FXML private lateinit var workFileListPane: SplitPane
 
-    @FXML private lateinit var stagedFileTopBox: AnchorPane
     @FXML private lateinit var stagedFileList: TableView<RowData>
     @FXML private lateinit var stagedFileBottomBox: AnchorPane
     @FXML private lateinit var stagedFileTypeColumn: TableColumn<RowData, String>
     @FXML private lateinit var stagedFilePathColumn: TableColumn<RowData, String>
 
-    @FXML private lateinit var changedFileTopBox: AnchorPane
     @FXML private lateinit var changedFileList: TableView<RowData>
     @FXML private lateinit var changedFileBottomBox: AnchorPane
     @FXML private lateinit var changedFileTypeColumn: TableColumn<RowData, String>
@@ -46,25 +49,37 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
 
     //初期化
     fun initialize() {
+        workFileListPane.setDividerPositions(SystemModal.workFileSplitPos.value)
+        workFileListPane.dividers[0].positionProperty().addListener { _, _, value ->
+            SystemModal.workFileSplitPos.value = value.toDouble()
+        }
         stagedFileTypeColumn.cellValueFactory = PropertyValueFactory("type")
         stagedFilePathColumn.cellValueFactory = PropertyValueFactory("path")
 
         changedFileTypeColumn.cellValueFactory = PropertyValueFactory("type")
         changedFilePathColumn.cellValueFactory = PropertyValueFactory("path")
 
-        stagedFileTopBox.style = CSS.topBoxStyle
-        stagedFileBottomBox.style = CSS.bottomBoxStyle
-        stagedFileTypeColumn.style = CSS.typeColumnStyle
-        stagedFilePathColumn.style = CSS.pathColumnStyle
-        stagedFileList.style = CSS.fileListStyle
+        stageLabel.text = resourceBundle().getString("workFileStage")
+        stageLabel.styleClass.add("TitleClass")
+        stagedFileBottomBox.styleClass.add("BottomBox")
+        stagedFileTypeColumn.text = resourceBundle().getString("workFileType")
+        stagedFileTypeColumn.styleClass.add("TypeColumn")
+        stagedFilePathColumn.text = resourceBundle().getString("workFilePath")
+        stagedFilePathColumn.styleClass.add("PathColumn")
         stagedFileList.placeholder = Label()
 
-        changedFileTopBox.style = CSS.topBoxStyle
-        changedFileBottomBox.style = CSS.bottomBoxStyle
-        changedFileTypeColumn.style = CSS.typeColumnStyle
-        changedFilePathColumn.style = CSS.pathColumnStyle
-        changedFileList.style = CSS.fileListStyle
+        changeLabel.text = resourceBundle().getString("workFileChange")
+        changeLabel.styleClass.add("TitleClass")
+        changedFileBottomBox.styleClass.add("BottomBox")
+        changedFileTypeColumn.text = resourceBundle().getString("workFileType")
+        changedFileTypeColumn.styleClass.add("TypeColumn")
+        changedFilePathColumn.text = resourceBundle().getString("workFilePath")
+        changedFilePathColumn.styleClass.add("PathColumn")
         changedFileList.placeholder = Label()
+
+        commitButton.text = resourceBundle().getString("workFileCommit")
+        unStageButton.text = resourceBundle().getString("workFileUnStage")
+        stageButton.text = resourceBundle().getString("workFileStage")
 
         stagedFileListAdjuster = GvColumnAdjuster(stagedFileList, stagedFilePathColumn)
         changedFileListAdjuster = GvColumnAdjuster(changedFileList, changedFilePathColumn)
@@ -80,9 +95,9 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        GvRepository.currentRepository?.workFiles?.stagedFiles?.addListener  { _, _, new -> updateStagedFiles(new)  }
-        GvRepository.currentRepository?.workFiles?.changedFiles?.addListener { _, _, new -> updateChangedFiles(new) }
-
+        GvRepository.currentRepositoryProperty.addListener { _, _, repository ->
+            javafx.application.Platform.runLater { updateRepository(repository) }
+        }
         stagedFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->
             CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
         }
@@ -90,8 +105,22 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
             CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
         }
 
+        stagedFileList.focusedProperty().addListener { _, _, newValue ->
+            if (!newValue) stagedFileList.selectionModel.clearSelection()
+        }
+        changedFileList.focusedProperty().addListener { _, _, newValue ->
+            if (!newValue) changedFileList.selectionModel.clearSelection()
+        }
+
         stagedFileListAdjuster.adjustColumnWidth()
         changedFileListAdjuster.adjustColumnWidth()
+    }
+
+    private fun updateRepository(repository: GvRepository) {
+        updateStagedFiles(repository.workFiles.stagedFiles.value)
+        updateChangedFiles(repository.workFiles.changedFiles.value)
+        repository.workFiles.stagedFiles.addListener  { _, _, new -> updateStagedFiles(new)  }
+        repository.workFiles.changedFiles.addListener { _, _, new -> updateChangedFiles(new) }
     }
 
     private fun updateStagedFiles(files: List<GvCommitFile>?) {
@@ -110,29 +139,5 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
             changedFileList.items.clear()
         }
         changedFileNumber.value = changedFileList.items.size
-    }
-
-    object CSS {
-        val topBoxStyle = """
-            -fx-padding: 0 10 0 10;
-            -fx-background-color: -background-color;
-        """.trimIndent()
-
-        val fileListStyle = """
-            -fx-padding: 5 8 5 8;
-            -fx-background-color: -background-color;
-        """.trimIndent()
-
-        val bottomBoxStyle = """
-            -fx-padding: 0 10 10 10;
-            -fx-background-color: -background-color;
-        """.trimIndent()
-
-        val typeColumnStyle = """
-            -fx-alignment: CENTER;
-        """.trimIndent()
-
-        val pathColumnStyle = """
-        """.trimIndent()
     }
 }

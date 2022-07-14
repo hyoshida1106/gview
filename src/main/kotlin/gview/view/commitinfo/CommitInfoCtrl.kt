@@ -11,9 +11,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.SplitPane
 import javafx.scene.layout.AnchorPane
 
-class CommitInfoCtrl
-    : GvBaseWindowCtrl() {
-
+class CommitInfoCtrl : GvBaseWindowCtrl() {
     @FXML private lateinit var commitInfoPane: SplitPane
     @FXML private lateinit var commitInfoFiles: AnchorPane
     @FXML private lateinit var commitInfoDiff: AnchorPane
@@ -32,13 +30,12 @@ class CommitInfoCtrl
     override fun displayCompleted() {
         var commitList: CommitListCtrl = CommitList.controller
         commitList.selectedRowProperty.addListener { _, _, newValue ->
-            when(newValue) {
+            when (newValue) {
                 is HeaderRowData -> selectHeaderRowData()
                 is CommitRowData -> selectCommitRowData(newValue)
                 else -> commitInfoPane.isVisible = false
             }
         }
-
         //初期状態は非表示
         commitInfoPane.isVisible = false
     }

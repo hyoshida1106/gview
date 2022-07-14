@@ -15,12 +15,12 @@ import javafx.scene.input.KeyCombination
 class BranchMenu
     : Menu("ブランチ(_B)") {
 
-    private val checkoutMenu = GviewMenuItem(
+    private val checkoutMenu = GvMenuItem(
             text= "チェックアウト(_C)",
             iconLiteral = "mdi-folder-star"
     ) { onCheckOut() }
 
-    private val pushMenu = GviewMenuItem(
+    private val pushMenu = GvMenuItem(
             text= "プッシュ(_P)",
             accelerator = KeyCodeCombination(
                     KeyCode.P,
@@ -29,7 +29,7 @@ class BranchMenu
             iconLiteral = "mdi-folder-upload"
     ) { onPush() }
 
-    private val pullMenu = GviewMenuItem(
+    private val pullMenu = GvMenuItem(
             text = "プル(_L)",
             accelerator = KeyCodeCombination(
                     KeyCode.L,
@@ -38,17 +38,17 @@ class BranchMenu
             iconLiteral = "mdi-folder-download"
     ) { onPull() }
 
-    private val createMenu = GviewMenuItem(
+    private val createMenu = GvMenuItem(
             text = "新規作成(_)...",
             iconLiteral = "mdi-folder-plus"
     ) { onCreate() }
 
-    private val renameMenu = GviewMenuItem(
+    private val renameMenu = GvMenuItem(
             text = "名称変更(_R)...",
             iconLiteral = "mdi-folder-move"
     ) { onRename() }
 
-    private val removeMenu = GviewMenuItem(
+    private val removeMenu = GvMenuItem(
             text = "削除(_D)",
             iconLiteral = "mdi-folder-remove"
     ) { onRemove() }

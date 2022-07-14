@@ -3,15 +3,14 @@ package gview.view.menu
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 
-
 class HelpMenu: Menu("ヘルプ(_H)") {
 
-    private val helpMenuItem = GviewMenuItem(
+    private val helpMenuItem = GvMenuItem(
             text = "ヘルプ...",
             iconLiteral = "mdi-help-circle-outline"
     ) { onHelp() }
 
-    private val aboutMenuItem = GviewMenuItem(
+    private val aboutMenuItem = GvMenuItem(
             text = "プログラムについて..."
     ) { onAbout() }
 

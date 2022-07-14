@@ -61,12 +61,10 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
         //保存済情報からスプリットの表示位置を読み出して再現する
         mainSplit.setDividerPositions(SystemModal.mainSplitPos[0], SystemModal.mainSplitPos[1])
         //スプリット位置が変更された場合に、位置情報を取得するためのイベント定義
-        mainSplit.dividers[0].positionProperty().addListener { _, _, value
-            ->
+        mainSplit.dividers[0].positionProperty().addListener { _, _, value ->
             SystemModal.mainSplitPos[0] = value.toDouble()
         }
-        mainSplit.dividers[1].positionProperty().addListener { _, _, value
-            ->
+        mainSplit.dividers[1].positionProperty().addListener { _, _, value ->
             SystemModal.mainSplitPos[1] = value.toDouble()
         }
         //各ペインにウィンドウのルートインスタンスを設定する

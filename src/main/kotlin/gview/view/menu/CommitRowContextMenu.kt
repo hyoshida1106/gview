@@ -14,17 +14,17 @@ import java.lang.Exception
 class CommitRowContextMenu(private val model: GvCommit)
     : ContextMenu() {
 
-    private val checkoutMenu = GviewMenuItem(
+    private val checkoutMenu = GvMenuItem(
             text = "このコミットをチェックアウトする...",
             iconLiteral = "mdi-source-branch"
     ) { onCheckout() }
 
-    private val createBranchMenu = GviewMenuItem(
+    private val createBranchMenu = GvMenuItem(
         text = "このコミットからブランチを作成する...",
         iconLiteral = "mdi-source-branch"
     ) { onCreateBranch() }
 
-    private val mergeMenu = GviewMenuItem(
+    private val mergeMenu = GvMenuItem(
             text = "このコミットをヘッドへマージする...",
             iconLiteral = "mdi-source-merge"
     ) { onMerge() }

@@ -6,6 +6,7 @@ import gview.view.util.GvColumnAdjuster
 import gview.view.util.GvTextMessage
 import gview.model.commit.GvCommit
 import gview.model.commit.GvCommitFile
+import gview.resourceBundle
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -15,7 +16,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.TextFlow
 
 class CommitFileListCtrl: GvBaseWindowCtrl()  {
-
     @FXML private lateinit var commitProps: VBox
     @FXML private lateinit var commitMessage: TextArea
     @FXML private lateinit var commitFileList: TableView<RowData>
@@ -35,15 +35,13 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
     fun initialize() {
         typeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
         pathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
-        commitFileList.style = CSS.fileListStyle
-        typeColumn.style = CSS.typeColumnStyle
-        pathColumn.style = CSS.pathColumnStyle
+        typeColumn.styleClass.add("TypeColumn")
+        pathColumn.styleClass.add("PathColumn")
         commitFileListAdjuster = GvColumnAdjuster(commitFileList, pathColumn)
     }
 
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-
         CommitInfo.controller.commitDataProperty.addListener { _, _, newValue -> update(newValue) }
         commitFileList.selectionModel.selectedItemProperty().addListener { _, _, entry ->
             CommitDiff.controller.selectDiffEntry(entry?.diffEntry)
@@ -52,31 +50,27 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
     }
 
     private fun update(model: GvCommit?) {
-
         updateFileInfo(model)
         updateFileList(model)
         commitFileList.selectionModel.clearSelection()
     }
 
     private fun updateFileInfo(model: GvCommit?) {
-
-        commitProps.children.clear()
-
         if(model != null) {
             val labelList = TextFlow()
+            labelList.styleClass.add("LabelList")
             labelList.children.setAll(GvBranchTagLabels(model))
-            labelList.style = CSS.labelListStyle
 
             commitProps.children.setAll(
-                    GvTextMessage("ID: ", model.id.toString()),
-                    GvTextMessage("日付: ", model.commitTime),
-                    GvTextMessage("作者: ", model.author),
-                    GvTextMessage("登録: ", model.committer),
+                    GvTextMessage(resourceBundle().getString("CommitIdTitle"), model.id.toString()),
+                    GvTextMessage(resourceBundle().getString("CommitDateTitle"), model.commitTime),
+                    GvTextMessage(resourceBundle().getString("CommitAuthorTitle"), model.author),
+                    GvTextMessage(resourceBundle().getString("CommitCommitterTitle"), model.committer),
                     labelList)
-            commitProps.style = CSS.itemListStyle
-
+            commitProps.styleClass.add("ItemList")
             commitMessage.text = model.fullMessage
-            commitMessage.style = CSS.commitMessageStyle
+        } else {
+            commitProps.children.clear()
         }
     }
 
@@ -86,33 +80,5 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
         } else {
             commitFileList.items.clear()
         }
-    }
-
-    object CSS {
-        val labelListStyle = """
-            -fx-padding: 0 2 0 0;
-        """.trimIndent()
-
-        val itemListStyle = """
-            -fx-padding: 3 10 0 10;
-        """.trimIndent()
-
-        val commitMessageStyle = """
-            -fx-padding: 10;
-            -fx-background-insets: 7;
-            -fx-background-radius: 5;
-        """.trimIndent()
-
-        val fileListStyle = """
-            -fx-padding: 10 8 7 8;
-            -fx-background-color: -background-color;
-        """.trimIndent()
-
-        val typeColumnStyle = """
-            -fx-alignment: CENTER;
-        """.trimIndent()
-
-        val pathColumnStyle = """
-        """.trimIndent()
     }
 }

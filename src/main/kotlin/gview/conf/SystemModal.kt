@@ -35,6 +35,11 @@ object SystemModal: SerializableData("ModalInfo.json") {
     val lastOpenedFiles: List<String> get() { return data.lastOpenedFiles }
 
     /**
+     * 作業ファイル一覧の分割位置
+     */
+    var workFileSplitPos: SimpleDoubleProperty
+
+    /**
      * 保存データインスタンス
      */
     private val data: StorageData
@@ -56,10 +61,12 @@ object SystemModal: SerializableData("ModalInfo.json") {
         mainHeightProperty = SimpleDoubleProperty(data.mainHeight)
         mainWidthProperty = SimpleDoubleProperty(data.mainWidth )
         mainSplitPos = data.mainSplitPos
+        workFileSplitPos = SimpleDoubleProperty(data.workFileSplitPos)
         //プロパティ更新時に保存データを更新するためのBind
         maximumProperty.addListener { _, _, newValue -> data.maximum = newValue }
         mainHeightProperty.addListener { _, _, newValue -> data.mainHeight = newValue.toDouble() }
         mainWidthProperty.addListener { _, _, newValue -> data.mainWidth = newValue.toDouble() }
+        workFileSplitPos.addListener { _, _, newValue -> data.workFileSplitPos = newValue.toDouble() }
     }
 
     /**
@@ -110,7 +117,8 @@ object SystemModal: SerializableData("ModalInfo.json") {
             var mainHeight: Double,
             var mainWidth: Double,
             var mainSplitPos: DoubleArray,
-            var lastOpenedFiles: List<String>){
+            var lastOpenedFiles: List<String>,
+            var workFileSplitPos: Double){
 
         /**
          * @constructor         セカンダリコンストラクタ
@@ -120,7 +128,8 @@ object SystemModal: SerializableData("ModalInfo.json") {
             800.0,
             1200.0,
             doubleArrayOf(0.15, 0.4),
-            mutableListOf<String>())
+            mutableListOf<String>(),
+            0.5)
 
         /**
          * ハッシュ関数
@@ -132,7 +141,8 @@ object SystemModal: SerializableData("ModalInfo.json") {
                     mainHeight.hashCode() +
                     mainWidth.hashCode() +
                     mainSplitPos.contentHashCode() +
-                    lastOpenedFiles.hashCode()
+                    lastOpenedFiles.hashCode() +
+                    workFileSplitPos.hashCode()
         }
 
         /**

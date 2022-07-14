@@ -5,11 +5,16 @@ import gview.view.menu.*
 import javafx.fxml.FXML
 import javafx.scene.control.MenuBar as JavaFxMenuBar
 
-class MenuBarCtrl: GvBaseWindowCtrl() {
+/**
+ * メニューバーコントロールクラス
+ */
+class MenuBarCtrl : GvBaseWindowCtrl() {
     @FXML private lateinit var menuBar: JavaFxMenuBar
 
+    /**
+     * 初期化
+     */
     fun initialize() {
-        menuBar.style = Style.menuBarStyle
         menuBar.menus.addAll(
             FileMenu(),
             BranchMenu(),
@@ -17,11 +22,5 @@ class MenuBarCtrl: GvBaseWindowCtrl() {
             CommitMenu(),
             HelpMenu()
         )
-    }
-
-    private object Style {
-        const val menuBarStyle =
-            "-fx-background-color: -background-color;" +
-            "-fx-effect: innershadow(three-pass-box, gray, 3, 0.5, 1, 1);"
     }
 }

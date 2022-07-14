@@ -28,7 +28,6 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.isShowRoot = false
         branchTree.setCellFactory { BranchTreeCell() }
         branchTree.selectionModel.clearSelection()
-        branchTree.style = Style.treeStyle
         GvRepository.currentRepositoryProperty.addListener { _, _, repository
             -> Platform.runLater { updateRepository(repository) }
         }
@@ -64,7 +63,6 @@ class BranchListCtrl: GvBaseWindowCtrl() {
                 contextMenu = null
             }
             text = null
-            style = Style.cellStyle
         }
     }
 
@@ -108,10 +106,9 @@ class BranchListCtrl: GvBaseWindowCtrl() {
 
         init {
             if (model.isCurrentBranch) {
-                branchName.style = Style.currentBranchLabelStyle
+                branchName.styleClass.add("CurrentBranch")
                 showInTree.isSelected = true
             }
-            showInTree.style = Style.checkBoxStyle
             showInTree.isSelected = model.selectedFlagProperty.value
             if (model.isCurrentBranch) {
                 showInTree.isDisable = true
@@ -120,16 +117,5 @@ class BranchListCtrl: GvBaseWindowCtrl() {
                 showInTree.selectedProperty().addListener { _, _, newVal -> model.selectedFlagProperty.set(newVal) }
             }
         }
-    }
-
-    private object Style {
-    val treeStyle =
-        "-fx-padding: 0;"
-    val cellStyle =
-        "-fx-padding: 2 0;"
-    val currentBranchLabelStyle =
-        "-fx-font-weight: bold;"
-    val checkBoxStyle =
-        "-fx-padding: 0 0 0 2;"
     }
 }
