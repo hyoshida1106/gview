@@ -31,14 +31,20 @@ class GvRepository private constructor(val jgitRepository: Repository) {
      */
     val commits = GvCommitList(this)
 
-    init {
-        jgitRepository.listenerList.addWorkingTreeModifiedListener {
-            println("work tree changed")
-        }
-        jgitRepository.listenerList.addIndexChangedListener {_ ->
-            println("index changed")
-        }
-    }
+//    init {
+//        jgitRepository.listenerList.addWorkingTreeModifiedListener {
+//            println("work tree changed")
+//        }
+//        jgitRepository.listenerList.addIndexChangedListener {_ ->
+//            println("index changed")
+//        }
+//        jgitRepository.listenerList.addRefsChangedListener { _ ->
+//            println("Refs changed")
+//        }
+//        jgitRepository.listenerList.addConfigChangedListener { _ ->
+//            println("Config changed")
+//        }
+//    }
 
     /**
      * シングルトン管理のための Companion Object

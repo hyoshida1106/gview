@@ -19,6 +19,7 @@ class GvBranchList(private val repository: GvRepository){
 
     init {
         update()
+        repository.jgitRepository.listenerList.addRefsChangedListener { _ -> update() }
     }
 
     fun remoteBranchDisplayName(name: String): String {
@@ -64,7 +65,6 @@ class GvBranchList(private val repository: GvRepository){
                 .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
                 .setCreateBranch(true)
                 .call()
-        Platform.runLater { update() }
     }
 
     fun checkoutLocalBranch(model: GvLocalBranch) {
@@ -72,7 +72,6 @@ class GvBranchList(private val repository: GvRepository){
                 .checkout()
                 .setName(model.name)
                 .call()
-        Platform.runLater { update() }
     }
 
     fun removeLocalBranch(model: GvLocalBranch, force: Boolean) {
@@ -81,7 +80,6 @@ class GvBranchList(private val repository: GvRepository){
                 .setBranchNames(model.name)
                 .setForce(force)
                 .call()
-        Platform.runLater { update() }
     }
 
     fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
@@ -97,7 +95,6 @@ class GvBranchList(private val repository: GvRepository){
                     .setName(newBranch)
                     .call()
         }
-        Platform.runLater { update() }
     }
 
     fun createNewBranchFromCommit(newBranch: String, commit: GvCommit, checkout: Boolean) {
@@ -115,7 +112,6 @@ class GvBranchList(private val repository: GvRepository){
                     .setStartPoint(commit.commit)
                     .call()
         }
-        Platform.runLater { update() }
     }
 
     fun createNewBranchFromOtherBranch(newBranch: String, model: GvLocalBranch, checkout: Boolean) {
@@ -133,7 +129,6 @@ class GvBranchList(private val repository: GvRepository){
                     .setStartPoint(model.path)
                     .call()
         }
-        Platform.runLater { update() }
     }
 
 	fun mergeCommit(model: GvCommit, message: String) {
@@ -142,6 +137,5 @@ class GvBranchList(private val repository: GvRepository){
                 .include(model.id)
                 .setMessage(message)
                 .call()
-        Platform.runLater { update() }
 	}
 }

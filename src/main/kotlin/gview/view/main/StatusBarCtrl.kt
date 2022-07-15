@@ -30,7 +30,8 @@ class StatusBarCtrl: GvBaseWindowCtrl() {
     private fun updateRepository(repository: GvRepository?) {
         setCurrentRepositoryPath( repository?.jgitRepository?.directory?.absolutePath )
         setCurrentBranch( repository?.branches?.currentBranch?.value )
-        repository?.branches?.currentBranch?.addListener { _, _, new -> setCurrentBranch( new ) }
+        repository?.branches?.currentBranch?.addListener { _, _, new ->
+            Platform.runLater { setCurrentBranch( new ) } }
     }
 
     /**

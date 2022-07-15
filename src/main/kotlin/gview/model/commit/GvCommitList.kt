@@ -43,10 +43,8 @@ class GvCommitList(private val repository: GvRepository) {
      * 初期化
      */
     init {
-        //最初の表示
         update()
-        //ローカルブランチが変更された場合、表示を更新する
-        repository.branches.localBranchList.addListener { _, _, _ -> update() }
+        repository.jgitRepository.listenerList.addRefsChangedListener { _ -> update() }
     }
 
     /**
@@ -63,7 +61,7 @@ class GvCommitList(private val repository: GvRepository) {
     /**
      * 表示の更新
      */
-    fun refresh() {
+    private fun refresh() {
         //所持値を初期化
         headId = repository.jgitRepository.resolve(Constants.HEAD)
         //PlotCommitListインスタンスを生成

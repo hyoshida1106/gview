@@ -89,8 +89,8 @@ class CommitListCtrl: GvBaseWindowCtrl() {
 
         commitListAdjuster = GvColumnAdjuster(commitListTable, infoColumn)
 
-        GvRepository.currentRepositoryProperty.addListener { _, _, repository
-            -> Platform.runLater { updateRepository(repository) }
+        GvRepository.currentRepositoryProperty.addListener { _, _, repository ->
+            Platform.runLater { updateRepository(repository) }
         }
 
         //初期状態はinvisible
@@ -100,8 +100,9 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     private fun updateRepository(repository: GvRepository) {
         val headers = repository.workFiles
         val commits = repository.commits
-        commits.commitList.addListener { _, _, _ -> update(headers, commits) }
         update(headers, commits)
+        commits.commitList.addListener { _, _, _ ->
+            Platform.runLater { update(headers, commits) } }
     }
 
     //表示完了時にListenerを設定する

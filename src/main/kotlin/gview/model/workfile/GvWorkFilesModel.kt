@@ -60,6 +60,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     init {
         update()
+        repository.jgitRepository.listenerList.addRefsChangedListener  { _ -> update() }
     }
 
     /**
@@ -153,11 +154,14 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     private fun updateConflictedFiles(cache: DirCache) {
         val files = mutableListOf<GvConflictFile>()
-//        val cacheIterator = DirCacheIterator(cache)
-//        while (!cacheIterator.eof()) {
-//            files.add(GvConflictFile(DirCacheEntry(cacheIterator.dirCacheEntry)))
-//            cacheIterator.next(1)
-//        }
+        val cacheIterator = DirCacheIterator(cache)
+        while (!cacheIterator.eof()) {
+            val dirCacheEntry = cacheIterator.dirCacheEntry
+            if(dirCacheEntry != null) {
+                files.add(GvConflictFile(DirCacheEntry(dirCacheEntry)))
+            }
+            cacheIterator.next(1)
+        }
         conflictedFiles.value = files
     }
 
@@ -193,9 +197,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
         if(addCount > 0 || delCount > 0) {
             if(addCount > 0) addCommand.call()
             if(delCount > 0) delCommand.call()
-            InformationDialog(resourceBundle().getString("WorkFileStagedMessage").format(addCount + delCount)).showDialog()
             update()
-            repository.commits.refresh()
+            InformationDialog(resourceBundle().getString("WorkFileStagedMessage").format(addCount + delCount)).showDialog()
         }
     }
 
@@ -211,9 +214,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
                 .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
             reset.call()
-            InformationDialog(resourceBundle().getString("WorkFilesUnstagedMessage").format(files.size)).showDialog()
             update()
-            repository.commits.refresh()
+            InformationDialog(resourceBundle().getString("WorkFilesUnstagedMessage").format(files.size)).showDialog()
         }
     }
 
@@ -233,8 +235,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
                 .setMessage(message)
             files.forEach { commit.setOnly(it.path) }
             commit.call()
-            InformationDialog(resourceBundle().getString("workFileCommitMessage").format(files.size)).showDialog()
             update()
+            InformationDialog(resourceBundle().getString("workFileCommitMessage").format(files.size)).showDialog()
         }
     }
 }
