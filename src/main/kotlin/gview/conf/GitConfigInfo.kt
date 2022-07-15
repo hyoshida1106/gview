@@ -20,5 +20,5 @@ object GitConfigInfo {
     /**
      * GITコンフィギュレーション情報を参照するプロパティ
      */
-    private val userConfig get() = GvRepository.currentRepository?.jgitRepository?.config?.get(UserConfig.KEY)
+    private val userConfig get() = GvRepository.currentRepository?.config?.get(UserConfig.KEY)
 }

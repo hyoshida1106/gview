@@ -19,18 +19,18 @@ class GvBranchList(private val repository: GvRepository){
 
     init {
         update()
-        repository.jgitRepository.listenerList.addRefsChangedListener { _ -> update() }
+        repository.addRefsChangedListener { _ -> update() }
     }
 
     fun remoteBranchDisplayName(name: String): String {
-        return repository.jgitRepository.shortenRemoteBranchName(name)
+        return repository.shortenRemoteBranchName(name)
     }
     fun localBranchDisplayName(name: String): String {
         return Repository.shortenRefName(name)
     }
 
     private fun update() {
-        val git = Git(repository.jgitRepository)
+        val git = repository.gitCommand
 
         val remoteBranches = git.branchList()
             .setListMode(ListBranchCommand.ListMode.REMOTE)
@@ -42,7 +42,7 @@ class GvBranchList(private val repository: GvRepository){
             .map { GvLocalBranch(this, it) }
 
         localBranches.forEach { localBranch ->
-            val trackingStatus = BranchTrackingStatus.of(repository.jgitRepository, localBranch.path)
+            val trackingStatus = repository.getTrackingStatus(localBranch.path)
             if(trackingStatus != null) {
                 val remoteBranch = remoteBranches.find { it.path == trackingStatus.remoteTrackingBranch }
                 if(remoteBranch != null) {
@@ -54,11 +54,11 @@ class GvBranchList(private val repository: GvRepository){
 
         remoteBranchList.value = remoteBranches
         localBranchList.value  = localBranches
-        currentBranch.value = repository.jgitRepository.branch
+        currentBranch.value = repository.currentBranch
     }
 
     fun checkoutRemoteBranch(model: GvRemoteBranch) {
-        Git(repository.jgitRepository)
+        repository.gitCommand
                 .checkout()
                 .setName(model.name)
                 .setStartPoint(model.path)
@@ -68,14 +68,14 @@ class GvBranchList(private val repository: GvRepository){
     }
 
     fun checkoutLocalBranch(model: GvLocalBranch) {
-        Git(repository.jgitRepository)
+        repository.gitCommand
                 .checkout()
                 .setName(model.name)
                 .call()
     }
 
     fun removeLocalBranch(model: GvLocalBranch, force: Boolean) {
-        Git(repository.jgitRepository)
+        repository.gitCommand
                 .branchDelete()
                 .setBranchNames(model.name)
                 .setForce(force)
@@ -84,13 +84,13 @@ class GvBranchList(private val repository: GvRepository){
 
     fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
         if(checkout) {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .checkout()
                     .setName(newBranch)
                     .setCreateBranch(true)
                     .call()
         } else {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .branchCreate()
                     .setName(newBranch)
                     .call()
@@ -99,14 +99,14 @@ class GvBranchList(private val repository: GvRepository){
 
     fun createNewBranchFromCommit(newBranch: String, commit: GvCommit, checkout: Boolean) {
         if(checkout) {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .checkout()
                     .setName(newBranch)
                     .setStartPoint(commit.commit)
                     .setCreateBranch(true)
                     .call()
         } else {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .branchCreate()
                     .setName(newBranch)
                     .setStartPoint(commit.commit)
@@ -116,14 +116,14 @@ class GvBranchList(private val repository: GvRepository){
 
     fun createNewBranchFromOtherBranch(newBranch: String, model: GvLocalBranch, checkout: Boolean) {
         if(checkout) {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .checkout()
                     .setName(newBranch)
                     .setStartPoint(model.path)
                     .setCreateBranch(true)
                     .call()
         } else {
-            Git(repository.jgitRepository)
+            repository.gitCommand
                     .branchCreate()
                     .setName(newBranch)
                     .setStartPoint(model.path)
@@ -132,7 +132,7 @@ class GvBranchList(private val repository: GvRepository){
     }
 
 	fun mergeCommit(model: GvCommit, message: String) {
-        Git(repository.jgitRepository)
+        repository.gitCommand
                 .merge()
                 .include(model.id)
                 .setMessage(message)

@@ -44,7 +44,7 @@ class GvCommitList(private val repository: GvRepository) {
      */
     init {
         update()
-        repository.jgitRepository.listenerList.addRefsChangedListener { _ -> update() }
+        repository.addRefsChangedListener { _ -> update() }
     }
 
     /**
@@ -63,11 +63,10 @@ class GvCommitList(private val repository: GvRepository) {
      */
     private fun refresh() {
         //所持値を初期化
-        headId = repository.jgitRepository.resolve(Constants.HEAD)
+        headId = repository.headId
         //PlotCommitListインスタンスを生成
         plotCommitList.clear()
-        val plotWalk = PlotWalk(repository.jgitRepository)
-        plotWalk.use {
+        repository.getPlotWalk().use { plotWalk ->
             repository.branches.localBranchList.value
                 .filter { it.selectedFlagProperty.value }
                 .forEach { plotWalk.markStart(plotWalk.parseCommit(it.ref.objectId)) }
@@ -78,7 +77,7 @@ class GvCommitList(private val repository: GvRepository) {
         val commits = mutableListOf<GvCommit>()
         var prev: GvCommit? = null
         plotCommitList.forEach {
-            val commit = GvCommit(it, repository.jgitRepository, this, prev)
+            val commit = GvCommit(it, repository, this, prev)
             commits.add(commit)
             prev = commit
         }
@@ -107,9 +106,8 @@ class GvCommitList(private val repository: GvRepository) {
             .forEach { commitIdMap[it.ref.objectId]?.remoteBranches?.add(it) }
         //コミット情報にタグを設定
         commitTagMap.clear()
-        val revWalk = RevWalk(repository.jgitRepository)
-        revWalk.use {
-            Git(repository.jgitRepository)
+        repository.getRevWalk().use { revWalk ->
+            repository.gitCommand
                 .tagList()
                 .call()
                 .forEach {

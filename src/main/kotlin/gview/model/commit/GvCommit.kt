@@ -1,10 +1,9 @@
 package gview.model.commit
 
+import gview.model.GvRepository
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
-import gview.model.util.ByteArrayDiffFormatter
 import org.eclipse.jgit.lib.ObjectId
-import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommit
 import org.eclipse.jgit.revplot.PlotLane
 import java.text.DateFormat
@@ -20,7 +19,7 @@ import java.text.DateFormat
  */
 class GvCommit(
     val commit: PlotCommit<PlotLane>,
-    private val repo: Repository,
+    private val repo: GvRepository,
     private val commitList: GvCommitList,
     private val prevCommit: GvCommit?
 ) {
@@ -153,7 +152,7 @@ class GvCommit(
     val diffEntries: List<GvCommitFile> by lazy {
         val tree1 = if (commit.parentCount > 0) commit.getParent(0).tree else null
         val tree2 = commit.tree
-        ByteArrayDiffFormatter(repo).use { fmt -> fmt.scan(tree1, tree2).map { GvModifiedFile(fmt, it) } }
+        repo.getDiffFormatter().use { fmt -> fmt.scan(tree1, tree2).map { GvModifiedFile(fmt, it) } }
     }
 
     /**

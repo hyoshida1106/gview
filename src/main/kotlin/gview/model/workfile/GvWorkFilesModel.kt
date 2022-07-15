@@ -4,18 +4,14 @@ import gview.model.GvRepository
 import gview.model.commit.GvCommitFile
 import gview.model.commit.GvConflictFile
 import gview.model.commit.GvModifiedFile
-import gview.model.util.ByteArrayDiffFormatter
 import gview.resourceBundle
 import gview.view.dialog.InformationDialog
 import javafx.beans.property.SimpleObjectProperty
-import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.dircache.DirCache
 import org.eclipse.jgit.dircache.DirCacheEntry
 import org.eclipse.jgit.dircache.DirCacheIterator
 import org.eclipse.jgit.lib.Constants
-import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.treewalk.*
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter
 import org.eclipse.jgit.treewalk.filter.IndexDiffFilter
@@ -60,34 +56,21 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     init {
         update()
-        repository.jgitRepository.listenerList.addRefsChangedListener  { _ -> update() }
+        repository.addRefsChangedListener  { _ -> update() }
     }
 
     /**
      * データ更新
      */
     private fun update() {
-        val cache = repository.jgitRepository.lockDirCache()
+        val cache = repository.lockDirCache()
         try {
-            updateStagedFiles(repository.jgitRepository, cache)
-            updateChangedFiles(repository.jgitRepository, cache)
+            updateStagedFiles(repository, cache)
+            updateChangedFiles(repository, cache)
             updateConflictedFiles(cache)
         } finally {
             cache.unlock()
         }
-    }
-
-    /**
-     * パラメータ設定済のTreeWalkインスタンスを取得する
-     *
-     * @param[repository]       リポジトリインスタンス
-     * @return                  取得したTreeWalkインスタンス
-     */
-    private fun getTreeWalk(repository: Repository): TreeWalk {
-        val treeWalk = TreeWalk(repository)
-        treeWalk.operationType = TreeWalk.OperationType.CHECKIN_OP
-        treeWalk.isRecursive = false
-        return treeWalk
     }
 
     /**
@@ -96,13 +79,13 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      * @param[repository]       リポジトリインスタンス
      * @param[cache]            ディレクトリキャッシュ
      */
-    private fun updateStagedFiles(repository: Repository, cache: DirCache) {
+    private fun updateStagedFiles(repository: GvRepository, cache: DirCache) {
         //SubModuleは当面無視する
-        val treeWalk = getTreeWalk(repository)
-        treeWalk.addTree(getHeadIterator(repository))
+        val treeWalk = repository.getTreeWalk()
+        treeWalk.addTree(repository.getHeadIterator())
         treeWalk.addTree(DirCacheIterator(cache))
         treeWalk.filter = NonconflictingFileFilter(1)
-        ByteArrayDiffFormatter(repository).use { formatter ->
+        repository.getDiffFormatter().use { formatter ->
             stagedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
         }
     }
@@ -113,11 +96,11 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      * @param[repository]       リポジトリインスタンス
      * @param[cache]            ディレクトリキャッシュ
      */
-    private fun updateChangedFiles(repository: Repository, cache: DirCache) {
+    private fun updateChangedFiles(repository: GvRepository, cache: DirCache) {
         //SubModuleは当面無視する
-        val treeWalk = getTreeWalk(repository)
+        val treeWalk = repository.getTreeWalk()
         val dirTreeIterator = DirCacheIterator(cache)
-        val fileTreeIterator = FileTreeIterator(repository)
+        val fileTreeIterator = repository.getFileTreeIterator()
         treeWalk.addTree(dirTreeIterator)
         treeWalk.addTree(fileTreeIterator)
         fileTreeIterator.setDirCacheIterator(treeWalk, 0)
@@ -125,26 +108,11 @@ class GvWorkFilesModel(private val repository: GvRepository) {
             NonconflictingFileFilter(0),
             IndexDiffFilter(0, 1)
         )
-        ByteArrayDiffFormatter(repository).use { formatter ->
+        repository.getDiffFormatter().use { formatter ->
             // 1度SCANしないとFormatter内の"source"に情報が設定されないらしい
-            formatter.scan(DirCacheIterator(cache), FileTreeIterator(repository))
+            formatter.scan(DirCacheIterator(cache), repository.getFileTreeIterator())
             changedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
         }
-    }
-
-    /**
-     * ファイルイテレータを取得する内部メソッド
-     *
-     * @param[repository]       リポジトリインスタンス
-     * @return                  TreeIteratorインスタンス
-     */
-    private fun getHeadIterator(repository: Repository): AbstractTreeIterator {
-        val headId = repository.resolve(Constants.HEAD) ?: return EmptyTreeIterator()
-        val parser = CanonicalTreeParser()
-        val revWalk = RevWalk(repository)
-        parser.reset(repository.newObjectReader(), revWalk.parseTree(headId).id)
-        revWalk.close()
-        return parser
     }
 
     /**
@@ -174,7 +142,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
         var addCount = 0
         var delCount = 0
 
-        val git = Git(repository.jgitRepository)
+        val git = repository.gitCommand
         val addCommand = git.add()
         val delCommand = git.rm()
 
@@ -209,7 +177,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     fun unStageFiles(files: List<GvCommitFile>) {
         if (files.isNotEmpty()) {
-            val reset = Git(repository.jgitRepository)
+            val reset = repository.gitCommand
                 .reset()
                 .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
@@ -229,7 +197,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      */
     fun commitFiles(files: List<GvCommitFile>, message: String, userName: String, mailAddress: String) {
         if (files.isNotEmpty()) {
-            val commit = Git(repository.jgitRepository)
+            val commit = repository.gitCommand
                 .commit()
                 .setCommitter(userName, mailAddress)
                 .setMessage(message)

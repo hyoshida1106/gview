@@ -1,12 +1,12 @@
 package gview.model.commit
 
-import gview.model.util.ByteArrayDiffFormatter
+import gview.model.GvRepository
 import org.eclipse.jgit.diff.DiffEntry
 
 /**
  * 更新ファイル
  */
-class GvModifiedFile(private val formatter: ByteArrayDiffFormatter, private val entry: DiffEntry) : GvCommitFile() {
+class GvModifiedFile(private val formatter: GvRepository.ByteArrayDiffFormatter, private val entry: DiffEntry) : GvCommitFile() {
 
     /**
      * 更新タイプ

@@ -5,7 +5,17 @@ import gview.model.commit.GvCommitList
 import gview.model.workfile.GvWorkFilesModel
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.diff.DiffEntry
+import org.eclipse.jgit.diff.DiffFormatter
+import org.eclipse.jgit.dircache.DirCache
+import org.eclipse.jgit.events.ListenerHandle
+import org.eclipse.jgit.events.RefsChangedListener
+import org.eclipse.jgit.lib.*
+import org.eclipse.jgit.revplot.PlotWalk
+import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.treewalk.*
+import java.io.ByteArrayOutputStream
+import java.io.Closeable
 import java.io.File
 
 /**
@@ -14,7 +24,7 @@ import java.io.File
  * @constructor コンストラクタ
  * @param[jgitRepository] JGitのリポジトリインスタンス
  */
-class GvRepository private constructor(val jgitRepository: Repository) {
+class GvRepository private constructor(private val jgitRepository: Repository) {
 
     /**
      * 作業ファイル情報
@@ -31,20 +41,64 @@ class GvRepository private constructor(val jgitRepository: Repository) {
      */
     val commits = GvCommitList(this)
 
-//    init {
-//        jgitRepository.listenerList.addWorkingTreeModifiedListener {
-//            println("work tree changed")
-//        }
-//        jgitRepository.listenerList.addIndexChangedListener {_ ->
-//            println("index changed")
-//        }
-//        jgitRepository.listenerList.addRefsChangedListener { _ ->
-//            println("Refs changed")
-//        }
-//        jgitRepository.listenerList.addConfigChangedListener { _ ->
-//            println("Config changed")
-//        }
-//    }
+    val absolutePath: String get() = jgitRepository.directory.absolutePath
+
+    val currentBranch: String get() = jgitRepository.branch
+
+    val headId: ObjectId? get() = jgitRepository.resolve(Constants.HEAD)
+
+    val config: StoredConfig get() = jgitRepository.config
+
+    val gitCommand: Git get() = Git(jgitRepository)
+
+
+    fun addRefsChangedListener(listener: RefsChangedListener): ListenerHandle =
+        jgitRepository.listenerList.addRefsChangedListener(listener)
+
+    fun shortenRemoteBranchName(name: String): String =
+        jgitRepository.shortenRemoteBranchName(name) ?: name
+
+    fun lockDirCache(): DirCache = jgitRepository.lockDirCache()
+
+    fun getTrackingStatus(path: String): BranchTrackingStatus? =
+        BranchTrackingStatus.of(jgitRepository, path)
+
+    fun getHeadIterator( ): AbstractTreeIterator {
+        if(headId == null) return EmptyTreeIterator()
+        val parser = CanonicalTreeParser()
+        val revWalk = RevWalk(jgitRepository)
+        parser.reset(jgitRepository.newObjectReader(), revWalk.parseTree(headId).id)
+        revWalk.close()
+        return parser
+    }
+
+    fun getFileTreeIterator(): FileTreeIterator =
+        FileTreeIterator(jgitRepository)
+
+    fun getPlotWalk(): PlotWalk = PlotWalk(jgitRepository)
+
+    fun getRevWalk(): RevWalk = RevWalk(jgitRepository)
+
+    fun getTreeWalk( ): TreeWalk {
+        val treeWalk = TreeWalk(jgitRepository)
+        treeWalk.operationType = TreeWalk.OperationType.CHECKIN_OP
+        treeWalk.isRecursive = false
+        return treeWalk
+    }
+
+    fun getDiffFormatter(output: ByteArrayOutputStream = ByteArrayOutputStream()): ByteArrayDiffFormatter =
+        ByteArrayDiffFormatter(output)
+
+    inner class ByteArrayDiffFormatter(private val output: ByteArrayOutputStream): DiffFormatter(output), Closeable {
+        init {
+            super.setRepository(jgitRepository)
+        }
+        fun getText(entry: DiffEntry): ByteArray {
+            output.reset()
+            super.format(entry)
+            return output.toByteArray()
+        }
+    }
 
     /**
      * シングルトン管理のための Companion Object
