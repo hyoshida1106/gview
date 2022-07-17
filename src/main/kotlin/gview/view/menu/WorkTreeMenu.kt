@@ -63,7 +63,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             val dialog = SelectStageFilesDialog()
             if (dialog.showDialog() == ButtonType.OK) {
                 try {
-                    GvRepository.currentRepository?.workFiles?.stageFiles(dialog.selectedFiles)
+                    GvRepository.currentRepository?.workFiles?.stageSelectedFiles(dialog.selectedFiles)
                 } catch (e: Exception) {
                     ErrorDialog(e).showDialog()
                 }

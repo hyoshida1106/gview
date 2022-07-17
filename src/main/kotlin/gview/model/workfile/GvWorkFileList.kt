@@ -11,6 +11,8 @@ import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.dircache.DirCache
 import org.eclipse.jgit.dircache.DirCacheEntry
 import org.eclipse.jgit.dircache.DirCacheIterator
+import org.eclipse.jgit.events.RepositoryEvent
+import org.eclipse.jgit.events.RepositoryListener
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.treewalk.*
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter
@@ -20,7 +22,19 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter
 /**
  *  ワーキングツリーとインデックスファイルの状態を保持するクラス
  */
-class GvWorkFilesModel(private val repository: GvRepository) {
+class GvWorkFileList(private val repository: GvRepository) {
+
+    class WorkFileChangedEvent : RepositoryEvent<WorkFileChangedListener>() {
+        override fun getListenerType(): Class<WorkFileChangedListener> {
+            return WorkFileChangedListener::class.java
+        }
+        override fun dispatch(listener: WorkFileChangedListener?) {
+            listener?.onWorkFileChanged(this)
+        }
+    }
+    fun interface WorkFileChangedListener : RepositoryListener {
+        fun onWorkFileChanged(event: WorkFileChangedEvent)
+    }
 
     /**
      * ステージングされているファイルを保持するリスト
@@ -55,14 +69,14 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      * 初期化
      */
     init {
-        update()
-        repository.addRefsChangedListener  { _ -> update() }
+        updateModel()
+        repository.addWorkFileChangedListener { _ -> updateModel() }
     }
 
     /**
      * データ更新
      */
-    private fun update() {
+    private fun updateModel() {
         val cache = repository.lockDirCache()
         try {
             updateStagedFiles(repository, cache)
@@ -138,7 +152,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
      *
      * @param[files]    対象ファイルのリスト
      */
-    fun stageFiles(files: List<GvCommitFile>) {
+    fun stageSelectedFiles(files: List<GvCommitFile>) {
         var addCount = 0
         var delCount = 0
 
@@ -165,7 +179,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
         if(addCount > 0 || delCount > 0) {
             if(addCount > 0) addCommand.call()
             if(delCount > 0) delCommand.call()
-            update()
+            updateModel()
             InformationDialog(resourceBundle().getString("WorkFileStagedMessage").format(addCount + delCount)).showDialog()
         }
     }
@@ -182,7 +196,7 @@ class GvWorkFilesModel(private val repository: GvRepository) {
                 .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
             reset.call()
-            update()
+            updateModel()
             InformationDialog(resourceBundle().getString("WorkFilesUnstagedMessage").format(files.size)).showDialog()
         }
     }
@@ -203,7 +217,8 @@ class GvWorkFilesModel(private val repository: GvRepository) {
                 .setMessage(message)
             files.forEach { commit.setOnly(it.path) }
             commit.call()
-            update()
+            repository.commitChanged()
+            repository.workFileChanged()
             InformationDialog(resourceBundle().getString("workFileCommitMessage").format(files.size)).showDialog()
         }
     }

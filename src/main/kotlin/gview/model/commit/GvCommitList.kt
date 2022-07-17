@@ -2,21 +2,31 @@ package gview.model.commit
 
 import gview.model.GvRepository
 import javafx.beans.property.SimpleObjectProperty
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.events.RepositoryEvent
+import org.eclipse.jgit.events.RepositoryListener
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revplot.PlotCommitList
 import org.eclipse.jgit.revplot.PlotLane
-import org.eclipse.jgit.revplot.PlotWalk
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevTag
-import org.eclipse.jgit.revwalk.RevWalk
 
 /**
  * コミット情報リストモデル
  */
 class GvCommitList(private val repository: GvRepository) {
+
+    class CommitChangedEvent : RepositoryEvent<CommitChangedListener>() {
+        override fun getListenerType(): Class<CommitChangedListener> {
+            return CommitChangedListener::class.java
+        }
+        override fun dispatch(listener: CommitChangedListener?) {
+            listener?.onCommitChanged(this)
+        }
+    }
+    fun interface CommitChangedListener : RepositoryListener {
+        fun onCommitChanged(event: CommitChangedEvent)
+    }
 
     //Commit情報のリスト
     val commitList = SimpleObjectProperty<List<GvCommit>>()
@@ -43,25 +53,14 @@ class GvCommitList(private val repository: GvRepository) {
      * 初期化
      */
     init {
-        update()
-        repository.addRefsChangedListener { _ -> update() }
+        updateModel()
+        repository.addCommitChangedListener() { _ -> updateModel() }
     }
 
     /**
-     * 表示更新処理
+     * 更新処理
      */
-    private fun update() {
-        refresh()
-        //ローカルブランチの表示状態が変更された場合、表示を更新する
-        repository.branches.localBranchList.value.forEach {
-            it.selectedFlagProperty.addListener { _, _, _ -> refresh() }
-        }
-    }
-
-    /**
-     * 表示の更新
-     */
-    private fun refresh() {
+    private fun updateModel() {
         //所持値を初期化
         headId = repository.headId
         //PlotCommitListインスタンスを生成

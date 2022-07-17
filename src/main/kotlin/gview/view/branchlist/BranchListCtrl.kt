@@ -67,12 +67,14 @@ class BranchListCtrl: GvBaseWindowCtrl() {
     }
 
     private fun updateLocalBranches(branchList: GvBranchList) {
+        branchTree.isVisible = false
         localTreeRoot.children.clear()
         branchList.localBranchList.value.forEach { localTreeRoot.children.add(LocalBranchItem(it)) }
         branchTree.isVisible = true
     }
 
     private fun updateRemoteBranches(branchList: GvBranchList) {
+        branchTree.isVisible = false
         remoteTreeRoot.children.clear()
         branchList.remoteBranchList.value.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
         branchTree.isVisible = true

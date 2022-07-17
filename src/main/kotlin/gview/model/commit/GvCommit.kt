@@ -99,9 +99,9 @@ class GvCommit(
     /**
      * 親(祖先)コミットのリスト
      */
-    private val parents: List<GvCommit> by lazy {
-        commit.parents.mapNotNull { commitList.commitIdMap[it.id] }
-    }
+//    private val parents: List<GvCommit> by lazy {
+//        commit.parents.mapNotNull { commitList.commitIdMap[it.id] }
+//    }
 
     /**
      * 子(子孫)コミットのリスト
@@ -131,8 +131,7 @@ class GvCommit(
      * 収束(このコミットに入る)レーンのリスト
      */
     val enteringLanes: List<Int> by lazy {
-        (nextCommit?.exitingLanes?.plus(nextCommit!!.passThroughLanes)?.minus(passThroughLanes.toSet())
-            ?.plus(parents.filter { !it.exitingLanes.contains(laneNumber) }.map { it.laneNumber }) ?: emptyList())
+        (nextCommit?.exitingLanes?.plus(nextCommit!!.passThroughLanes)?.minus(passThroughLanes.toSet())?: emptyList())
     }
 
     /**

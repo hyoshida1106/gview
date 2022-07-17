@@ -4,7 +4,7 @@ import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvColumnAdjuster
 import gview.model.commit.GvCommitList
-import gview.model.workfile.GvWorkFilesModel
+import gview.model.workfile.GvWorkFileList
 import javafx.application.Platform
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty
@@ -121,7 +121,7 @@ class CommitListCtrl: GvBaseWindowCtrl() {
 
     //表示更新
     private fun update(
-        header: GvWorkFilesModel,
+        header: GvWorkFileList,
         commits: GvCommitList) {
 
         //最初に全削除

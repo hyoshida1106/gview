@@ -2,7 +2,7 @@ package gview.model
 
 import gview.model.branch.GvBranchList
 import gview.model.commit.GvCommitList
-import gview.model.workfile.GvWorkFilesModel
+import gview.model.workfile.GvWorkFileList
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry
@@ -29,17 +29,42 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
     /**
      * 作業ファイル情報
      */
-    val workFiles = GvWorkFilesModel(this)
+    val workFiles = GvWorkFileList(this)
+
+    fun addWorkFileChangedListener(listener: GvWorkFileList.WorkFileChangedListener) {
+        jgitRepository.listenerList.addListener(GvWorkFileList.WorkFileChangedListener::class.java, listener)
+    }
+
+    fun workFileChanged() {
+        jgitRepository.listenerList.dispatch(GvWorkFileList.WorkFileChangedEvent())
+    }
 
     /**
      * ブランチ情報リスト(リモート/ローカルブランチ)
      */
     val branches = GvBranchList(this)
 
+    fun addBranchChangedListener(listener: GvBranchList.BranchChangedListener) {
+        jgitRepository.listenerList.addListener(GvBranchList.BranchChangedListener::class.java, listener)
+    }
+
+    fun branchChanged() {
+        jgitRepository.listenerList.dispatch(GvBranchList.BranchChangedEvent())
+    }
+
     /**
      * コミット情報リスト
      */
     val commits = GvCommitList(this)
+
+    fun addCommitChangedListener(listener: GvCommitList.CommitChangedListener) {
+        jgitRepository.listenerList.addListener(GvCommitList.CommitChangedListener::class.java, listener)
+    }
+
+    fun commitChanged() {
+        jgitRepository.listenerList.dispatch(GvCommitList.CommitChangedEvent())
+    }
+
 
     val absolutePath: String get() = jgitRepository.directory.absolutePath
 
@@ -54,6 +79,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     fun addRefsChangedListener(listener: RefsChangedListener): ListenerHandle =
         jgitRepository.listenerList.addRefsChangedListener(listener)
+
 
     fun shortenRemoteBranchName(name: String): String =
         jgitRepository.shortenRemoteBranchName(name) ?: name
