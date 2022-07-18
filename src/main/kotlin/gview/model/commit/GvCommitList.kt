@@ -54,7 +54,7 @@ class GvCommitList(private val repository: GvRepository) {
      */
     init {
         updateModel()
-        repository.addCommitChangedListener() { _ -> updateModel() }
+        repository.addCommitChangedListener { updateModel() }
     }
 
     /**

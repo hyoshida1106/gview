@@ -70,7 +70,7 @@ class GvWorkFileList(private val repository: GvRepository) {
      */
     init {
         updateModel()
-        repository.addWorkFileChangedListener { _ -> updateModel() }
+        repository.addWorkFileChangedListener { updateModel() }
     }
 
     /**
@@ -217,8 +217,7 @@ class GvWorkFileList(private val repository: GvRepository) {
                 .setMessage(message)
             files.forEach { commit.setOnly(it.path) }
             commit.call()
-            repository.commitChanged()
-            repository.workFileChanged()
+            repository.branchChanged()
             InformationDialog(resourceBundle().getString("workFileCommitMessage").format(files.size)).showDialog()
         }
     }

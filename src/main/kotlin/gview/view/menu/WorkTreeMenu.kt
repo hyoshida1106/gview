@@ -84,12 +84,12 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
         fun doCommitCommand() {
             //ユーザ名とメールアドレスが未入力ならば入力する
             var userName = GitConfigInfo.userName
-            var mailAddr = GitConfigInfo.mailAddress
-            while (userName.isEmpty() || mailAddr.isEmpty()) {
-                val dialog = UserNameDialog(userName, mailAddr)
+            var mailAddress = GitConfigInfo.mailAddress
+            while (userName.isEmpty() || mailAddress.isEmpty()) {
+                val dialog = UserNameDialog(userName, mailAddress)
                 if (dialog.showDialog() != ButtonType.OK) return
                 userName = dialog.userName
-                mailAddr = dialog.mailAddr
+                mailAddress = dialog.mailAddr
             }
             //対象ファイルを選択する
             val dialog = SelectCommitFilesDialog()
@@ -100,7 +100,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
                         dialog.selectedFiles,
                         dialog.message,
                         userName,
-                        mailAddr)
+                        mailAddress)
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }

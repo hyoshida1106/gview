@@ -31,7 +31,7 @@ class GvBranchList(private val repository: GvRepository){
 
     init {
         updateModel()
-        repository.addBranchChangedListener { _ -> updateModel() }
+        repository.addBranchChangedListener { updateModel() }
     }
 
     fun remoteBranchDisplayName(name: String): String {

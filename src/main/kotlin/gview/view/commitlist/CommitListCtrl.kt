@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
+import org.eclipse.jgit.lib.ObjectId
+import java.lang.Integer.max
 
 class CommitListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var commitListTable: TableView<RowData>
@@ -18,6 +20,8 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var infoColumn: TableColumn<RowData, CellData>
 
     val selectedRowProperty = SimpleObjectProperty<RowData>()
+
+    private var selectedCommitId: ObjectId? = null
 
     interface RowData {
         val styleClassName: String
@@ -109,6 +113,11 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     override fun displayCompleted() {
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            if(newValue is CommitRowData) {
+                selectedCommitId = newValue.model.id
+            } else {
+                selectedCommitId = null
+            }
             selectedRowProperty.value = newValue
         }
         //Treeカラム幅変更時の描画更新
@@ -120,9 +129,10 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     }
 
     //表示更新
-    private fun update(
-        header: GvWorkFileList,
-        commits: GvCommitList) {
+    private fun update(header: GvWorkFileList, commits: GvCommitList) {
+
+        //全削除する前に選択していたコミットのインデクスを取得
+        val lastSelectedCommit = selectedCommitId
 
         //最初に全削除
         commitListTable.items.clear()
@@ -140,7 +150,11 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        if(commits.commitList.value.isNotEmpty()) {
+        maxLaneNumber = if(commits.commitList.value.isEmpty()) 0 else {
+            max(commits.commitList.value.maxOf { it.laneNumber }, headerLaneNumber ?: 0)
+        }
+
+        if (commits.commitList.value.isNotEmpty()) {
             maxLaneNumber = commits.commitList.value.maxOf { it.laneNumber }
             if (headerLaneNumber != null && maxLaneNumber < headerLaneNumber) {
                 maxLaneNumber = headerLaneNumber
@@ -151,8 +165,9 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
 
-        //先頭のコミットまたはヘッダを選択する
-        commitListTable.selectionModel.select(if(commitListTable.items.size <= 1) 0 else 1)
+        //更新前に選択されていたコミットを再選択する
+        commitListTable.selectionModel.select(if (lastSelectedCommit == null) 0 else
+            commits.commitList.value.indexOfFirst { it.id == lastSelectedCommit } + 1)
 
         //リストを可視化
         commitListTable.isVisible = true
