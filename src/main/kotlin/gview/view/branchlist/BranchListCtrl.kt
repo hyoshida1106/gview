@@ -6,12 +6,14 @@ import gview.model.branch.GvBranch
 import gview.model.branch.GvBranchList
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
+import gview.view.main.MainWindow
 import gview.view.menu.LocalBranchContextMenu
 import gview.view.menu.RemoteBranchContextMenu
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
 
 class BranchListCtrl: GvBaseWindowCtrl() {
@@ -35,17 +37,35 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.focusedProperty().addListener { _, _, newValue ->
             if(!newValue) branchTree.selectionModel.clearSelection() }
 
+        branchTree.setOnMouseClicked {
+            if(it.button == MouseButton.PRIMARY && it.clickCount == 2) {
+                val model = selectedBranch
+                if(model is GvLocalBranch) {
+                    MainWindow.controller.runTask { model.checkout() }
+                }
+            }
+        }
+
         branchTree.isVisible = false
     }
 
     private fun updateRepository(repository: GvRepository) {
         val branchList = repository.branches
-        updateLocalBranches (branchList)
-        updateRemoteBranches(branchList)
-        branchList.localBranchList.addListener  { _ -> updateLocalBranches (branchList) }
-        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList) }
-        branchList.currentBranch.addListener    { _ -> updateLocalBranches (branchList) }
+        updateLocalBranches(branchList.localBranchList.value)
+        updateRemoteBranches(branchList.remoteBranchList.value)
+        branchList.localBranchList.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
+        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList.remoteBranchList.value) }
+        branchList.currentBranch.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
         branchTree.selectionModel.clearSelection()
+        branchTree.isVisible = true
+    }
+
+    private fun updateLocalBranches(localBranchList: List<GvLocalBranch>) {
+        localTreeRoot.children.setAll(localBranchList.map { LocalBranchItem(it) } )
+    }
+
+    private fun updateRemoteBranches(remoteBranchList: List<GvRemoteBranch>) {
+        remoteTreeRoot.children.setAll(remoteBranchList.map { RemoteBranchItem(it) })
     }
 
     val selectedBranch: GvBranch? get() {
@@ -66,24 +86,10 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         }
     }
 
-    private fun updateLocalBranches(branchList: GvBranchList) {
-        branchTree.isVisible = false
-        localTreeRoot.children.clear()
-        branchList.localBranchList.value.forEach { localTreeRoot.children.add(LocalBranchItem(it)) }
-        branchTree.isVisible = true
-    }
-
-    private fun updateRemoteBranches(branchList: GvBranchList) {
-        branchTree.isVisible = false
-        remoteTreeRoot.children.clear()
-        branchList.remoteBranchList.value.forEach { remoteTreeRoot.children.add(RemoteBranchItem(it)) }
-        branchTree.isVisible = true
-    }
-
     abstract class BranchTreeItem(model: GvBranch?) : TreeItem<GvBranch>(model) {
-        abstract val cellImage: Node                    //表示イメージ
-        abstract val contextMenu: ContextMenu?          //コンテキストメニュー
-        abstract override fun isLeaf(): Boolean         //末端か
+        abstract val cellImage: Node
+        abstract val contextMenu: ContextMenu?
+        abstract override fun isLeaf(): Boolean
     }
 
     class RootItem(name: String) : BranchTreeItem(null) {

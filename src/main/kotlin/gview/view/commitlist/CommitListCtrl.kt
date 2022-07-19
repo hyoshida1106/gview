@@ -107,6 +107,13 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         update(headers, commits)
         commits.commitList.addListener { _, _, _ ->
             Platform.runLater { update(headers, commits) } }
+        headers.changedFiles.addListener { _, _, _ ->
+            Platform.runLater {
+                //先頭行の表示を更新する
+                commitListTable.columns[0].isVisible = false
+                commitListTable.columns[0].isVisible = true
+            }
+        }
     }
 
     //表示完了時にListenerを設定する

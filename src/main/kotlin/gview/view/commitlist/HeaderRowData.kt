@@ -23,10 +23,8 @@ class HeaderRowData(
     override val styleClassName: String = "header-row"
 
     //コミットツリーセル
-    inner class HeaderTreeCellData(
-        private val commitList: CommitListCtrl,
-        val model: GvWorkFileList
-    ) : CommitListCtrl.CellData {
+    inner class HeaderTreeCellData(private val commitList: CommitListCtrl, val model: GvWorkFileList) :
+        CommitListCtrl.CellData {
 
         override fun update(): Pair<Node?, String?> {
             return Pair(null, null)

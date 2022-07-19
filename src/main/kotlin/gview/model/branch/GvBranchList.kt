@@ -11,7 +11,7 @@ import org.eclipse.jgit.events.RepositoryListener
 import org.eclipse.jgit.lib.Repository
 import java.lang.ref.WeakReference
 
-class GvBranchList(private val repository: GvRepository){
+class GvBranchList(val repository: GvRepository){
     val localBranchList  = SimpleObjectProperty<List<GvLocalBranch>>()
     val remoteBranchList = SimpleObjectProperty<List<GvRemoteBranch>>()
     val currentBranch    = SimpleStringProperty("")
@@ -90,13 +90,13 @@ class GvBranchList(private val repository: GvRepository){
         repository.branchChanged()
     }
 
-    fun checkoutLocalBranch(model: GvLocalBranch) {
-        repository.gitCommand
-                .checkout()
-                .setName(model.name)
-                .call()
-        repository.branchChanged()
-    }
+//    fun checkoutLocalBranch(model: GvLocalBranch) {
+//        repository.gitCommand
+//                .checkout()
+//                .setName(model.name)
+//                .call()
+//        repository.branchChanged()
+//    }
 
     fun removeLocalBranch(model: GvLocalBranch, force: Boolean) {
         repository.gitCommand

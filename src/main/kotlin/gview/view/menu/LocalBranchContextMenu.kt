@@ -47,9 +47,7 @@ class LocalBranchContextMenu(private val model: GvLocalBranch)
     }
 
     private fun onCheckOut() {
-        MainWindow.controller.runTask {
-            model.branchList.checkoutLocalBranch(
-                    model) }
+        MainWindow.controller.runTask { model.checkout() }
     }
 
     private fun onCreateNewBranch() {

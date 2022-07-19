@@ -50,15 +50,12 @@ class CommitRowContextMenu(private val model: GvCommit)
 
     private fun onCheckout() {
         try {
-            val selectedBranch = if(branches.count() == 1) {
+            (if (branches.count() == 1) {
                 branches[0]
             } else {
                 BranchSelectDialog(branches).showDialog()
-            }
-            if(selectedBranch != null) {
-                GvRepository.currentRepository?.branches?.checkoutLocalBranch(selectedBranch)
-            }
-        } catch(e: Exception) {
+            })?.checkout()
+        } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
     }

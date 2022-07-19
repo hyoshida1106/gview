@@ -38,4 +38,14 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
      * 表示対象ローカルブランチの場合、trueを保持する
      */
     val selectedFlagProperty = SimpleBooleanProperty(true)
+
+    fun checkout( ) {
+        val repository = branchList.repository
+        repository.gitCommand
+            .checkout()
+            .setName(name)
+            .call()
+        repository.branchChanged()
+    }
+
 }

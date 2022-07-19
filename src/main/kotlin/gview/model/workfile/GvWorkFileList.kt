@@ -98,6 +98,7 @@ class GvWorkFileList(private val repository: GvRepository) {
         val treeWalk = repository.getTreeWalk()
         treeWalk.addTree(repository.getHeadIterator())
         treeWalk.addTree(DirCacheIterator(cache))
+        treeWalk.isRecursive = true
         treeWalk.filter = NonconflictingFileFilter(1)
         repository.getDiffFormatter().use { formatter ->
             stagedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
@@ -117,6 +118,7 @@ class GvWorkFileList(private val repository: GvRepository) {
         val fileTreeIterator = repository.getFileTreeIterator()
         treeWalk.addTree(dirTreeIterator)
         treeWalk.addTree(fileTreeIterator)
+        treeWalk.isRecursive = true
         fileTreeIterator.setDirCacheIterator(treeWalk, 0)
         treeWalk.filter = AndTreeFilter.create(
             NonconflictingFileFilter(0),
@@ -179,7 +181,7 @@ class GvWorkFileList(private val repository: GvRepository) {
         if(addCount > 0 || delCount > 0) {
             if(addCount > 0) addCommand.call()
             if(delCount > 0) delCommand.call()
-            updateModel()
+            repository.workFileChanged()
             InformationDialog(resourceBundle().getString("WorkFileStagedMessage").format(addCount + delCount)).showDialog()
         }
     }
@@ -196,7 +198,7 @@ class GvWorkFileList(private val repository: GvRepository) {
                 .setRef(Constants.HEAD)
             files.forEach { reset.addPath(it.path) }
             reset.call()
-            updateModel()
+            repository.workFileChanged()
             InformationDialog(resourceBundle().getString("WorkFilesUnstagedMessage").format(files.size)).showDialog()
         }
     }
