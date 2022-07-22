@@ -21,6 +21,10 @@ import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter
  */
 class GvWorkFileList(private val repository: GvRepository) {
 
+    fun interface WorkFileChangedListener : RepositoryListener {
+        fun onWorkFileChanged(event: WorkFileChangedEvent)
+    }
+
     class WorkFileChangedEvent : RepositoryEvent<WorkFileChangedListener>() {
         override fun getListenerType(): Class<WorkFileChangedListener> {
             return WorkFileChangedListener::class.java
@@ -28,9 +32,6 @@ class GvWorkFileList(private val repository: GvRepository) {
         override fun dispatch(listener: WorkFileChangedListener?) {
             listener?.onWorkFileChanged(this)
         }
-    }
-    fun interface WorkFileChangedListener : RepositoryListener {
-        fun onWorkFileChanged(event: WorkFileChangedEvent)
     }
 
     /**

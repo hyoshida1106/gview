@@ -9,8 +9,8 @@ import javafx.scene.paint.Paint
  */
 abstract class AbstractRowData: CommitListCtrl.RowData {
 
-    protected val markRadius = 5.0
-    protected val lineWidth  = 3.0
+    protected val markRadius = 4.0
+    protected val lineWidth  = 2.0
 
     //表示色
     private val colors = arrayOf(

@@ -12,7 +12,6 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 import org.eclipse.jgit.lib.ObjectId
-import java.lang.Integer.max
 
 class CommitListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var commitListTable: TableView<RowData>
@@ -104,6 +103,7 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     private fun updateRepository(repository: GvRepository) {
         val headers = repository.workFiles
         val commits = repository.commits
+
         update(headers, commits)
         commits.commitList.addListener { _, _, _ ->
             Platform.runLater { update(headers, commits) } }
@@ -120,11 +120,7 @@ class CommitListCtrl: GvBaseWindowCtrl() {
     override fun displayCompleted() {
         //行選択変更時
         commitListTable.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            if(newValue is CommitRowData) {
-                selectedCommitId = newValue.model.id
-            } else {
-                selectedCommitId = null
-            }
+            selectedCommitId = (newValue as? CommitRowData)?.model?.id
             selectedRowProperty.value = newValue
         }
         //Treeカラム幅変更時の描画更新
@@ -157,10 +153,6 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         xPitch = defaultXPitch
 
         //レーン数からカラム幅を決定する
-        maxLaneNumber = if(commits.commitList.value.isEmpty()) 0 else {
-            max(commits.commitList.value.maxOf { it.laneNumber }, headerLaneNumber ?: 0)
-        }
-
         if (commits.commitList.value.isNotEmpty()) {
             maxLaneNumber = commits.commitList.value.maxOf { it.laneNumber }
             if (headerLaneNumber != null && maxLaneNumber < headerLaneNumber) {
@@ -169,8 +161,13 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         } else {
             maxLaneNumber = 0
         }
-        treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
+
+        //カラム幅を変更する
+        treeColumn.maxWidth = treeColumnWidth(maxLaneNumber + 1)
         treeColumn.prefWidth = treeColumnWidth(maxLaneNumber + 1)
+
+        //一旦変更した上で最大値を再設定する
+        treeColumn.maxWidth = treeColumnMaxWidth(maxLaneNumber + 1)
 
         //更新前に選択されていたコミットを再選択する
         commitListTable.selectionModel.select(if (lastSelectedCommit == null) 0 else
