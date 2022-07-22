@@ -8,8 +8,6 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.dircache.DirCache
-import org.eclipse.jgit.events.ListenerHandle
-import org.eclipse.jgit.events.RefsChangedListener
 import org.eclipse.jgit.lib.*
 import org.eclipse.jgit.revplot.PlotWalk
 import org.eclipse.jgit.revwalk.RevWalk
@@ -65,7 +63,6 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
         jgitRepository.listenerList.dispatch(GvCommitList.CommitChangedEvent())
     }
 
-
     val absolutePath: String get() = jgitRepository.directory.absolutePath
 
     val currentBranch: String get() = jgitRepository.branch
@@ -76,10 +73,8 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     val gitCommand: Git get() = Git(jgitRepository)
 
-
-    fun addRefsChangedListener(listener: RefsChangedListener): ListenerHandle =
-        jgitRepository.listenerList.addRefsChangedListener(listener)
-
+//    fun addRefsChangedListener(listener: RefsChangedListener): ListenerHandle =
+//        jgitRepository.listenerList.addRefsChangedListener(listener)
 
     fun shortenRemoteBranchName(name: String): String =
         jgitRepository.shortenRemoteBranchName(name) ?: name
@@ -88,15 +83,6 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     fun getTrackingStatus(path: String): BranchTrackingStatus? =
         BranchTrackingStatus.of(jgitRepository, path)
-
-    fun getHeadIterator( ): AbstractTreeIterator {
-        if(headId == null) return EmptyTreeIterator()
-        val parser = CanonicalTreeParser()
-        val revWalk = RevWalk(jgitRepository)
-        parser.reset(jgitRepository.newObjectReader(), revWalk.parseTree(headId).id)
-        revWalk.close()
-        return parser
-    }
 
     fun getFileTreeIterator(): FileTreeIterator =
         FileTreeIterator(jgitRepository)
@@ -108,7 +94,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
     fun getTreeWalk( ): TreeWalk {
         val treeWalk = TreeWalk(jgitRepository)
         treeWalk.operationType = TreeWalk.OperationType.CHECKIN_OP
-        treeWalk.isRecursive = false
+        treeWalk.isRecursive = true
         return treeWalk
     }
 

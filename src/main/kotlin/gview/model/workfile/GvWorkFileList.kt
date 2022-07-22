@@ -14,10 +14,7 @@ import org.eclipse.jgit.dircache.DirCacheIterator
 import org.eclipse.jgit.events.RepositoryEvent
 import org.eclipse.jgit.events.RepositoryListener
 import org.eclipse.jgit.lib.Constants
-import org.eclipse.jgit.treewalk.*
-import org.eclipse.jgit.treewalk.filter.AndTreeFilter
-import org.eclipse.jgit.treewalk.filter.IndexDiffFilter
-import org.eclipse.jgit.treewalk.filter.TreeFilter
+import org.eclipse.jgit.treewalk.filter.SkipWorkTreeFilter
 
 /**
  *  ワーキングツリーとインデックスファイルの状態を保持するクラス
@@ -51,19 +48,19 @@ class GvWorkFileList(private val repository: GvRepository) {
      */
     val conflictedFiles = SimpleObjectProperty<List<GvCommitFile>>()
 
-    /**
+    /*
      * コンフリクトの発生していないファイルを取得するためのフィルタ
      *
      * @param[treeIdx]          ツリーインデックス
      */
-    inner class NonconflictingFileFilter(private val treeIdx: Int) : TreeFilter() {
-        override fun include(walker: TreeWalk): Boolean {
-            val it = walker.getTree(treeIdx, DirCacheIterator::class.java) ?: return true
-            return it.dirCacheEntry?.stage == DirCacheEntry.STAGE_0
-        }
-        override fun shouldBeRecursive(): Boolean { return false }
-        override fun clone(): TreeFilter { return this }
-    }
+//    inner class NonconflictingFileFilter(private val treeIdx: Int) : TreeFilter() {
+//        override fun include(walker: TreeWalk): Boolean {
+//            val it = walker.getTree(treeIdx, DirCacheIterator::class.java) ?: return true
+//            return it.dirCacheEntry?.stage == DirCacheEntry.STAGE_0
+//        }
+//        override fun shouldBeRecursive(): Boolean { return true }
+//        override fun clone(): TreeFilter { return this }
+//    }
 
     /**
      * 初期化
@@ -94,14 +91,14 @@ class GvWorkFileList(private val repository: GvRepository) {
      * @param[cache]            ディレクトリキャッシュ
      */
     private fun updateStagedFiles(repository: GvRepository, cache: DirCache) {
-        //SubModuleは当面無視する
-        val treeWalk = repository.getTreeWalk()
-        treeWalk.addTree(repository.getHeadIterator())
-        treeWalk.addTree(DirCacheIterator(cache))
-        treeWalk.isRecursive = true
-        treeWalk.filter = NonconflictingFileFilter(1)
-        repository.getDiffFormatter().use { formatter ->
-            stagedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
+        repository.getTreeWalk().use { treeWalk ->
+            val headRevTree = repository.getRevWalk().use { it.parseTree(repository.headId) }
+            treeWalk.addTree(headRevTree)
+            treeWalk.addTree(DirCacheIterator(cache))
+            treeWalk.filter = SkipWorkTreeFilter(1)
+            repository.getDiffFormatter().use { formatter ->
+                stagedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
+            }
         }
     }
 
@@ -112,22 +109,15 @@ class GvWorkFileList(private val repository: GvRepository) {
      * @param[cache]            ディレクトリキャッシュ
      */
     private fun updateChangedFiles(repository: GvRepository, cache: DirCache) {
-        //SubModuleは当面無視する
-        val treeWalk = repository.getTreeWalk()
-        val dirTreeIterator = DirCacheIterator(cache)
-        val fileTreeIterator = repository.getFileTreeIterator()
-        treeWalk.addTree(dirTreeIterator)
-        treeWalk.addTree(fileTreeIterator)
-        treeWalk.isRecursive = true
-        fileTreeIterator.setDirCacheIterator(treeWalk, 0)
-        treeWalk.filter = AndTreeFilter.create(
-            NonconflictingFileFilter(0),
-            IndexDiffFilter(0, 1)
-        )
-        repository.getDiffFormatter().use { formatter ->
-            // 1度SCANしないとFormatter内の"source"に情報が設定されないらしい
-            formatter.scan(DirCacheIterator(cache), repository.getFileTreeIterator())
-            changedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
+        repository.getTreeWalk().use { treeWalk ->
+            val fileTreeIterator = repository.getFileTreeIterator()
+            treeWalk.addTree(DirCacheIterator(cache))
+            treeWalk.addTree(fileTreeIterator)
+            fileTreeIterator.setDirCacheIterator(treeWalk, 0)
+            treeWalk.filter = SkipWorkTreeFilter(0)
+            repository.getDiffFormatter().use { formatter ->
+                changedFiles.value = DiffEntry.scan(treeWalk).map { GvModifiedFile(formatter, it) }
+            }
         }
     }
 
