@@ -5,7 +5,7 @@ import org.eclipse.jgit.dircache.DirCacheEntry
 /**
  * コンフリクトファイル
  */
-class GvConflictFile(private val entry: DirCacheEntry) : GvCommitFile() {
+class GvConflictFile(entry: DirCacheEntry) : GvCommitFile() {
 
     /**
      * 更新タイプ

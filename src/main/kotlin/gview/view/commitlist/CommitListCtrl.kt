@@ -57,7 +57,7 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         }
     }
 
-    private val defaultXPitch = 12.0
+    private val defaultXPitch = 15.0
 
     var xPitch = defaultXPitch
 

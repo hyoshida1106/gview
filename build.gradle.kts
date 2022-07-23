@@ -22,6 +22,8 @@ dependencies {
     implementation("org.kordamp.ikonli:ikonli-materialdesign-pack:12.2.0")
     //ControlFX
     implementation("org.controlsfx:controlsfx:11.1.1")
+
+    implementation("org.jetbrains:annotations:16.0.2")
 }
 
 // JavaFX PlugIn

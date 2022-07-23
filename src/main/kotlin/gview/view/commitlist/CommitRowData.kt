@@ -11,15 +11,15 @@ import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
 import javafx.scene.shape.ArcType
+import org.jetbrains.annotations.NonNls
 
-class CommitRowData(
-    private val commitList: CommitListCtrl,
-    val model: GvCommit) : AbstractRowData() {
-
+class CommitRowData(commitList: CommitListCtrl, val model: GvCommit) : AbstractRowData() {
     override val treeCellValue: CommitListCtrl.CellData = CommitTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = CommitInfoCellData(model)
-
+    @NonNls
     override val styleClassName: String = "commit-row"
+    @NonNls
+    private val mergeMarkColor = "white"
 
     //コミットツリーセル
     inner class CommitTreeCellData(
@@ -57,36 +57,34 @@ class CommitRowData(
             tableCell.text = null
         }
 
-        private fun drawCommitMark(
-            canvas: Canvas,
-            commit: GvCommit,
-            ys: Double,
-            ye: Double) {
-
+        @Suppress("SameParameterValue")
+        private fun drawCommitMark(canvas: Canvas, commit: GvCommit, ys: Double, ye: Double) {
             val lane = commit.laneNumber
-            val gc = setColor(canvas, lane)
+            val gc = getGraphicContext(canvas, lane)
             val x = commitList.treeColumnWidth(lane)
             val y = (ye - ys) / 2.0
             val xr = markRadius
             val yr = markRadius
             gc.fillOval(x - xr, y - yr, xr * 2.0, yr * 2.0)
-            if(model.isMerge) {
-                gc.fill = Paint.valueOf("white")
+            if (model.isMerge) {
+                gc.fill = Paint.valueOf(mergeMarkColor)
                 gc.fillOval(x - xr / 2.0, y - yr / 2.0, xr, yr)
             }
         }
 
+        @Suppress("SameParameterValue")
         private fun drawPassThroughLine(
                 canvas: Canvas,
                 lane: Int,
                 ys: Double,
                 ye: Double) {
 
-            val gc = setColor(canvas, lane)
+            val gc = getGraphicContext(canvas, lane)
             val x = commitList.treeColumnWidth(lane)
             gc.strokeLine(x, ys, x, ye)
         }
 
+        @Suppress("SameParameterValue")
         private fun drawBranchLine(
                 canvas: Canvas,
                 currentLane: Int,
@@ -94,7 +92,7 @@ class CommitRowData(
                 ys: Double,
                 ye: Double) {
 
-            val gc = setColor(canvas, branchLane)
+            val gc = getGraphicContext(canvas, branchLane)
             val xs = commitList.treeColumnWidth(currentLane)
             val xe = commitList.treeColumnWidth(branchLane)
             val ym = (ye - ys) / 2.0 - 2.0
@@ -119,6 +117,7 @@ class CommitRowData(
             }
         }
 
+        @Suppress("SameParameterValue")
         private fun drawMergeLine(
                 canvas: Canvas,
                 currentLane: Int,
@@ -126,7 +125,7 @@ class CommitRowData(
                 ys: Double,
                 ye: Double) {
 
-            val gc = setColor(canvas, mergeLane)
+            val gc = getGraphicContext(canvas, mergeLane)
             val xs = commitList.treeColumnWidth(mergeLane)
             val xe = commitList.treeColumnWidth(currentLane)
             val ym = (ye - ys) / 2.0 + 2.0

@@ -24,7 +24,7 @@ class BranchNameDialogCtrl : GvCustomDialogCtrl() {
     /**
      *  チェックアウトフラグの設定結果を参照する
      */
-    val checkoutFlag: Boolean get() = checkout.isSelected
+    val checkoutFlag get() = checkout.isSelected
 
     /**
      * 初期化

@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
+import org.jetbrains.annotations.NonNls
 import java.text.DateFormat
 import java.util.*
 
@@ -20,6 +21,7 @@ class HeaderRowData(
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = HeaderInfoCellData(model)
 
+    @NonNls
     override val styleClassName: String = "header-row"
 
     //コミットツリーセル
@@ -41,8 +43,9 @@ class HeaderRowData(
 
         override val contextMenu: ContextMenu? = null
 
+        @Suppress("SameParameterValue")
         private fun drawMark(canvas: Canvas, ys: Double, ye: Double) {
-            val gc = setColor(canvas, laneNumber ?: 0)
+            val gc = getGraphicContext(canvas, laneNumber ?: 0)
             val x = commitList.treeColumnWidth(laneNumber ?: 0)
             val y = (ye - ys) / 2.0
             val xr = markRadius

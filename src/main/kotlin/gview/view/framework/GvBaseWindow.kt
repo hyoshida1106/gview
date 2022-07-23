@@ -2,6 +2,7 @@ package gview.view.framework
 
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
+import org.jetbrains.annotations.NonNls
 
 /**
  * 基本ウィンドウクラス
@@ -10,6 +11,7 @@ import javafx.scene.Parent
  * @param[formPath]         FXMLファイルのパス
  * @param[style]            スタイルクラス名称
  */
+@NonNls
 open class GvBaseWindow<Controller>(formPath: String, style: String) where Controller : GvBaseWindowCtrl {
     /**
      * ルートウィンドウ

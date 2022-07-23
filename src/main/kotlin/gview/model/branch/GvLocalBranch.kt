@@ -32,7 +32,7 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
     /**
      * 選択中のブランチである場合、trueを保持する
      */
-    val isCurrentBranch: Boolean get() = (branchList.currentBranch.value == name)
+    val isCurrentBranch get() = (branchList.currentBranch.value == name)
 
     /**
      * 表示対象ローカルブランチの場合、trueを保持する

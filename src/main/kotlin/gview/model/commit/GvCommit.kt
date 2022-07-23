@@ -164,21 +164,21 @@ class GvCommit(
         repo.getDiffFormatter().use { fmt -> fmt.scan(tree1, tree2).map { GvModifiedFile(fmt, it) } }
     }
 
-    /**
-     *  タグ名称検索
-     *
-     *  措定されたタグ名がこのコミットに含まれているかチェックする
-     *  @param[tagName]     検索するタグ名
-     *  @return             タグが含まれていればtrueを返す
-     */
-    fun containsTag(tagName: String): Boolean = tags.contains(tagName)
-
-    /**
-     * コメント検索
-     *
-     *  措定された文字列がこのコミットのコメントに含まれているかチェックする
-     *  @param[comment]     検索する文字列
-     *  @return             文字列が含まれていればtrueを返す
-     */
-    fun containsInComment(comment: String): Boolean = fullMessage.contains(comment)
+//    /**
+//     *  タグ名称検索
+//     *
+//     *  措定されたタグ名がこのコミットに含まれているかチェックする
+//     *  @param[tagName]     検索するタグ名
+//     *  @return             タグが含まれていればtrueを返す
+//     */
+//    fun containsTag(tagName: String): Boolean = tags.contains(tagName)
+//
+//    /**
+//     * コメント検索
+//     *
+//     *  措定された文字列がこのコミットのコメントに含まれているかチェックする
+//     *  @param[comment]     検索する文字列
+//     *  @return             文字列が含まれていればtrueを返す
+//     */
+//    fun containsInComment(comment: String): Boolean = fullMessage.contains(comment)
 }
