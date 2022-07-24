@@ -1,12 +1,10 @@
 package gview.view.util
 
+import javafx.animation.Animation.INDEFINITE
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.Event
-import javafx.event.EventHandler
-import javafx.event.EventType
-import javafx.scene.Node
-import javafx.scene.Scene
+import javafx.stage.Stage
 import javafx.util.Duration
 
 /**
@@ -14,71 +12,29 @@ import javafx.util.Duration
  *
  * @param idleTime      アイドル時間を秒で指定する
  * @param handler       アイドル時処理
+ * @param repeat        繰り返し実施指示
  */
-class GvIdleTimer(idleTime: Int, handler: () -> Unit ) {
+class GvIdleTimer(private val stage: Stage, idleTime: Int, private val repeat: Boolean, val handler: () -> Unit ) {
 
     /**
      *  指定されたタイマ値を持つTimeLine
      */
     private val idleTimeline: Timeline = Timeline(
-        KeyFrame(Duration(idleTime.toDouble()), { _ -> handler() }))
+        KeyFrame(Duration(idleTime.toDouble()), { handler() })
+    )
 
-    /**
-     *  イベントが通知された場合に notUIdle() を起動するEventHandler
-     */
-    private val userEventHandler = EventHandler<Event> { resetTimer() }
-
-    /**
-     * 指定された Scene にイベントフィルタを登録する
-     */
-    fun register(scene: Scene, eventType: EventType<Event> = Event.ANY) {
-        scene.addEventFilter(eventType, userEventHandler)
-        startTimer()
+    init {
+        idleTimeline.cycleCount = if (repeat) INDEFINITE else 1
+        stage.scene.addEventFilter(Event.ANY) { resetTimer() }
+        stage.focusedProperty().addListener { _, _, _ -> resetTimer() }
+        resetTimer()
     }
 
-    /**
-     * 指定された Node にイベントフィルタを登録する
-     */
-    fun register(node: Node, eventType: EventType<Event> = Event.ANY) {
-        node.addEventFilter(eventType, userEventHandler)
-        startTimer()
-    }
-
-    /**
-     * 指定された Scene のイベントフィルタを削除する
-     */
-    fun unregister(scene: Scene, eventType: EventType<Event> = Event.ANY) {
-        stopTimer()
-        scene.removeEventFilter(eventType, userEventHandler)
-    }
-
-    /**
-     * 指定された Node のイベントフィルタを削除する
-     */
-    fun unregister(node: Node, eventType: EventType<Event> = Event.ANY) {
-        stopTimer()
-        node.removeEventFilter(eventType, userEventHandler)
-    }
-
-    /**
-     * イベントを受信したならばタイマをリセットする
-     */
     private fun resetTimer() {
-        idleTimeline.playFromStart()
-    }
-
-    /**
-     * タイマを起動する
-     */
-    private fun startTimer() {
-        idleTimeline.cycleCount = 1;
-        idleTimeline.playFromStart()
-    }
-
-    /**
-     * タイマを停止する
-     */
-    private fun stopTimer() {
-        idleTimeline.stop( ) 
+        if (stage.isFocused) {
+            idleTimeline.playFromStart()
+        } else {
+            idleTimeline.stop()
+        }
     }
 }

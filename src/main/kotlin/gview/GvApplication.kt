@@ -10,6 +10,7 @@ import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.stage.Stage
+import org.jetbrains.annotations.NonNls
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -17,6 +18,9 @@ import kotlin.system.exitProcess
  * アプリケーションクラス
  */
 class GvApplication : Application() {
+
+    private lateinit var idleMonitor: GvIdleTimer
+    private lateinit var updateMonitor: GvIdleTimer
 
     /**
      * アプリケーション起動処理
@@ -43,14 +47,23 @@ class GvApplication : Application() {
                 confirmToQuit()
                 it.consume()
             }
-            //アイドルタイマの登録
-            monitor.register(stage.scene)
+
+            idleMonitor = GvIdleTimer(stage, 1000, false) {
+                GvBaseWindowCtrl.updateConfigInfo()
+                SystemModal.saveToFile()
+            }
+
+            updateMonitor = GvIdleTimer(stage, 30000, true) {
+                println("updateTimer")
+            }
+
             //画面サイズ変更時、サイズを保存するためのbind定義
             with(SystemModal) {
                 mainHeightProperty.bind(stage.scene.heightProperty())
                 mainWidthProperty.bind(stage.scene.widthProperty())
                 maximumProperty.bind(stage.fullScreenProperty())
             }
+
             //メイン画面の表示
             stage.show()
         } catch (e: java.lang.Exception) {
@@ -58,17 +71,6 @@ class GvApplication : Application() {
             e.printStackTrace()
             exitProcess(-1)
         }
-    }
-
-    /**
-     * アイドルタイマインスタンス
-     *
-     * 画面操作が1秒間行われない場合、ハンドラが実行される。
-     * 表示情報を[SystemModal]に記録した後、ファイルへの書き込みを行う。
-     */
-    private val monitor = GvIdleTimer(1000) {
-        GvBaseWindowCtrl.updateConfigInfo()
-        SystemModal.saveToFile()
     }
 
     /**
@@ -99,4 +101,5 @@ fun main(args: Array<String>) {
 /**
  * リソースバンドルを参照するためのグローバルインスタンス
  */
+@NonNls
 fun resourceBundle(): ResourceBundle = ResourceBundle.getBundle("Gview")

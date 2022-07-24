@@ -12,6 +12,7 @@ import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
 import org.eclipse.jgit.lib.ObjectId
+import org.jetbrains.annotations.NonNls
 
 class CommitListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var commitListTable: TableView<RowData>
@@ -83,8 +84,12 @@ class CommitListCtrl: GvBaseWindowCtrl() {
         /* 行のCSS Classを設定するためにRowFactoryを更新する */
         commitListTable.setRowFactory {
             object : TableRow<RowData>() {
+                @NonNls
+                private val styleClassArray = listOf("cell", "table-row-cell")
+
                 override fun updateItem(rowData: RowData?, empty: Boolean) {
-                    styleClass.setAll("cell", "table-row-cell", rowData?.styleClassName)
+                    styleClass.setAll(styleClassArray)
+                    if(rowData != null) styleClass.add(rowData.styleClassName)
                     super.updateItem(rowData, empty)
                 }
             }
