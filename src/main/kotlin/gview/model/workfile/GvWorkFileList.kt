@@ -47,7 +47,7 @@ class GvWorkFileList(private val repository: GvRepository) {
     /**
      * コンフリクトの発生しているファイルのリスト
      */
-    val conflictedFiles = SimpleObjectProperty<List<GvCommitFile>>()
+    private val conflictedFiles = SimpleObjectProperty<List<GvCommitFile>>()
 
     /*
      * コンフリクトの発生していないファイルを取得するためのフィルタ

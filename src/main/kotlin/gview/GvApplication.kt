@@ -1,6 +1,7 @@
 package gview
 
 import gview.conf.SystemModal
+import gview.model.GvRepository
 import gview.view.dialog.ConfirmationDialog
 import gview.view.dialog.ConfirmationDialog.ConfirmationType
 import gview.view.main.MainWindow
@@ -53,8 +54,8 @@ class GvApplication : Application() {
                 SystemModal.saveToFile()
             }
 
-            updateMonitor = GvIdleTimer(stage, 30000, true) {
-                println("updateTimer")
+            updateMonitor = GvIdleTimer(stage, 10000, true) {
+                GvRepository.currentRepository?.workFileChanged()
             }
 
             //画面サイズ変更時、サイズを保存するためのbind定義

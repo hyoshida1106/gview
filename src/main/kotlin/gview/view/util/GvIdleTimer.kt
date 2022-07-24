@@ -10,9 +10,10 @@ import javafx.util.Duration
 /**
  * TimeLineを利用したアイドルタイマ
  *
- * @param idleTime      アイドル時間を秒で指定する
- * @param handler       アイドル時処理
+ * @param stage         登録するStage
+ * @param idleTime      アイドル時間をミリ秒で指定する
  * @param repeat        繰り返し実施指示
+ * @param handler       アイドル時処理
  */
 class GvIdleTimer(private val stage: Stage, idleTime: Int, private val repeat: Boolean, val handler: () -> Unit ) {
 
@@ -23,6 +24,9 @@ class GvIdleTimer(private val stage: Stage, idleTime: Int, private val repeat: B
         KeyFrame(Duration(idleTime.toDouble()), { handler() })
     )
 
+    /**
+     * 初期化
+     */
     init {
         idleTimeline.cycleCount = if (repeat) INDEFINITE else 1
         stage.scene.addEventFilter(Event.ANY) { resetTimer() }
@@ -30,6 +34,10 @@ class GvIdleTimer(private val stage: Stage, idleTime: Int, private val repeat: B
         resetTimer()
     }
 
+    /**
+     * タイマのセット/リセット。
+     * フォーカスの有無によって処理を変更する。
+     */
     private fun resetTimer() {
         if (stage.isFocused) {
             idleTimeline.playFromStart()
