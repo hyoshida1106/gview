@@ -12,12 +12,12 @@ class RemoteBranchContextMenu(val model: GvRemoteBranch)
 
     private val checkOutMenuItem = GvMenuItem(
             text = "このリモートブランチをローカルへチェックアウトする",
-            iconLiteral = "mdi-folder-star"
+            iconLiteral = "mdi2f-folder-star"
     ) { onCheckOut() }
 
     private val removeMenuItem   = GvMenuItem(
             text = "このリモートブランチを削除する",
-            iconLiteral = "mdi-delete-forever"
+            iconLiteral = "mdi2d-delete-forever"
     ) { onRemove() }
 
     init {

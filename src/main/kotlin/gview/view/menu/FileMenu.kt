@@ -3,6 +3,7 @@ package gview.view.menu
 import gview.GvApplication
 import gview.conf.SystemModal
 import gview.model.GvRepository
+import gview.resourceBundle
 import gview.view.dialog.CloneRepositoryDialog
 import gview.view.main.MainWindow
 import javafx.event.EventHandler
@@ -14,36 +15,42 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.stage.DirectoryChooser
+import org.jetbrains.annotations.NonNls
 
-class FileMenu
-    : Menu("ファイル(_F)") {
+class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
 
+    @NonNls
     private val openMenu = GvMenuItem(
-            text= "リポジトリを開く(_O)...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.O,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-folder"
+        text = resourceBundle().getString("FileOpenRepository"),
+        accelerator = KeyCodeCombination(
+            KeyCode.O,
+            KeyCombination.SHORTCUT_DOWN
+        ),
+        iconLiteral = "mdi2f-folder"
     ) { onFileOpenRepo() }
 
+    @NonNls
     private val createMenu = GvMenuItem(
-            text = "新規リポジトリ(_N)...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.N,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-folder-plus"
+        text = resourceBundle().getString("FileCreateRepository"),
+        accelerator = KeyCodeCombination(
+            KeyCode.N,
+            KeyCombination.SHORTCUT_DOWN
+        ),
+        iconLiteral = "mdi2f-folder-plus"
     ) { onFileCreateRepo() }
 
+    @NonNls
     private val cloneMenu = GvMenuItem(
-            text = "クローン(_C)...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.C,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-cloud-download"
+        text = resourceBundle().getString("FileCloneRepository"),
+        accelerator = KeyCodeCombination(
+            KeyCode.C,
+            KeyCombination.SHORTCUT_DOWN
+        ),
+        iconLiteral = "mdi2c-cloud-download"
     ) { onFileCloneRepo() }
 
     private val quitMenu = GvMenuItem(
-            text = "終了(_X)"
+        text = resourceBundle().getString("FileQUit")
     ) { onFileQuit() }
 
     //以前に開いたファイル用メニューのプレースホルダ
@@ -81,10 +88,10 @@ class FileMenu
             it.text = ""
         }
         val lastOpenedFiles = SystemModal.lastOpenedFiles
-        if(lastOpenedFiles.isEmpty()) {
+        if (lastOpenedFiles.isEmpty()) {
             with(lastFileMenuArray[0]) {
                 isVisible = true
-                text = "ファイルなし"
+                text = resourceBundle().getString("FileNoFile")
             }
         } else {
             val item = lastFileMenuArray.iterator()
@@ -110,7 +117,7 @@ class FileMenu
     //既存のリポジトリを開く
     private fun onFileOpenRepo() {
         val chooser = DirectoryChooser()
-        chooser.title = "オープンするリポジトリのパスを指定してください"
+        chooser.title = resourceBundle().getString("FileOpenRepositoryPath")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
@@ -122,7 +129,7 @@ class FileMenu
     //新規作成
     private fun onFileCreateRepo() {
         val chooser = DirectoryChooser()
-        chooser.title = "リポジトリを生成するパスを指定してください"
+        chooser.title = resourceBundle().getString("FileCreateRepositoryPath")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
@@ -134,7 +141,7 @@ class FileMenu
     //クローン
     private fun onFileCloneRepo() {
         val dialog = CloneRepositoryDialog("", "")
-        if(dialog.showDialog() == ButtonType.OK) {
+        if (dialog.showDialog() == ButtonType.OK) {
             MainWindow.controller.runTask {
                 GvRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
                 SystemModal.addLastOpenedFile(dialog.localPath)

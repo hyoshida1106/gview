@@ -1,5 +1,6 @@
 package gview.view.framework
 
+import gview.resourceBundle
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import org.jetbrains.annotations.NonNls
@@ -28,7 +29,7 @@ open class GvBaseWindow<Controller>(formPath: String, style: String) where Contr
      */
     init {
         //ウィンドウクラスをロードし、styleを登録する
-        val loader = FXMLLoader(javaClass.getResource(formPath))
+        val loader = FXMLLoader(javaClass.getResource(formPath), resourceBundle())
         root = loader.load()
         root.styleClass.add(style)
         //コントローラインスタンスを取得する

@@ -1,7 +1,7 @@
 package gview.view.menu
 
-import gview.GvApplication
 import gview.model.GvRepository
+import gview.resourceBundle
 import gview.view.dialog.CreateBranchDialog
 import gview.view.dialog.CreateBranchDialogCtrl
 import javafx.event.EventHandler
@@ -11,64 +11,79 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import org.jetbrains.annotations.NonNls
 
-class BranchMenu
-    : Menu("ブランチ(_B)") {
+class BranchMenu : Menu(resourceBundle().getString("BranchMenu")) {
 
-    private val checkoutMenu = GvMenuItem(
-            text= "チェックアウト(_C)",
-            iconLiteral = "mdi-folder-star"
+    @NonNls
+    private val checkoutLocalBranchMenu = GvMenuItem(
+        /* チェックアウト */
+        text = "test",
+        iconLiteral = "mdi2f-folder-star"
     ) { onCheckOut() }
 
+    private val checkoutMenu = GvSubMenu(
+        text = resourceBundle().getString("BranchCheckout"),
+        iconLiteral = "mdi2f-folder-star",
+        subMenuList = arrayOf( checkoutLocalBranchMenu )
+    )
+
+    @NonNls
     private val pushMenu = GvMenuItem(
-            text= "プッシュ(_P)",
-            accelerator = KeyCodeCombination(
-                    KeyCode.P,
-                    KeyCombination.SHORTCUT_DOWN,
-                    KeyCombination.SHIFT_DOWN),
-            iconLiteral = "mdi-folder-upload"
+        text = resourceBundle().getString("BranchPush"),
+        accelerator = KeyCodeCombination(
+            KeyCode.P,
+            KeyCombination.SHORTCUT_DOWN,
+            KeyCombination.SHIFT_DOWN
+        ),
+        iconLiteral = "mdi2f-folder-upload"
     ) { onPush() }
 
+    @NonNls
     private val pullMenu = GvMenuItem(
-            text = "プル(_L)",
-            accelerator = KeyCodeCombination(
-                    KeyCode.L,
-                    KeyCombination.SHORTCUT_DOWN,
-                    KeyCombination.SHIFT_DOWN),
-            iconLiteral = "mdi-folder-download"
+        text = resourceBundle().getString("BranchPull"),
+        accelerator = KeyCodeCombination(
+            KeyCode.L,
+            KeyCombination.SHORTCUT_DOWN,
+            KeyCombination.SHIFT_DOWN
+        ),
+        iconLiteral = "mdi2f-folder-download"
     ) { onPull() }
 
+    @NonNls
     private val createMenu = GvMenuItem(
-            text = "新規作成(_)...",
-            iconLiteral = "mdi-folder-plus"
+        text = resourceBundle().getString("BranchCreate"),
+        iconLiteral = "mdi2f-folder-plus"
     ) { onCreate() }
 
+    @NonNls
     private val renameMenu = GvMenuItem(
-            text = "名称変更(_R)...",
-            iconLiteral = "mdi-folder-move"
+        text = resourceBundle().getString("BranchRename"),
+        iconLiteral = "mdi2f-folder-move"
     ) { onRename() }
 
+    @NonNls
     private val removeMenu = GvMenuItem(
-            text = "削除(_D)",
-            iconLiteral = "mdi-folder-remove"
+        text = resourceBundle().getString("BranchRemove"),
+        iconLiteral = "mdi2f-folder-remove"
     ) { onRemove() }
 
     init {
         items.setAll(
-                checkoutMenu,
-                pushMenu,
-                pullMenu,
-                SeparatorMenuItem(),
-                createMenu,
-                renameMenu,
-                removeMenu
+            checkoutMenu,
+            pushMenu,
+            pullMenu,
+            SeparatorMenuItem(),
+            createMenu,
+            renameMenu,
+            removeMenu
         )
         onShowing = EventHandler { onShowingMenu() }
     }
 
     //メニュー表示
     private fun onShowingMenu() {
-        val repositoryInvalid = ( GvRepository.currentRepository == null )
+        val repositoryInvalid = (GvRepository.currentRepository == null)
         checkoutMenu.isDisable = repositoryInvalid
         pushMenu.isDisable = repositoryInvalid
         pullMenu.isDisable = repositoryInvalid
@@ -77,6 +92,9 @@ class BranchMenu
         removeMenu.isDisable = repositoryInvalid
     }
 
+    /**
+     * ブランチのチェックアウト
+     */
     private fun onCheckOut() {
     }
 
@@ -86,32 +104,32 @@ class BranchMenu
     private fun onPull() {
     }
 
+    /**
+     * ブランチの新規作成
+     */
     private fun onCreate() {
-        val branches = GvRepository.currentRepository?.branches
-        if(branches != null) {
-            val dialog = CreateBranchDialog()
-            if (dialog.showDialog() == ButtonType.OK) {
-                val branchName = dialog.controller.newBranchName
-                val checkout = dialog.controller.checkoutFlag
-                when (dialog.controller.startPoint) {
-                    CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
-                        branches.createNewBranchFromHead(branchName, checkout)
-                    }
-                    CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
-                        branches.createNewBranchFromOtherBranch(
-                            branchName,
-                            dialog.controller.selectedBranch!!,
-                            checkout
-                        )
-                    }
-                    CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
-                        branches.createNewBranchFromCommit(
-                            branchName,
-                            dialog.controller.selected!!,
-                            checkout
-                        )
-                    }
-                }
+        val branches = GvRepository.currentRepository?.branches ?: return
+        val dialog = CreateBranchDialog()
+        if (dialog.showDialog() != ButtonType.OK) return
+        val branchName = dialog.controller.newBranchName
+        val checkout = dialog.controller.checkoutFlag
+        when (dialog.controller.startPoint) {
+            CreateBranchDialogCtrl.BranchStartPoint.FromHead -> {
+                branches.createNewBranchFromHead(branchName, checkout)
+            }
+            CreateBranchDialogCtrl.BranchStartPoint.ByOtherBranch -> {
+                branches.createNewBranchFromOtherBranch(
+                    branchName,
+                    dialog.controller.selectedBranch!!,
+                    checkout
+                )
+            }
+            CreateBranchDialogCtrl.BranchStartPoint.ByCommit -> {
+                branches.createNewBranchFromCommit(
+                    branchName,
+                    dialog.controller.selected!!,
+                    checkout
+                )
             }
         }
     }

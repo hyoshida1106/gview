@@ -18,7 +18,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             accelerator = KeyCodeCombination(
                     KeyCode.S,
                     KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-arrow-up-bold-circle-outline"
+            iconLiteral = "mdi2a-arrow-up-bold-circle-outline"
     ) { doStageCommand() }
 
     private val unstageMenu = GvMenuItem(
@@ -27,7 +27,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
                     KeyCode.S,
                     KeyCombination.SHORTCUT_DOWN,
                     KeyCombination.SHIFT_DOWN),
-            iconLiteral = "mdi-arrow-down-bold-circle-outline"
+            iconLiteral = "mdi2a-arrow-down-bold-circle-outline"
     ) { doUnStageCommand() }
 
     private val commitMenu = GvMenuItem(
@@ -35,7 +35,7 @@ class WorkTreeMenu: Menu("ワークツリー(_W)") {
             accelerator = KeyCodeCombination(
                     KeyCode.C,
                     KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-checkbox-marked-circle-outline"
+            iconLiteral = "mdi2c-checkbox-marked-circle-outline"
     ) { doCommitCommand() }
 
     init {

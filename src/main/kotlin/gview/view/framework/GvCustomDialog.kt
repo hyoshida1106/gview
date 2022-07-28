@@ -1,11 +1,13 @@
 package gview.view.framework
 
+import gview.resourceBundle
 import javafx.beans.property.BooleanProperty
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
+import org.jetbrains.annotations.NonNls
 
 /**
  * カスタムダイアログ
@@ -14,6 +16,7 @@ import javafx.scene.control.Dialog
  * @param form      FXMLファイルのパス
  * @param buttons   表示するボタン
  */
+@NonNls
 open class GvCustomDialog<Controller>(title: String, form: String, vararg buttons: ButtonType) : Dialog<ButtonType>(),
     GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
 
@@ -21,6 +24,9 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
      * コントローラへの参照を保持する
      */
     val controller: Controller
+
+    @NonNls
+    private val cssResource = javaClass.getResource("/Gview.css")
 
     /**
      * 初期化
@@ -31,12 +37,12 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
         dialogPane.buttonTypes.addAll(buttons)
 
         //FXMLファイルをロードして、コントローラ参照を取得する
-        val loader = FXMLLoader(javaClass.getResource(form))
+        val loader = FXMLLoader(javaClass.getResource(form), resourceBundle())
         dialogPane.content = loader.load()
         controller = loader.getController() as Controller
 
         //StyleSheetを登録
-        dialogPane.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())
+        dialogPane.stylesheets.add(cssResource.toExternalForm())
 
         // "X"で閉じないようにする
         dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }

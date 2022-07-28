@@ -1,75 +1,77 @@
 package gview.view.menu
 
-import gview.model.GvRepository
-import gview.view.dialog.BranchNameDialog
-import gview.view.dialog.ErrorDialog
 import gview.view.dialog.RemoveLocalBranchDialog
 import gview.view.main.MainWindow
 import gview.model.branch.GvLocalBranch
+import gview.resourceBundle
 import javafx.event.EventHandler
-import javafx.scene.control.ButtonType
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
-import java.lang.Exception
-
+import org.jetbrains.annotations.NonNls
 
 class LocalBranchContextMenu(private val model: GvLocalBranch)
     : ContextMenu() {
 
+    /* このブランチをカレントブランチにする */
+    @NonNls
     private val checkOutMenuItem = GvMenuItem(
-            text = "このブランチをカレントブランチにする" ,
-            iconLiteral = "mdi-download"
-    ) { onCheckOut() }
+        text = resourceBundle().getString("CheckoutLocalBranch"),
+        iconLiteral = "mdi2d-download",
+        bold = true
+    ) { checkoutLocalBranch() }
 
-    private val createBranchMenuItem = GvMenuItem(
-            text = "このブランチから新たなブランチを作成する..." ,
-            iconLiteral = "mdi-source-branch"
-    ) { onCreateNewBranch() }
+    /* このブランチの名称を変更する */
+    @NonNls
+    private val renameMenuItem = GvMenuItem(
+        text = resourceBundle().getString("RenameLocalBranch"),
+        iconLiteral = "mdi2r-rename-box"
+    ) { renameLocalBranch() }
 
-    private val removeMenuItem   = GvMenuItem(
-            text = "このブランチを削除する",
-            iconLiteral = "mdi-delete-forever"
-    ) { onRemove() }
+    /* このブランチを削除する */
+    @NonNls
+    private val removeMenuItem = GvMenuItem(
+        text = resourceBundle().getString("RemoveLocalBranch"),
+        iconLiteral = "mdi2d-delete-forever"
+    ) { removeLocalBranch() }
 
+    /**
+     * 初期化
+     */
     init {
         items.setAll(
             checkOutMenuItem,
-            createBranchMenuItem,
+            renameMenuItem,
             SeparatorMenuItem(),
             removeMenuItem
         )
         onShowing = EventHandler { onMyShowing() }
     }
 
+    /**
+     * メニュー表示時処理
+     */
     private fun onMyShowing() {
         checkOutMenuItem.isDisable = (model.isCurrentBranch)
         removeMenuItem.isDisable = (model.isCurrentBranch)
     }
 
-    private fun onCheckOut() {
+    private fun checkoutLocalBranch() {
         MainWindow.controller.runTask { model.checkout() }
     }
 
-    private fun onCreateNewBranch() {
-        val dialog = BranchNameDialog()
-        if(dialog.showDialog() == ButtonType.OK) {
-            try {
-                GvRepository.currentRepository?.branches?.createNewBranchFromOtherBranch(
-                        dialog.controller.newBranchName, model, dialog.controller.checkoutFlag)
-            } catch(e: Exception) {
-                ErrorDialog(e).showDialog()
-            }
-        }
+    private fun renameLocalBranch() {
 
     }
 
-    private fun onRemove() {
-        val dialog = RemoveLocalBranchDialog("${model.name}を削除しますか")
-        if(dialog.showDialog()) {
+    private fun removeLocalBranch() {
+        val dialog = RemoveLocalBranchDialog(String.format(resourceBundle().getString("ConfirmToRemove"), model.name))
+        if (dialog.showDialog()) {
             MainWindow.controller.runTask {
                 model.branchList.removeLocalBranch(
-                        model,
-                        dialog.forceRemove) }
+                    model,
+                    dialog.forceRemove
+                )
+            }
         }
     }
 }

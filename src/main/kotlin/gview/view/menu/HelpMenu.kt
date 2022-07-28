@@ -7,7 +7,7 @@ class HelpMenu: Menu("ヘルプ(_H)") {
 
     private val helpMenuItem = GvMenuItem(
             text = "ヘルプ...",
-            iconLiteral = "mdi-help-circle-outline"
+            iconLiteral = "mdi2h-help-circle-outline"
     ) { onHelp() }
 
     private val aboutMenuItem = GvMenuItem(

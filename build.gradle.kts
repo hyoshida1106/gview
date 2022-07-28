@@ -18,8 +18,8 @@ dependencies {
     // SLF4J/Log4J
     implementation("org.slf4j:slf4j-log4j12:1.7.32")
     // Ikonli
-    implementation("org.kordamp.ikonli:ikonli-javafx:12.2.0")
-    implementation("org.kordamp.ikonli:ikonli-materialdesign-pack:12.2.0")
+    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1")
     //ControlFX
     implementation("org.controlsfx:controlsfx:11.1.1")
 

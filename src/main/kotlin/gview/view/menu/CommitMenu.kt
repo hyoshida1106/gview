@@ -33,7 +33,7 @@ class CommitMenu
             accelerator = KeyCodeCombination(
                     KeyCode.B,
                     KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-source-branch"
+            iconLiteral = "mdi2s-source-branch"
     ) { onBranch() }
 
     private val mergeMenu = GvMenuItem(
@@ -41,7 +41,7 @@ class CommitMenu
             accelerator = KeyCodeCombination(
                     KeyCode.M,
                     KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-source-merge"
+            iconLiteral = "mdi2s-source-merge"
     ) { onMerge() }
 
     private val cherryPickMenu = GvMenuItem(
@@ -49,7 +49,7 @@ class CommitMenu
             accelerator = KeyCodeCombination(
                     KeyCode.P,
                     KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi-source-pull"
+            iconLiteral = "mdi2s-source-pull"
     ) { onCherryPick() }
 
     private val newTagMenu = GvMenuItem(

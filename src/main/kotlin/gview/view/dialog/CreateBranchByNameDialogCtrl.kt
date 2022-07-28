@@ -7,7 +7,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 
-class BranchNameDialogCtrl : GvCustomDialogCtrl() {
+class CreateBranchByNameDialogCtrl : GvCustomDialogCtrl() {
     @FXML private lateinit var branchName: TextField
     @FXML private lateinit var checkout: CheckBox
 

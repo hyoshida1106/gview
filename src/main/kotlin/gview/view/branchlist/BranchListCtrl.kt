@@ -3,7 +3,6 @@ package gview.view.branchlist
 import gview.view.framework.GvBaseWindowCtrl
 import gview.model.GvRepository
 import gview.model.branch.GvBranch
-import gview.model.branch.GvBranchList
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
 import gview.view.main.MainWindow
@@ -16,6 +15,9 @@ import javafx.scene.control.*
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.HBox
 
+/**
+ * ブランチ一覧
+ */
 class BranchListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var branchTree: TreeView<GvBranch>
 
@@ -49,6 +51,8 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.isVisible = false
     }
 
+    val selectedBranch: GvBranch? get() =branchTree.selectionModel.selectedItem?.value
+
     private fun updateRepository(repository: GvRepository) {
         val branchList = repository.branches
         updateLocalBranches(branchList.localBranchList.value)
@@ -61,15 +65,32 @@ class BranchListCtrl: GvBaseWindowCtrl() {
     }
 
     private fun updateLocalBranches(localBranchList: List<GvLocalBranch>) {
-        localTreeRoot.children.setAll(localBranchList.map { LocalBranchItem(it) } )
+        localTreeRoot.children.clear()
+        localBranchList.forEach { model ->
+            val leaf = LocalBranchItem(model)
+            findTreePath(localTreeRoot, leaf).children.add(leaf)
+        }
     }
 
     private fun updateRemoteBranches(remoteBranchList: List<GvRemoteBranch>) {
-        remoteTreeRoot.children.setAll(remoteBranchList.map { RemoteBranchItem(it) })
+        remoteTreeRoot.children.clear()
+        remoteBranchList.forEach { model ->
+            val leaf = RemoteBranchItem(model)
+            findTreePath(remoteTreeRoot, leaf).children.add(leaf)
+        }
     }
 
-    val selectedBranch: GvBranch? get() {
-        return branchTree.selectionModel.selectedItem?.value
+    private fun findTreePath(root: RootItem, leaf: LeafItem): RootItem {
+        var node: RootItem = root
+        leaf.path.forEach { name ->
+            var n = node.children.find { p -> (p as? BranchTreeItem)?.name == name } as? RootItem
+            if(n == null) {
+                n = RootItem(name)
+                node.children.add(n)
+            }
+            node = n
+        }
+        return node
     }
 
     private class BranchTreeCell: TreeCell<GvBranch>() {
@@ -89,24 +110,34 @@ class BranchListCtrl: GvBaseWindowCtrl() {
     abstract class BranchTreeItem(model: GvBranch?) : TreeItem<GvBranch>(model) {
         abstract val cellImage: Node
         abstract val contextMenu: ContextMenu?
+        abstract val name: String
+        abstract val path: List<String>
         abstract override fun isLeaf(): Boolean
     }
 
     class RootItem(name: String) : BranchTreeItem(null) {
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
+        override val name: String = name
+        override val path:List<String> = emptyList()
         override fun isLeaf(): Boolean = false
         init { isExpanded = true }
     }
 
-    class RemoteBranchItem(val model: GvRemoteBranch) : BranchTreeItem(model) {
-        override val cellImage: Node = Label(model.name)
+    abstract class LeafItem(model: GvBranch): BranchTreeItem(model) {
+        private val pathList: List<String> = model.path.split("/")
+        override val name: String = pathList.last()
+        override val path: List<String> = pathList.drop(2).dropLast(1)
+    }
+
+    class RemoteBranchItem(val model: GvRemoteBranch) : LeafItem(model) {
+        override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = RemoteBranchContextMenu(model)
         override fun isLeaf(): Boolean = true
     }
 
-    class LocalBranchItem(val model: GvLocalBranch) : BranchTreeItem(model) {
-        private val branchName = Label(model.name)
+    class LocalBranchItem(val model: GvLocalBranch) : LeafItem(model) {
+        private val branchName = Label(name)
         private val showInTree = CheckBox()
         override val cellImage: Node = HBox(branchName, showInTree)
         override val contextMenu: ContextMenu? = LocalBranchContextMenu(model)
@@ -116,11 +147,9 @@ class BranchListCtrl: GvBaseWindowCtrl() {
             if (model.isCurrentBranch) {
                 branchName.styleClass.add("CurrentBranch")
                 showInTree.isSelected = true
-            }
-            showInTree.isSelected = model.selectedFlagProperty.value
-            if (model.isCurrentBranch) {
                 showInTree.isDisable = true
             } else {
+                showInTree.isSelected = model.selectedFlagProperty.value
                 showInTree.isDisable = false
                 showInTree.selectedProperty().addListener { _, _, newVal -> model.selectedFlagProperty.set(newVal) }
             }
