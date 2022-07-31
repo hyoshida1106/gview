@@ -12,9 +12,7 @@ import javafx.scene.control.TableView
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
 
-class SelectStageFilesDialogCtrl
-    : GvCustomDialogCtrl() {
-
+class SelectChangedFilesDialogCtrl: GvCustomDialogCtrl() {
     @FXML private lateinit var selAllCheckBox: CheckBox
     @FXML private lateinit var fileList: TableView<RowData>
     @FXML private lateinit var fileTypeColumn: TableColumn<RowData, String>

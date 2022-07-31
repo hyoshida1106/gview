@@ -29,6 +29,7 @@ class GvWorkFileList(private val repository: GvRepository) {
         override fun getListenerType(): Class<WorkFileChangedListener> {
             return WorkFileChangedListener::class.java
         }
+
         override fun dispatch(listener: WorkFileChangedListener?) {
             listener?.onWorkFileChanged(this)
         }
@@ -132,7 +133,7 @@ class GvWorkFileList(private val repository: GvRepository) {
         val cacheIterator = DirCacheIterator(cache)
         while (!cacheIterator.eof()) {
             val dirCacheEntry = cacheIterator.dirCacheEntry
-            if(dirCacheEntry != null) {
+            if (dirCacheEntry != null) {
                 files.add(GvConflictFile(DirCacheEntry(dirCacheEntry)))
             }
             cacheIterator.next(1)
@@ -145,7 +146,7 @@ class GvWorkFileList(private val repository: GvRepository) {
      *
      * @param[files]    対象ファイルのリスト
      */
-    fun stageSelectedFiles(files: List<GvCommitFile>) {
+    fun stageFiles(files: List<GvCommitFile>) {
         var addCount = 0
         var delCount = 0
 
@@ -169,11 +170,13 @@ class GvWorkFileList(private val repository: GvRepository) {
                 else -> {}
             }
         }
-        if(addCount > 0 || delCount > 0) {
-            if(addCount > 0) addCommand.call()
-            if(delCount > 0) delCommand.call()
+        if (addCount > 0 || delCount > 0) {
+            if (addCount > 0) addCommand.call()
+            if (delCount > 0) delCommand.call()
             repository.workFileChanged()
-            InformationDialog(resourceBundle().getString("WorkFileStagedMessage").format(addCount + delCount)).showDialog()
+            InformationDialog(
+                resourceBundle().getString("Message.WorkFileStage").format(addCount + delCount)
+            ).showDialog()
         }
     }
 
@@ -190,7 +193,7 @@ class GvWorkFileList(private val repository: GvRepository) {
             files.forEach { reset.addPath(it.path) }
             reset.call()
             repository.workFileChanged()
-            InformationDialog(resourceBundle().getString("WorkFilesUnstagedMessage").format(files.size)).showDialog()
+            InformationDialog(resourceBundle().getString("Message.WorkFileUnStage").format(files.size)).showDialog()
         }
     }
 
@@ -211,7 +214,31 @@ class GvWorkFileList(private val repository: GvRepository) {
             files.forEach { commit.setOnly(it.path) }
             commit.call()
             repository.branchChanged()
-            InformationDialog(resourceBundle().getString("workFileCommitMessage").format(files.size)).showDialog()
+            InformationDialog(resourceBundle().getString("Message.WorkFileCommit").format(files.size)).showDialog()
+        }
+    }
+
+    fun discardFiles(files: List<GvCommitFile>) {
+        var restoreCount = 0
+        val checkoutCommand = repository.gitCommand.checkout()
+
+        files.forEach {
+            when (it.type) {
+                GvCommitFile.ModifiedType.MODIFY,
+                GvCommitFile.ModifiedType.DELETE,
+                GvCommitFile.ModifiedType.RENAME -> {
+                    checkoutCommand.addPath(it.path)
+                    ++restoreCount
+                }
+                else -> {}
+            }
+        }
+        if (restoreCount > 0) {
+            checkoutCommand.call()
+            repository.workFileChanged()
+            InformationDialog(
+                resourceBundle().getString("Message.WorkFileRestore").format(restoreCount)
+            ).showDialog()
         }
     }
 }

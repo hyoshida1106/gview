@@ -17,41 +17,47 @@ import javafx.scene.input.KeyCombination
 import javafx.stage.DirectoryChooser
 import org.jetbrains.annotations.NonNls
 
-class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
+class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
 
+    /* リポジトリを開く(_O)... */
     @NonNls
     private val openMenu = GvMenuItem(
-        text = resourceBundle().getString("FileOpenRepository"),
+        text = resourceBundle().getString("FileMenu.OpenRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.O,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2f-folder"
-    ) { onFileOpenRepo() }
+        iconLiteral = "mdi2f-folder-open-outline"
+    ) { openRepository() }
 
+    /* 新規リポジトリ(_N)... */
     @NonNls
     private val createMenu = GvMenuItem(
-        text = resourceBundle().getString("FileCreateRepository"),
+        text = resourceBundle().getString("FileMenu.CreateNewRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.N,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2f-folder-plus"
-    ) { onFileCreateRepo() }
+        iconLiteral = "mdi2f-folder-plus-outline"
+    ) { createNewRepository() }
 
+    /* クローン(_C)... */
     @NonNls
     private val cloneMenu = GvMenuItem(
-        text = resourceBundle().getString("FileCloneRepository"),
+        text = resourceBundle().getString("FileMenu.CloneRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.C,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2c-cloud-download"
-    ) { onFileCloneRepo() }
+        iconLiteral = "mdi2f-folder-download-outline"
+    ) { cloneRepository() }
 
+    /* 終了(_X) */
+    @NonNls
     private val quitMenu = GvMenuItem(
-        text = resourceBundle().getString("FileQUit")
-    ) { onFileQuit() }
+        text = resourceBundle().getString("FileMenu.Quit"),
+        iconLiteral = "mdi2s-stop-circle-outline"
+    ) { quitApplication() }
 
     //以前に開いたファイル用メニューのプレースホルダ
     private val lastFileMenuArray = listOf(
@@ -91,7 +97,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
         if (lastOpenedFiles.isEmpty()) {
             with(lastFileMenuArray[0]) {
                 isVisible = true
-                text = resourceBundle().getString("FileNoFile")
+                text = resourceBundle().getString("FileMenu.NoFileMessage")
             }
         } else {
             val item = lastFileMenuArray.iterator()
@@ -115,9 +121,9 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
     }
 
     //既存のリポジトリを開く
-    private fun onFileOpenRepo() {
+    private fun openRepository() {
         val chooser = DirectoryChooser()
-        chooser.title = resourceBundle().getString("FileOpenRepositoryPath")
+        chooser.title = resourceBundle().getString("FileMenu.OpenRepositoryPathMessage")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
@@ -127,9 +133,9 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
     }
 
     //新規作成
-    private fun onFileCreateRepo() {
+    private fun createNewRepository() {
         val chooser = DirectoryChooser()
-        chooser.title = resourceBundle().getString("FileCreateRepositoryPath")
+        chooser.title = resourceBundle().getString("FileMenu.CreateNewRepositoryPathMessage")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         MainWindow.controller.runTask {
             val filePath = dir.absolutePath
@@ -139,7 +145,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
     }
 
     //クローン
-    private fun onFileCloneRepo() {
+    private fun cloneRepository() {
         val dialog = CloneRepositoryDialog("", "")
         if (dialog.showDialog() == ButtonType.OK) {
             MainWindow.controller.runTask {
@@ -150,7 +156,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu")) {
     }
 
     //プログラム終了
-    private fun onFileQuit() {
+    private fun quitApplication() {
         GvApplication.confirmToQuit()
     }
 

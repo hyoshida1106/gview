@@ -3,10 +3,10 @@ package gview.view.commitinfo
 import gview.conf.SystemModal
 import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
-import gview.view.menu.WorkTreeMenu
 import gview.view.util.GvColumnAdjuster
 import gview.model.commit.GvCommitFile
 import gview.resourceBundle
+import gview.view.function.WorkTreeFunction
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -88,9 +88,9 @@ class WorkFileListCtrl: GvBaseWindowCtrl() {
         unStageButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
         commitButton.disableProperty().bind(stagedFileNumber.isEqualTo(0))
 
-        commitButton.setOnAction { WorkTreeMenu.doCommitCommand() }
-        unStageButton.setOnAction { WorkTreeMenu.doUnStageCommand() }
-        stageButton.setOnAction { WorkTreeMenu.doStageCommand() }
+        commitButton.setOnAction    { WorkTreeFunction.doCommit() }
+        unStageButton.setOnAction   { WorkTreeFunction.doUnStage() }
+        stageButton.setOnAction     { WorkTreeFunction.doStage() }
     }
 
     //表示完了時にListenerを設定する

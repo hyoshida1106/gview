@@ -11,6 +11,7 @@ import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.stage.Stage
+import org.eclipse.jgit.errors.LockFailedException
 import org.jetbrains.annotations.NonNls
 import java.util.*
 import kotlin.system.exitProcess
@@ -55,7 +56,11 @@ class GvApplication : Application() {
             }
 
             updateMonitor = GvIdleTimer(stage, 10000, true) {
-                GvRepository.currentRepository?.workFileChanged()
+                try {
+                    GvRepository.currentRepository?.workFileChanged()
+                } catch(_: LockFailedException) {
+                    /* 他の処理が実行中 */
+                }
             }
 
             //画面サイズ変更時、サイズを保存するためのbind定義

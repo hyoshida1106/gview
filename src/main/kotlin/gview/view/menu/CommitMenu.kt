@@ -1,109 +1,91 @@
 package gview.view.menu
 
-import gview.view.dialog.CommentSearchDialog
-import gview.view.dialog.TagSearchDialog
+import gview.resourceBundle
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
+import org.jetbrains.annotations.NonNls
 
-class CommitMenu
-    : Menu("コミット(_C)") {
+class CommitMenu: Menu(resourceBundle().getString("CommitMenu.Title")) {
 
-    private val tagSearchMenu = GvMenuItem(
-            text= "タグを検索(_F)...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.F,
-                    KeyCombination.SHORTCUT_DOWN,
-                    KeyCombination.SHIFT_DOWN)
-    ) { onTagSearch() }
+    @NonNls
+    private val checkOutMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.Checkout"),
+        iconLiteral = "mdi2s-source-branch",
+        bold = true
+    ) { }
 
-    private val commentSearchMenu = GvMenuItem(
-            text = "コメントを検索(_S)...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.S,
-                    KeyCombination.SHORTCUT_DOWN,
-                    KeyCombination.SHIFT_DOWN)
-    ) { onCommentSearch() }
+    @NonNls
+    private val branchMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.Branch"),
+        accelerator = KeyCodeCombination(
+            KeyCode.B,
+            KeyCombination.SHORTCUT_DOWN),
+        iconLiteral = "mdi2s-source-branch"
+    ) { }
 
-    private val branchMenu = GvMenuItem(
-            text = "ブランチ...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.B,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi2s-source-branch"
-    ) { onBranch() }
+    @NonNls
+    private val mergeMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.Merge"),
+        accelerator = KeyCodeCombination(
+            KeyCode.M,
+            KeyCombination.SHORTCUT_DOWN),
+        iconLiteral = "mdi2s-source-merge"
+    ) { }
 
-    private val mergeMenu = GvMenuItem(
-            text = "マージ...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.M,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi2s-source-merge"
-    ) { onMerge() }
+    @NonNls
+    private val tagMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.Tag"),
+        iconLiteral = "mdi2t-tag-outline"
+    ) { }
 
-    private val cherryPickMenu = GvMenuItem(
-            text = "チェリーピック...",
-            accelerator = KeyCodeCombination(
-                    KeyCode.P,
-                    KeyCombination.SHORTCUT_DOWN),
-            iconLiteral = "mdi2s-source-pull"
-    ) { onCherryPick() }
+    /* リベース/インタラクティブなリベース... */
+    @NonNls
+    private val rebaseMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.Rebase"),
+        iconLiteral = "mdi2s-source-merge"
+    ) { }
 
-    private val newTagMenu = GvMenuItem(
-            text = "タグを作成..."
-    ) { onNewTag() }
+    @NonNls
+    private val tagSearchMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.TagSearch")
+    ) { searchCommitByTagName() }
 
-    private val removeTagMenu = GvMenuItem(
-            text = "タグを削除..."
-    ) { onRemoveTag() }
+    @NonNls
+    private val commentSearchMenuItem = GvMenuItem(
+        text = resourceBundle().getString("CommitMenu.CommentSearch")
+    ) { searchCommitByComment() }
 
     init {
         items.setAll(
-                tagSearchMenu,
-                commentSearchMenu,
-                SeparatorMenuItem(),
-                branchMenu,
-                mergeMenu,
-                cherryPickMenu,
-                SeparatorMenuItem(),
-                newTagMenu,
-                removeTagMenu
+            checkOutMenuItem,
+            branchMenuItem,
+            mergeMenuItem,
+            tagMenuItem,
+            rebaseMenuItem,
+            SeparatorMenuItem(),
+            tagSearchMenuItem,
+            commentSearchMenuItem
         )
         onShowing = EventHandler { onShowingMenu() }
     }
 
     private fun onShowingMenu() {
+        checkOutMenuItem.isDisable = true
+        mergeMenuItem.isDisable = true
+        mergeMenuItem.isDisable = true
+        tagMenuItem.isDisable = true
+        rebaseMenuItem.isDisable = true
+        tagSearchMenuItem.isDisable = true
+        commentSearchMenuItem.isDisable = true
     }
 
-    private fun onTagSearch() {
-        val tagName = TagSearchDialog().showDialog()
-        if(tagName != null) {
-            //タグ検索(tagName)
-        }
+    private fun searchCommitByTagName() {
     }
 
-    private fun onCommentSearch() {
-        val comment = CommentSearchDialog().showDialog()
-        if(comment != null) {
-            //コメント検索(comment)
-        }
-    }
-
-    private fun onBranch() {
-    }
-
-    private fun onMerge() {
-    }
-
-    private fun onCherryPick() {
-    }
-
-    private fun onNewTag() {
-    }
-
-    private fun onRemoveTag() {
+    private fun searchCommitByComment() {
     }
 }
