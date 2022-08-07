@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      stylesheets="@/Gview.css" fx:controller="gview.view.dialog.FetchDialogCtrl">
+    <TableView fx:id="remoteList" editable="false" prefWidth="600" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="nameColumn" editable="false" reorderable="false" text="%FetchDialog.Name" minWidth="80"/>
+            <TableColumn fx:id="urlColumn" editable="false" reorderable="false" text="%FetchDialog.Url"/>
+        </columns>
+    </TableView>
+    <CheckBox fx:id="pruneCheck" text="%FetchDialog.Prune" />
+</VBox>

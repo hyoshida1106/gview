@@ -8,6 +8,8 @@ import javafx.scene.control.ButtonType
 
 object WorkTreeFunction {
 
+    val canStage get() = GvRepository.currentRepository?.workFiles?.changedFiles?.value?.isNotEmpty() ?: false
+
     fun doStage() {
         val dialog = SelectChangedFilesDialog(resourceBundle().getString("SelectChangedFiles.Stage"))
         if (dialog.showDialog() == ButtonType.OK) {
@@ -19,6 +21,8 @@ object WorkTreeFunction {
         }
     }
 
+    val canUnStage get() = GvRepository.currentRepository?.workFiles?.stagedFiles?.value?.isNotEmpty() ?: false
+
     fun doUnStage() {
         val dialog = SelectUnStageFilesDialog()
         if (dialog.showDialog() == ButtonType.OK) {
@@ -29,6 +33,8 @@ object WorkTreeFunction {
             }
         }
     }
+
+    val canCommit get() = canUnStage
 
     fun doCommit() {
         //ユーザ名とメールアドレスが未入力ならば入力する
@@ -54,6 +60,8 @@ object WorkTreeFunction {
             ErrorDialog(e).showDialog()
         }
     }
+
+    val canDiscard get() = canStage
 
     fun doDiscard() {
         val dialog = SelectChangedFilesDialog(resourceBundle().getString("SelectChangedFiles.Discard"))

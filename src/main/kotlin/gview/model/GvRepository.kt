@@ -4,6 +4,7 @@ import gview.model.branch.GvBranchList
 import gview.model.commit.GvCommitList
 import gview.model.workfile.GvWorkFileList
 import javafx.beans.property.SimpleObjectProperty
+import org.eclipse.jgit.api.FetchCommand
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.diff.DiffFormatter

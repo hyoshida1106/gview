@@ -69,12 +69,10 @@ class WorkTreeMenu: Menu(resourceBundle().getString("WorkTreeMenu.Title")) {
     }
 
     private fun onShowingMenu() {
-        val selected = GvRepository.currentRepository?.workFiles?.stagedFiles?.value?.isNotEmpty()
-        val changed = GvRepository.currentRepository?.workFiles?.changedFiles?.value?.isNotEmpty()
-        commitMenuItem.isDisable = (selected == false)
-        stageMenuItem.isDisable = (changed == false)
-        unStageMenuItem.isDisable = (selected == false)
-        discardMenuItem.isDisable = (changed == false)
+        commitMenuItem.isDisable = !WorkTreeFunction.canCommit
+        stageMenuItem.isDisable = !WorkTreeFunction.canStage
+        unStageMenuItem.isDisable = !WorkTreeFunction.canUnStage
+        discardMenuItem.isDisable = !WorkTreeFunction.canDiscard
     }
 
 }

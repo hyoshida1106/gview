@@ -34,8 +34,8 @@ class SelectChangedFilesDialogCtrl: GvCustomDialogCtrl() {
         fileList.selectionModel = null
         fileList.style = CSS.fileListStyle
 
-        fileTypeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
-        filePathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
+        fileTypeColumn.cellValueFactory = PropertyValueFactory("type")
+        filePathColumn.cellValueFactory = PropertyValueFactory("path")
         fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index ->
             fileList.items[index].check }
 
