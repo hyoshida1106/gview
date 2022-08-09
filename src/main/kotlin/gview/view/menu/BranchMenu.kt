@@ -1,7 +1,6 @@
 package gview.view.menu
 
 import gview.resourceBundle
-import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCode
@@ -35,17 +34,10 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
         iconLiteral = "mdi2s-source-branch-sync"
     ) { }
 
-    @NonNls
-    private val fetchMenu = GvMenuItem(
-        text = resourceBundle().getString("BranchMenu.Fetch"),
-        iconLiteral = "mdi2s-source-branch-refresh"
-    ) { fetchBranches() }
-
     init {
         items.setAll(
             pullMenu,
-            pushMenu,
-            fetchMenu
+            pushMenu
         )
         onShowing = EventHandler { onShowingMenu() }
     }
@@ -54,10 +46,5 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
     private fun onShowingMenu() {
         pushMenu.isDisable = true
         pullMenu.isDisable = true
-        fetchMenu.isDisable = !BranchFunction.canFetch
-    }
-
-    private fun fetchBranches() {
-        BranchFunction.doFetch()
     }
 }

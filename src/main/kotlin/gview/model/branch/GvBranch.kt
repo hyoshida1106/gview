@@ -19,4 +19,6 @@ abstract class GvBranch(val branchList: GvBranchList, val ref: Ref) {
      * ブランチのパス
      */
     abstract val path: String
+
+    val repository = branchList.repository
 }

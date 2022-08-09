@@ -4,7 +4,6 @@ import gview.model.branch.GvBranchList
 import gview.model.commit.GvCommitList
 import gview.model.workfile.GvWorkFileList
 import javafx.beans.property.SimpleObjectProperty
-import org.eclipse.jgit.api.FetchCommand
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry
 import org.eclipse.jgit.diff.DiffFormatter
@@ -12,7 +11,9 @@ import org.eclipse.jgit.dircache.DirCache
 import org.eclipse.jgit.lib.*
 import org.eclipse.jgit.revplot.PlotWalk
 import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.transport.RemoteConfig
 import org.eclipse.jgit.treewalk.*
+import org.jetbrains.annotations.NonNls
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
@@ -70,12 +71,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     val headId: ObjectId? get() = jgitRepository.resolve(Constants.HEAD)
 
-    val config: StoredConfig get() = jgitRepository.config
-
     val gitCommand: Git get() = Git(jgitRepository)
-
-//    fun addRefsChangedListener(listener: RefsChangedListener): ListenerHandle =
-//        jgitRepository.listenerList.addRefsChangedListener(listener)
 
     fun shortenRemoteBranchName(name: String): String =
         jgitRepository.shortenRemoteBranchName(name) ?: name
@@ -111,6 +107,21 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
             super.format(entry)
             return output.toByteArray()
         }
+    }
+
+    val remoteConfigList: List<RemoteConfig> get() = RemoteConfig.getAllRemoteConfigs(jgitRepository.config)
+
+    val userConfig: UserConfig get() = jgitRepository.config.get(UserConfig.KEY)
+
+    @NonNls
+    private val remoteDefault = "origin"
+
+    fun fetch(remote: String = remoteDefault, prune: Boolean = false) {
+        gitCommand.fetch()
+            .setRemote(remote)
+            .setRemoveDeletedRefs(prune)
+            .call()
+        branchChanged()
     }
 
     /**

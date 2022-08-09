@@ -5,6 +5,7 @@ import gview.model.GvRepository
 import gview.model.branch.GvBranch
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
+import gview.view.function.BranchFunction
 import gview.view.main.MainWindow
 import gview.view.menu.LocalBranchContextMenu
 import gview.view.menu.RemoteBranchContextMenu
@@ -43,7 +44,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
             if(it.button == MouseButton.PRIMARY && it.clickCount == 2) {
                 val model = selectedBranch
                 if(model is GvLocalBranch) {
-                    MainWindow.controller.runTask { model.checkout() }
+                    BranchFunction.doCheckout(model)
                 }
             }
         }

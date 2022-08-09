@@ -17,6 +17,7 @@ class MenuBarCtrl : GvBaseWindowCtrl() {
     fun initialize() {
         menuBar.menus.addAll(
             FileMenu(),
+            RepositoryMenu(),
             BranchMenu(),
             WorkTreeMenu(),
             CommitMenu(),

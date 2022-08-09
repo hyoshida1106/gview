@@ -4,6 +4,8 @@ import gview.view.dialog.RemoveLocalBranchDialog
 import gview.view.main.MainWindow
 import gview.model.branch.GvLocalBranch
 import gview.resourceBundle
+import gview.view.dialog.BranchSelectDialog
+import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
@@ -17,7 +19,7 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
         text = resourceBundle().getString("LocalBranch.Checkout"),
         iconLiteral = "mdi2s-source-branch",
         bold = true
-    ) { checkoutLocalBranch() }
+    ) { BranchFunction.doCheckout(model) }
 
     /* 現在のブランチにマージ */
     @NonNls
@@ -33,19 +35,12 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
         iconLiteral = "mdi2s-source-branch-check"
     ) {  }
 
-    /* フェッチ */
-    @NonNls
-    private val fetchMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Fetch"),
-        iconLiteral = "mdi2s-source-branch-refresh"
-    ) {  }
-
     /* プル */
     @NonNls
     private val pullMenuItem = GvMenuItem(
         text = resourceBundle().getString("LocalBranch.Pull"),
         iconLiteral = "mdi2s-source-pull"
-    ) {  }
+    ) { BranchFunction.doPull(model) }
 
     /* プッシュ */
     @NonNls
@@ -77,8 +72,6 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
             mergeMenuItem,
             rebaseMenuItem,
             SeparatorMenuItem(),
-            fetchMenuItem,
-            SeparatorMenuItem(),
             pushMenuItem,
             pullMenuItem,
             SeparatorMenuItem(),
@@ -92,24 +85,19 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
      * メニュー表示時処理
      */
     private fun onMyShowing() {
-        checkOutMenuItem.isDisable = model.isCurrentBranch
+        checkOutMenuItem.isDisable = !BranchFunction.canCheckout(model)
         mergeMenuItem.isDisable = true
         rebaseMenuItem.isDisable = true
-        fetchMenuItem.isDisable = true
         pushMenuItem.isDisable = true
-        pullMenuItem.isDisable = true
+        pullMenuItem.isDisable = !BranchFunction.canPull(model)
         renameMenuItem.isDisable = true
         removeMenuItem.isDisable = model.isCurrentBranch
-    }
-
-    private fun checkoutLocalBranch() {
-        MainWindow.controller.runTask { model.checkout() }
     }
 
     private fun removeLocalBranch() {
         val dialog = RemoveLocalBranchDialog(String.format(resourceBundle().getString("Message.ConfirmToRemove"), model.name))
         if (dialog.showDialog()) {
-            MainWindow.controller.runTask {
+            MainWindow.runTask {
                 model.branchList.removeLocalBranch(
                     model,
                     dialog.forceRemove

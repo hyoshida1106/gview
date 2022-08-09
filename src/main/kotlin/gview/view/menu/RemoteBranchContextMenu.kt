@@ -39,7 +39,7 @@ class RemoteBranchContextMenu(val model: GvRemoteBranch)
     }
 
     private fun checkoutRemoteBranch() {
-        MainWindow.controller.runTask {
+        MainWindow.runTask {
             model.branchList.checkoutRemoteBranch(model) }
     }
 

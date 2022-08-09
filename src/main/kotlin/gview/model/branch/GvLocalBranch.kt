@@ -1,5 +1,8 @@
 package gview.model.branch
 
+import gview.model.GvRepository
+import gview.view.dialog.ErrorDialog
+import gview.view.main.MainWindow
 import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.Ref
 import java.lang.ref.WeakReference
@@ -39,13 +42,16 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
      */
     val selectedFlagProperty = SimpleBooleanProperty(true)
 
-    fun checkout( ) {
-        val repository = branchList.repository
-        repository.gitCommand
-            .checkout()
+    fun checkout() {
+        repository.gitCommand.checkout()
             .setName(name)
             .call()
         repository.branchChanged()
     }
 
+    fun pull() {
+        repository.gitCommand.pull()
+            .call()
+        repository.branchChanged()
+    }
 }

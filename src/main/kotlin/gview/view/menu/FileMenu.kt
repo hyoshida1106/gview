@@ -113,7 +113,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
 
     //以前に開いたファイル選択時の処理
     private fun onLastFileMenu(item: MenuItem) {
-        MainWindow.controller.runTask {
+        MainWindow.runTask {
             val filePath = item.text
             GvRepository.open(filePath)
             SystemModal.addLastOpenedFile(filePath)
@@ -125,7 +125,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
         val chooser = DirectoryChooser()
         chooser.title = resourceBundle().getString("FileMenu.OpenRepositoryPathMessage")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask {
+        MainWindow.runTask {
             val filePath = dir.absolutePath
             GvRepository.open(filePath)
             SystemModal.addLastOpenedFile(filePath)
@@ -137,7 +137,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
         val chooser = DirectoryChooser()
         chooser.title = resourceBundle().getString("FileMenu.CreateNewRepositoryPathMessage")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
-        MainWindow.controller.runTask {
+        MainWindow.runTask {
             val filePath = dir.absolutePath
             GvRepository.init(filePath)
             SystemModal.addLastOpenedFile(filePath)
@@ -148,7 +148,7 @@ class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
     private fun cloneRepository() {
         val dialog = CloneRepositoryDialog("", "")
         if (dialog.showDialog() == ButtonType.OK) {
-            MainWindow.controller.runTask {
+            MainWindow.runTask {
                 GvRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
                 SystemModal.addLastOpenedFile(dialog.localPath)
             }
