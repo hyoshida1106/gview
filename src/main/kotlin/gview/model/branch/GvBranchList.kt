@@ -90,23 +90,6 @@ class GvBranchList(val repository: GvRepository){
         repository.branchChanged()
     }
 
-//    fun checkoutLocalBranch(model: GvLocalBranch) {
-//        repository.gitCommand
-//                .checkout()
-//                .setName(model.name)
-//                .call()
-//        repository.branchChanged()
-//    }
-
-    fun removeLocalBranch(model: GvLocalBranch, force: Boolean) {
-        repository.gitCommand
-                .branchDelete()
-                .setBranchNames(model.name)
-                .setForce(force)
-                .call()
-        repository.branchChanged()
-    }
-
     fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
         if(checkout) {
             repository.gitCommand

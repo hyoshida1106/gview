@@ -47,7 +47,7 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
     private val pushMenuItem = GvMenuItem(
         text = resourceBundle().getString("LocalBranch.Push"),
         iconLiteral = "mdi2s-source-branch-sync"
-    ) {  }
+    ) { BranchFunction.doPush(model) }
 
     /* 名前の変更 */
     @NonNls
@@ -61,7 +61,7 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
     private val removeMenuItem = GvMenuItem(
         text = resourceBundle().getString("LocalBranch.Remove"),
         iconLiteral = "mdi2s-source-branch-remove"
-    ) { removeLocalBranch() }
+    ) { BranchFunction.doRemove(model) }
 
     /**
      * 初期化
@@ -88,21 +88,9 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
         checkOutMenuItem.isDisable = !BranchFunction.canCheckout(model)
         mergeMenuItem.isDisable = true
         rebaseMenuItem.isDisable = true
-        pushMenuItem.isDisable = true
+        pushMenuItem.isDisable = !BranchFunction.canPush(model)
         pullMenuItem.isDisable = !BranchFunction.canPull(model)
         renameMenuItem.isDisable = true
-        removeMenuItem.isDisable = model.isCurrentBranch
-    }
-
-    private fun removeLocalBranch() {
-        val dialog = RemoveLocalBranchDialog(String.format(resourceBundle().getString("Message.ConfirmToRemove"), model.name))
-        if (dialog.showDialog()) {
-            MainWindow.runTask {
-                model.branchList.removeLocalBranch(
-                    model,
-                    dialog.forceRemove
-                )
-            }
-        }
+        removeMenuItem.isDisable = !BranchFunction.canRemove(model)
     }
 }

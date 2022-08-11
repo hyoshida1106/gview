@@ -1,5 +1,6 @@
 package gview.view.dialog
 
+import gview.resourceBundle
 import gview.view.framework.GvDialogInterface
 import gview.view.main.MainWindow
 import javafx.geometry.Insets
@@ -9,29 +10,24 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 
 
-class RemoveLocalBranchDialog(
-        private val message: String,
-        force: Boolean = false)
-    : GvDialogInterface<Boolean> {
+class RemoveLocalBranchDialog(private val message: String, force: Boolean = false) : GvDialogInterface<Boolean> {
 
-    private val forceCheckBox = CheckBox("強制的に削除")
+    private val forceCheckBox = CheckBox(resourceBundle().getString("RemoveLocalBranch.Force"))
     val forceRemove: Boolean get() = forceCheckBox.isSelected
 
     init {
         forceCheckBox.isSelected = force
     }
 
-    override fun showDialog()
-            : Boolean {
+    override fun showDialog(): Boolean {
         val alert = Alert(Alert.AlertType.CONFIRMATION)
         val styleClass = alert.dialogPane.styleClass
 
         alert.initOwner(MainWindow.root.scene.window)
-        alert.title = "Confirmation"
+        alert.title = resourceBundle().getString("RemoveLocalBranch.Title")
         alert.headerText = null
         alert.dialogPane = object : DialogPane() {
-            override fun createButtonBar()
-                    : Node {
+            override fun createButtonBar(): Node {
                 val checkBox = forceCheckBox
                 val buttonBar = super.createButtonBar()
                 HBox.setHgrow(checkBox, Priority.ALWAYS)
@@ -43,9 +39,7 @@ class RemoveLocalBranchDialog(
             }
         }
         alert.dialogPane.contentText = message
-        alert.dialogPane.buttonTypes.addAll(
-                ButtonType("はい", ButtonBar.ButtonData.OK_DONE),
-                ButtonType("いいえ", ButtonBar.ButtonData.CANCEL_CLOSE))
+        alert.dialogPane.buttonTypes.addAll(ButtonType.OK, ButtonType.CANCEL)
         alert.dialogPane.styleClass.setAll(styleClass)
         alert.dialogPane.applyCss()
 

@@ -1,9 +1,7 @@
 package gview.model.branch
 
-import gview.model.GvRepository
-import gview.view.dialog.ErrorDialog
-import gview.view.main.MainWindow
 import javafx.beans.property.SimpleBooleanProperty
+import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Ref
 import java.lang.ref.WeakReference
 
@@ -42,6 +40,8 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
      */
     val selectedFlagProperty = SimpleBooleanProperty(true)
 
+    val hasRemoteConf get() = branchList.repository.remoteConfigList.isNotEmpty()
+
     fun checkout() {
         repository.gitCommand.checkout()
             .setName(name)
@@ -51,6 +51,25 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
 
     fun pull() {
         repository.gitCommand.pull()
+            .call()
+        repository.branchChanged()
+    }
+
+    fun push(remote: String = Constants.DEFAULT_REMOTE_NAME, tag: Boolean = true) {
+        val command = repository.gitCommand.push()
+            .add(name)
+            .setRemote(remote)
+        if (tag) {
+            command.setPushTags()
+        }
+        command.call()
+        repository.branchChanged()
+    }
+
+    fun remove(force: Boolean) {
+        repository.gitCommand.branchDelete()
+            .setBranchNames(name)
+            .setForce(force)
             .call()
         repository.branchChanged()
     }
