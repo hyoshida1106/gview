@@ -58,8 +58,8 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         val branchList = repository.branches
         updateLocalBranches(branchList.localBranchList.value)
         updateRemoteBranches(branchList.remoteBranchList.value)
-        branchList.localBranchList.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
-        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList.remoteBranchList.value) }
+//        branchList.localBranchList.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
+//        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList.remoteBranchList.value) }
         branchList.currentBranch.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
         branchTree.selectionModel.clearSelection()
         branchTree.isVisible = true

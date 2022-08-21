@@ -113,17 +113,6 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     val userConfig: UserConfig get() = jgitRepository.config.get(UserConfig.KEY)
 
-    @NonNls
-    private val remoteDefault = "origin"
-
-    fun fetch(remote: String = remoteDefault, prune: Boolean = false) {
-        gitCommand.fetch()
-            .setRemote(remote)
-            .setRemoveDeletedRefs(prune)
-            .call()
-        branchChanged()
-    }
-
     /**
      * シングルトン管理のための Companion Object
      */
@@ -190,5 +179,18 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
                 )
             )
         }
+
+        @NonNls
+        private val remoteDefault = "origin"
+
+        fun fetch(remote: String = remoteDefault, prune: Boolean = false) {
+            val repo: Repository = currentRepository?.jgitRepository ?: return
+            Git(repo).fetch()
+                .setRemote(remote)
+                .setRemoveDeletedRefs(prune)
+                .call()
+            open(repo.directory.absolutePath)
+        }
+
     }
 }

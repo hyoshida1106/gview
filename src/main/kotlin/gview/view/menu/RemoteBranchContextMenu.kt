@@ -1,29 +1,28 @@
 package gview.view.menu
 
-import gview.view.main.MainWindow
 import gview.model.branch.GvRemoteBranch
 import gview.resourceBundle
+import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.ContextMenu
 import org.jetbrains.annotations.NonNls
 
 
-class RemoteBranchContextMenu(val model: GvRemoteBranch)
-    : ContextMenu() {
+class RemoteBranchContextMenu(val model: GvRemoteBranch) : ContextMenu() {
 
     /* このブランチをチェックアウト */
     @NonNls
     private val checkOutMenuItem = GvMenuItem(
         text = resourceBundle().getString("RemoteBranch.Checkout"),
         iconLiteral = "mdi2s-source-branch-check",
-    ) { checkoutRemoteBranch() }
+    ) { BranchFunction.doCheckout(model) }
 
     /* 削除 */
     @NonNls
     private val removeMenuItem = GvMenuItem(
         text = resourceBundle().getString("RemoteBranch.Remove"),
         iconLiteral = "mdi2d-delete"
-    ) { removeRemoteBranch() }
+    ) { BranchFunction.doRemove(model) }
 
     init {
         items.setAll(
@@ -34,15 +33,7 @@ class RemoteBranchContextMenu(val model: GvRemoteBranch)
     }
 
     private fun onMyShowing() {
-        checkOutMenuItem.isDisable = (model.localBranch.get() != null)
-        removeMenuItem.isDisable = true
-    }
-
-    private fun checkoutRemoteBranch() {
-        MainWindow.runTask {
-            model.branchList.checkoutRemoteBranch(model) }
-    }
-
-    private fun removeRemoteBranch() {
+        checkOutMenuItem.isDisable = BranchFunction.canCheckout(model).not()
+        removeMenuItem.isDisable = BranchFunction.canRemove(model).not()
     }
 }

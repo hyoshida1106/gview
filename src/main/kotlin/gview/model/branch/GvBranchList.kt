@@ -4,7 +4,6 @@ import gview.model.GvRepository
 import gview.model.commit.GvCommit
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
-import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.api.ListBranchCommand
 import org.eclipse.jgit.events.RepositoryEvent
 import org.eclipse.jgit.events.RepositoryListener
@@ -30,8 +29,8 @@ class GvBranchList(val repository: GvRepository){
     }
 
     init {
-        updateModel()
-        repository.addBranchChangedListener { updateModel() }
+        update()
+        repository.addBranchChangedListener { update() }
     }
 
     fun remoteBranchDisplayName(name: String): String {
@@ -41,7 +40,7 @@ class GvBranchList(val repository: GvRepository){
         return Repository.shortenRefName(name)
     }
 
-    private fun updateModel() {
+    private fun update() {
         val git = repository.gitCommand
 
         val remoteBranches = git.branchList()
@@ -79,32 +78,21 @@ class GvBranchList(val repository: GvRepository){
         repository.commitChanged()
     }
 
-    fun checkoutRemoteBranch(model: GvRemoteBranch) {
-        repository.gitCommand
-                .checkout()
-                .setName(model.name)
-                .setStartPoint(model.path)
-                .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
-                .setCreateBranch(true)
-                .call()
-        repository.branchChanged()
-    }
-
-    fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
-        if(checkout) {
-            repository.gitCommand
-                    .checkout()
-                    .setName(newBranch)
-                    .setCreateBranch(true)
-                    .call()
-        } else {
-            repository.gitCommand
-                    .branchCreate()
-                    .setName(newBranch)
-                    .call()
-        }
-        repository.branchChanged()
-    }
+//    fun createNewBranchFromHead(newBranch: String, checkout: Boolean) {
+//        if(checkout) {
+//            repository.gitCommand
+//                    .checkout()
+//                    .setName(newBranch)
+//                    .setCreateBranch(true)
+//                    .call()
+//        } else {
+//            repository.gitCommand
+//                    .branchCreate()
+//                    .setName(newBranch)
+//                    .call()
+//        }
+//        repository.branchChanged()
+//    }
 
     fun createNewBranchFromCommit(newBranch: String, commit: GvCommit, checkout: Boolean) {
         if(checkout) {
@@ -124,23 +112,23 @@ class GvBranchList(val repository: GvRepository){
         repository.branchChanged()
     }
 
-    fun createNewBranchFromOtherBranch(newBranch: String, model: GvLocalBranch, checkout: Boolean) {
-        if(checkout) {
-            repository.gitCommand
-                    .checkout()
-                    .setName(newBranch)
-                    .setStartPoint(model.path)
-                    .setCreateBranch(true)
-                    .call()
-        } else {
-            repository.gitCommand
-                    .branchCreate()
-                    .setName(newBranch)
-                    .setStartPoint(model.path)
-                    .call()
-        }
-        repository.branchChanged()
-    }
+//    fun createNewBranchFromOtherBranch(newBranch: String, model: GvLocalBranch, checkout: Boolean) {
+//        if(checkout) {
+//            repository.gitCommand
+//                    .checkout()
+//                    .setName(newBranch)
+//                    .setStartPoint(model.path)
+//                    .setCreateBranch(true)
+//                    .call()
+//        } else {
+//            repository.gitCommand
+//                    .branchCreate()
+//                    .setName(newBranch)
+//                    .setStartPoint(model.path)
+//                    .call()
+//        }
+//        repository.branchChanged()
+//    }
 
 	fun mergeCommit(model: GvCommit, message: String) {
         repository.gitCommand
