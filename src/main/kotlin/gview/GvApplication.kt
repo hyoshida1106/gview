@@ -89,7 +89,7 @@ class GvApplication : Application() {
          * ダイアログを表示し、OKであればプロセスを終了する
          */
         fun confirmToQuit() {
-            val message = resourceBundle().getString("QuitConformation")
+            val message = resourceBundle().getString("Message.QuitConfirmation")
             if (ConfirmationDialog(ConfirmationType.YesNo, message).showDialog()) {
                 exitProcess(0)
             }

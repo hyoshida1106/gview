@@ -21,12 +21,12 @@ abstract class  GvCommitFile {
      * 更新タイプに対応する文字列
      */
     val typeName: String by lazy {  when (type) {
-        ModifiedType.ADD        -> resourceBundle().getString("TypeNameNew")
-        ModifiedType.COPY       -> resourceBundle().getString("TypeNameCopy")
-        ModifiedType.DELETE     -> resourceBundle().getString("TypeNameDelete")
-        ModifiedType.MODIFY     -> resourceBundle().getString("TypeNameModify")
-        ModifiedType.RENAME     -> resourceBundle().getString("TypeNameRename")
-        ModifiedType.CONFLICT   -> resourceBundle().getString("TypeNameConflict")
+        ModifiedType.ADD        -> resourceBundle().getString("Term.New")
+        ModifiedType.COPY       -> resourceBundle().getString("Term.Copy")
+        ModifiedType.DELETE     -> resourceBundle().getString("Term.Delete")
+        ModifiedType.MODIFY     -> resourceBundle().getString("Term.Modify")
+        ModifiedType.RENAME     -> resourceBundle().getString("Term.Rename")
+        ModifiedType.CONFLICT   -> resourceBundle().getString("Term.Conflict")
         else -> "???"
     } }
 

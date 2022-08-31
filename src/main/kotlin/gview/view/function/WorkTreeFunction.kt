@@ -11,7 +11,7 @@ object WorkTreeFunction {
     val canStage get() = GvRepository.currentRepository?.workFiles?.changedFiles?.value?.isNotEmpty() ?: false
 
     fun doStage() {
-        val dialog = SelectChangedFilesDialog(resourceBundle().getString("SelectChangedFiles.Stage"))
+        val dialog = SelectChangedFilesDialog(resourceBundle().getString("Message.SelectFilesToIndex"))
         if (dialog.showDialog() == ButtonType.OK) {
             try {
                 GvRepository.currentRepository?.workFiles?.stageFiles(dialog.selectedFiles)
@@ -64,7 +64,7 @@ object WorkTreeFunction {
     val canDiscard get() = canStage
 
     fun doDiscard() {
-        val dialog = SelectChangedFilesDialog(resourceBundle().getString("SelectChangedFiles.Discard"))
+        val dialog = SelectChangedFilesDialog(resourceBundle().getString("Message.SelectFilesToDiscard"))
         if (dialog.showDialog() == ButtonType.OK) {
             try {
                 GvRepository.currentRepository?.workFiles?.discardFiles(dialog.selectedFiles)

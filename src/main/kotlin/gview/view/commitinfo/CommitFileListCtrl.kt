@@ -62,10 +62,10 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
             labelList.children.setAll(GvBranchTagLabels(model))
 
             commitProps.children.setAll(
-                    GvTextMessage(resourceBundle().getString("CommitIdTitle"), model.id.toString()),
-                    GvTextMessage(resourceBundle().getString("CommitDateTitle"), model.commitTime),
-                    GvTextMessage(resourceBundle().getString("CommitAuthorTitle"), model.author),
-                    GvTextMessage(resourceBundle().getString("CommitCommitterTitle"), model.committer),
+                    GvTextMessage(resourceBundle().getString("Title.ID"), model.id.toString()),
+                    GvTextMessage(resourceBundle().getString("Title.Date"), model.commitTime),
+                    GvTextMessage(resourceBundle().getString("Title.Author"), model.author),
+                    GvTextMessage(resourceBundle().getString("Title.Committer"), model.committer),
                     labelList)
             commitProps.styleClass.add("ItemList")
             commitMessage.text = model.fullMessage

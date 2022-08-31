@@ -156,9 +156,9 @@ class CommitRowData(commitList: CommitListCtrl, val model: GvCommit) : AbstractR
         override val contextMenu = CommitRowContextMenu(model)
 
         override fun update( ): Pair<Node?, String?> {
-            val row1 = GvTextMessage(resourceBundle().getString("CommitDateTitle"), model.commitTime)
-            val row2 = GvTextMessage(resourceBundle().getString("CommitAuthorTitle"), model.author)
-            val row3 = GvTextMessage(resourceBundle().getString("CommitCommentTitle"), model.shortMessage)
+            val row1 = GvTextMessage(resourceBundle().getString("Title.Date"), model.commitTime)
+            val row2 = GvTextMessage(resourceBundle().getString("Title.Author"), model.author)
+            val row3 = GvTextMessage(resourceBundle().getString("Title.Comment"), model.shortMessage)
             row1.children.addAll(GvBranchTagLabels(model))
             return Pair(VBox(row1, row2, row3), null)
         }

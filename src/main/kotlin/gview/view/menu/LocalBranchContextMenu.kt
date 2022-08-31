@@ -1,10 +1,7 @@
 package gview.view.menu
 
-import gview.view.dialog.RemoveLocalBranchDialog
-import gview.view.main.MainWindow
 import gview.model.branch.GvLocalBranch
 import gview.resourceBundle
-import gview.view.dialog.BranchSelectDialog
 import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.ContextMenu
@@ -16,7 +13,7 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
     /* このブランチをチェックアウト */
     @NonNls
     private val checkOutMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Checkout"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Checkout"),
         iconLiteral = "mdi2s-source-branch",
         bold = true
     ) { BranchFunction.doCheckout(model) }
@@ -24,42 +21,42 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
     /* 現在のブランチにマージ */
     @NonNls
     private val mergeMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Merge"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Merge"),
         iconLiteral = "mdi2s-source-merge"
-    ) {  }
+    ) { BranchFunction.doMerge(model) }
 
     /* 現在の変更をリベース */
     @NonNls
     private val rebaseMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Rebase"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Rebase"),
         iconLiteral = "mdi2s-source-branch-check"
-    ) {  }
+    ) { BranchFunction.doRebase(model) }
 
     /* プル */
     @NonNls
     private val pullMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Pull"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Pull"),
         iconLiteral = "mdi2s-source-pull"
     ) { BranchFunction.doPull(model) }
 
     /* プッシュ */
     @NonNls
     private val pushMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Push"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Push"),
         iconLiteral = "mdi2s-source-branch-sync"
     ) { BranchFunction.doPush(model) }
 
     /* 名前の変更 */
     @NonNls
     private val renameMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Rename"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Rename"),
         iconLiteral = "mdi2s-source-branch-check"
-    ) { }
+    ) { BranchFunction.doRename(model) }
 
     /* 削除 */
     @NonNls
     private val removeMenuItem = GvMenuItem(
-        text = resourceBundle().getString("LocalBranch.Remove"),
+        text = resourceBundle().getString("LocalBranchContextMenu.Remove"),
         iconLiteral = "mdi2s-source-branch-remove"
     ) { BranchFunction.doRemove(model) }
 
@@ -85,12 +82,12 @@ class LocalBranchContextMenu(private val model: GvLocalBranch): ContextMenu() {
      * メニュー表示時処理
      */
     private fun onMyShowing() {
-        checkOutMenuItem.isDisable = !BranchFunction.canCheckout(model)
-        mergeMenuItem.isDisable = true
-        rebaseMenuItem.isDisable = true
-        pushMenuItem.isDisable = !BranchFunction.canPush(model)
-        pullMenuItem.isDisable = !BranchFunction.canPull(model)
-        renameMenuItem.isDisable = true
-        removeMenuItem.isDisable = !BranchFunction.canRemove(model)
+        checkOutMenuItem.isDisable = BranchFunction.canCheckout(model).not()
+        mergeMenuItem.isDisable = BranchFunction.canMerge(model).not()
+        rebaseMenuItem.isDisable = BranchFunction.canRebase(model).not()
+        pushMenuItem.isDisable = BranchFunction.canPush(model).not()
+        pullMenuItem.isDisable = BranchFunction.canPull(model).not()
+        renameMenuItem.isDisable = BranchFunction.canRename(model).not()
+        removeMenuItem.isDisable = BranchFunction.canRemove(model).not()
     }
 }

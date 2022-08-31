@@ -4,7 +4,7 @@ import gview.view.framework.GvCustomDialogCtrl
 import javafx.fxml.FXML
 import javafx.scene.control.TextArea
 
-class MergeDialogCtrl: GvCustomDialogCtrl() {
+class MergeDialogCtrl : GvCustomDialogCtrl() {
 
     @FXML private lateinit var messageText: TextArea
 

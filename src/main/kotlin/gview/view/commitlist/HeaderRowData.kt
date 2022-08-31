@@ -59,13 +59,10 @@ class HeaderRowData(
     inner class HeaderInfoCellData(private val model: GvWorkFileList) : CommitListCtrl.CellData {
         override fun update(): Pair<Node?, String?> {
             val timeStamp = DateFormat.getDateTimeInstance().format(Date())
-            val row1 = GvTextMessage(resourceBundle().getString("HeaderRowTitle"), timeStamp)
-            val row2 = GvTextMessage(resourceBundle().getString("HeaderStagedTitle"), "${model.stagedFiles.value?.size ?: 0}")
-            val row3 = GvTextMessage(resourceBundle().getString("HeaderModifiedTitle"), "${model.changedFiles.value?.size ?: 0}")
+            val row1 = GvTextMessage(resourceBundle().getString("Title.HeaderRow"), timeStamp)
+            val row2 = GvTextMessage(resourceBundle().getString("Title.StagedFileNumber"), "${model.stagedFiles.value?.size ?: 0}")
+            val row3 = GvTextMessage(resourceBundle().getString("Title.UpdateFileNumber"), "${model.changedFiles.value?.size ?: 0}")
             return Pair(VBox(row1, row2, row3), null)
-        }
-
-        override fun layout(tableCell: CommitListCtrl.Cell) {
         }
 
         override val contextMenu: ContextMenu? = null

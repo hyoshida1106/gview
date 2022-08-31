@@ -4,7 +4,6 @@ import gview.conf.SystemModal
 import gview.view.branchlist.BranchList
 import gview.view.commitinfo.CommitInfo
 import gview.view.commitlist.CommitList
-import gview.view.dialog.ErrorDialog
 import gview.view.framework.GvBaseWindowCtrl
 import javafx.application.Platform
 import javafx.concurrent.Task
@@ -89,8 +88,6 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
             override fun call() {
                 try {
                     function()
-                } catch (e: Exception) {
-                    Platform.runLater { ErrorDialog(e).showDialog() }
                 } finally {
                     Platform.runLater { scene.cursor = Cursor.DEFAULT }
                 }

@@ -39,7 +39,7 @@ class StatusBarCtrl: GvBaseWindowCtrl() {
      */
     private fun setCurrentRepositoryPath(path: String?) {
         repositoryPath.children.setAll(
-            GvTextMessage(resourceBundle().getString("CurrentRepository"), path ?: "" ))
+            GvTextMessage(resourceBundle().getString("Title.Repository"), path ?: "" ))
     }
 
     /**
@@ -47,6 +47,6 @@ class StatusBarCtrl: GvBaseWindowCtrl() {
      */
     private fun setCurrentBranch(branchName: String?) {
         currentBranch.children.setAll(
-            GvTextMessage(resourceBundle().getString("CurrentBranch"), branchName ?: "" ))
+            GvTextMessage(resourceBundle().getString("Title.Branch"), branchName ?: "" ))
     }
 }

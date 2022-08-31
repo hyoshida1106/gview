@@ -18,63 +18,63 @@ class CommitRowContextMenu(private val model: GvCommit): ContextMenu() {
     /* このコミットをチェックアウトする... */
     @NonNls
     private val checkoutMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Checkout"),
+        text = resourceBundle().getString("CommitRowContextMenu.Checkout"),
         iconLiteral = "mdi2s-source-branch"
     ) { checkoutFromThisCommit() }
 
     /* このコミットからブランチを作成する... */
     @NonNls
     private val createBranchMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.CreateBranch"),
+        text = resourceBundle().getString("CommitRowContextMenu.CreateBranch"),
         iconLiteral = "mdi2s-source-branch"
     ) { createNewBranchFromThisCommit() }
 
     /* このコミットをヘッドへマージする... */
     @NonNls
     private val mergeMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Merge"),
+        text = resourceBundle().getString("CommitRowContextMenu.Merge"),
         iconLiteral = "mdi2s-source-merge"
     ) { mergeThisCommitToHead() }
 
     /* このコミットにタグを作成する... */
     @NonNls
     private val tagMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Tag"),
+        text = resourceBundle().getString("CommitRowContextMenu.Tag"),
         iconLiteral = "mdi2t-tag-outline"
     ) { }
 
     /* リベース/インタラクティブなリベース... */
     @NonNls
     private val rebaseMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Rebase"),
+        text = resourceBundle().getString("CommitRowContextMenu.Rebase"),
         iconLiteral = "mdi2s-source-merge"
     ) { }
 
     /* ここまでリセット */
     @NonNls
     private val resetMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Reset"),
+        text = resourceBundle().getString("CommitRowContextMenu.Reset"),
         iconLiteral = "mdi2r-rewind"
     ) { }
 
     /* リバース */
     @NonNls
     private val reverseMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.Reverse"),
+        text = resourceBundle().getString("CommitRowContextMenu.Reverse"),
         iconLiteral = "mdi2r-restore"
     ) { }
 
     /* パッチ生成 */
     @NonNls
     private val patchMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.CreatePatch"),
+        text = resourceBundle().getString("CommitRowContextMenu.CreatePatch"),
         iconLiteral = "mdi2d-download-outline"
     ) { }
 
     /* チェリーピック */
     @NonNls
     private val cherryPickMenu = GvMenuItem(
-        text = resourceBundle().getString("CommitData.CherryPick"),
+        text = resourceBundle().getString("CommitRowContextMenu.CherryPick"),
         iconLiteral = "mdi2s-source-commit-local"
     ) { }
 

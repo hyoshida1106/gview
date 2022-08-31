@@ -9,13 +9,12 @@ import org.jetbrains.annotations.NonNls
 
 class RepositoryMenu: Menu(resourceBundle().getString("RepositoryMenu.Title")) {
 
+    /* フェッチ */
     @NonNls
     private val fetchMenu = GvMenuItem(
         text = resourceBundle().getString("RepositoryMenu.Fetch"),
         iconLiteral = "mdi2s-source-branch-refresh"
-    ) {
-        RepositoryFunction.doFetch(GvRepository.currentRepository)
-    }
+    ) { RepositoryFunction.doFetch(GvRepository.currentRepository) }
 
     init {
         items.setAll(

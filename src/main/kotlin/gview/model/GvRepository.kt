@@ -69,7 +69,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
 
     val currentBranch: String get() = jgitRepository.branch
 
-    val headId: ObjectId? get() = jgitRepository.resolve(Constants.HEAD)
+    val head: ObjectId? get() = jgitRepository.resolve(Constants.HEAD)
 
     val gitCommand: Git get() = Git(jgitRepository)
 
@@ -134,6 +134,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
          * @param[isBare]           Bareリポジトリを生成する場合、trueを指定する
          */
         fun init(directoryPath: String, isBare: Boolean = false) {
+            currentRepository?.jgitRepository?.close()
             currentRepositoryProperty.set(
                 GvRepository(
                     Git.init()
@@ -152,6 +153,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
          * @param[directoryPath]    オープンするディレクトリのパス
          */
         fun open(directoryPath: String) {
+            currentRepository?.jgitRepository?.close()
             currentRepositoryProperty.set(
                 GvRepository(
                     Git.open(File(directoryPath))
@@ -168,6 +170,7 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
          * @param[isBare]           生成するリポジトリがBareの場合、trueを指定する
          */
         fun clone(directoryPath: String, remoteUrl: String, isBare: Boolean = false) {
+            currentRepository?.jgitRepository?.close()
             currentRepositoryProperty.set(
                 GvRepository(
                     Git.cloneRepository()
@@ -180,16 +183,16 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
             )
         }
 
-        @NonNls
-        private val remoteDefault = "origin"
-
-        fun fetch(remote: String = remoteDefault, prune: Boolean = false) {
-            val repo: Repository = currentRepository?.jgitRepository ?: return
-            Git(repo).fetch()
-                .setRemote(remote)
+        fun fetch(remote: String? = null, prune: Boolean = false) {
+            val repository = currentRepository ?: return
+            @NonNls
+            val remoteName = remote
+                ?: if (repository.remoteConfigList.isNotEmpty()) repository.remoteConfigList[0].name else "origin"
+            repository.gitCommand.fetch()
+                .setRemote(remoteName)
                 .setRemoveDeletedRefs(prune)
                 .call()
-            open(repo.directory.absolutePath)
+            open(repository.absolutePath)
         }
 
     }

@@ -12,7 +12,7 @@ import javafx.scene.layout.Priority
 
 class RemoveLocalBranchDialog(private val message: String, force: Boolean = false) : GvDialogInterface<Boolean> {
 
-    private val forceCheckBox = CheckBox(resourceBundle().getString("RemoveLocalBranch.Force"))
+    private val forceCheckBox = CheckBox(resourceBundle().getString("RemoveLocalBranchDialog.Force"))
     val forceRemove: Boolean get() = forceCheckBox.isSelected
 
     init {
@@ -24,7 +24,7 @@ class RemoveLocalBranchDialog(private val message: String, force: Boolean = fals
         val styleClass = alert.dialogPane.styleClass
 
         alert.initOwner(MainWindow.root.scene.window)
-        alert.title = resourceBundle().getString("RemoveLocalBranch.Title")
+        alert.title = resourceBundle().getString("RemoveLocalBranchDialog.Title")
         alert.headerText = null
         alert.dialogPane = object : DialogPane() {
             override fun createButtonBar(): Node {

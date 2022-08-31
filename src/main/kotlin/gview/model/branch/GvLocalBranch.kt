@@ -1,8 +1,11 @@
 package gview.model.branch
 
+import gview.model.GvRepository
 import javafx.beans.property.SimpleBooleanProperty
+import org.eclipse.jgit.lib.BranchConfig
 import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Ref
+import org.eclipse.jgit.lib.SubmoduleConfig
 import java.lang.ref.WeakReference
 
 /**
@@ -51,6 +54,8 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
 
     fun pull() {
         repository.gitCommand.pull()
+            .setRebase(BranchConfig.BranchRebaseMode.REBASE)
+            .setRecurseSubmodules(SubmoduleConfig.FetchRecurseSubmodulesMode.ON_DEMAND)
             .call()
         repository.branchChanged()
     }
@@ -63,13 +68,38 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
             command.setPushTags()
         }
         command.call()
+        GvRepository.fetch()
+    }
+
+    fun mergeToHead(message: String) {
+        repository.gitCommand
+            .merge()
+            .include(ref)
+            .setMessage(message)
+            .call()
         repository.branchChanged()
+
     }
 
     fun remove(force: Boolean) {
         repository.gitCommand.branchDelete()
             .setBranchNames(name)
             .setForce(force)
+            .call()
+        repository.branchChanged()
+    }
+
+    fun rename(newName: String) {
+        repository.gitCommand.branchRename()
+            .setOldName(name)
+            .setNewName(newName)
+            .call()
+        repository.branchChanged()
+    }
+
+    fun rebase() {
+        repository.gitCommand.rebase()
+            .setUpstream(path)
             .call()
         repository.branchChanged()
     }

@@ -94,7 +94,7 @@ class GvWorkFileList(private val repository: GvRepository) {
      */
     private fun updateStagedFiles(repository: GvRepository, cache: DirCache) {
         repository.getTreeWalk().use { treeWalk ->
-            val headRevTree = repository.getRevWalk().use { it.parseTree(repository.headId) }
+            val headRevTree = repository.getRevWalk().use { it.parseTree(repository.head) }
             treeWalk.addTree(headRevTree)
             treeWalk.addTree(DirCacheIterator(cache))
             treeWalk.filter = SkipWorkTreeFilter(1)

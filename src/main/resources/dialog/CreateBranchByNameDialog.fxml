@@ -17,7 +17,7 @@
     <padding>
         <Insets bottom="12.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
-    <Label text="%CreateBranchByName.BranchName" GridPane.halignment="RIGHT"/>
+    <Label text="%Title.BranchName" GridPane.halignment="RIGHT"/>
     <TextField fx:id="branchName" prefColumnCount="20" GridPane.columnIndex="1"/>
-    <CheckBox fx:id="checkout" text="%CreateBranchByName.CheckoutBranch" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
+    <CheckBox fx:id="checkout" text="%CreateBranchByNameDialog.CheckoutBranch" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
 </GridPane>

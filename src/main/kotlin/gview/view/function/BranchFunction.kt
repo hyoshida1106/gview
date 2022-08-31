@@ -3,10 +3,9 @@ package gview.view.function
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
 import gview.resourceBundle
-import gview.view.dialog.ErrorDialog
-import gview.view.dialog.RemoveLocalBranchDialog
-import gview.view.dialog.RemoveRemoteBranchDialog
+import gview.view.dialog.*
 import gview.view.main.MainWindow
+import javafx.scene.control.ButtonType
 import org.eclipse.jgit.api.errors.NotMergedException
 
 object BranchFunction {
@@ -82,7 +81,7 @@ object BranchFunction {
     }
 
     // Remove Remote Branch
-    fun canRemove(branch: GvRemoteBranch): Boolean {
+    fun canRemove(branch: GvRemoteBranch?): Boolean {
         return if(branch != null) {
             branch.localBranch.get() == null
         } else {
@@ -97,6 +96,49 @@ object BranchFunction {
                 MainWindow.runTask { branch.remove() }
             } catch (e:NotMergedException) {
                 ErrorDialog(resourceBundle().getString("Message.BranchNotMerged").format(branch.name)).showDialog()
+            } catch (e: Exception) {
+                ErrorDialog(e).showDialog()
+            }
+        }
+    }
+
+    fun canMerge(branch: GvLocalBranch?): Boolean {
+        return branch?.isCurrentBranch?.not() ?: false
+    }
+    fun doMerge(branch: GvLocalBranch) {
+        val dialog = MergeDialog()
+        if (dialog.showDialog() != ButtonType.OK) return
+        try {
+            MainWindow.runTask { branch.mergeToHead(dialog.message) }
+        } catch (e: Exception) {
+            ErrorDialog(e).showDialog()
+        }
+    }
+
+    fun canRename(branch: GvLocalBranch?): Boolean {
+        return branch != null
+    }
+
+    fun doRename(branch: GvLocalBranch) {
+        val dialog = RenameBranchDialog(branch.name)
+        if(dialog.showDialog() != ButtonType.OK) return
+        try {
+            MainWindow.runTask { branch.rename(dialog.controller.newBranchName) }
+        } catch (e: Exception) {
+            ErrorDialog(e).showDialog()
+        }
+    }
+
+    fun canRebase(branch: GvLocalBranch?): Boolean {
+        return branch?.isCurrentBranch?.not() ?: false
+    }
+
+    fun doRebase(branch: GvLocalBranch) {
+        val message = resourceBundle().getString("Message.ConfirmToRebase").format(
+            branch.repository.currentBranch, branch.name)
+        if (ConfirmationDialog(ConfirmationDialog.ConfirmationType.YesNo, message).showDialog()) {
+            try {
+                branch.rebase()
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }

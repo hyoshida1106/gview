@@ -31,7 +31,7 @@ class CommitListCtrl: GvBaseWindowCtrl() {
 
     interface CellData {
         fun update(): Pair<Node?, String?>
-        fun layout(tableCell: Cell)
+        fun layout(tableCell: Cell) {}
         val contextMenu: ContextMenu?
     }
 

@@ -62,7 +62,7 @@ class GvCommitList(private val repository: GvRepository) {
      */
     private fun updateModel() {
         //所持値を初期化
-        headId = repository.headId
+        headId = repository.head
         //PlotCommitListインスタンスを生成
         plotCommitList.clear()
         repository.getPlotWalk().use { plotWalk ->

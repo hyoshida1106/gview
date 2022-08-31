@@ -11,10 +11,10 @@ class BranchSelectDialog(list: List<GvBranch>) : ChoiceDialog<String>(), GvDialo
 
 	init {
 		initOwner(MainWindow.root.scene.window)
-		title = resourceBundle().getString("BranchSelect.Title")
+		title = resourceBundle().getString("BranchSelectDialog.Title")
 		graphic = null
 		headerText = null
-		contentText = resourceBundle().getString("BranchSelect.Checkout")
+		contentText = resourceBundle().getString("BranchSelectDialog.Checkout")
 		branchMap = list.associateBy { it.name }
 		items.addAll(branchMap.keys)
 	}

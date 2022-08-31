@@ -13,14 +13,14 @@ class RemoteBranchContextMenu(val model: GvRemoteBranch) : ContextMenu() {
     /* このブランチをチェックアウト */
     @NonNls
     private val checkOutMenuItem = GvMenuItem(
-        text = resourceBundle().getString("RemoteBranch.Checkout"),
+        text = resourceBundle().getString("RemoteBranchContextMenu.Checkout"),
         iconLiteral = "mdi2s-source-branch-check",
     ) { BranchFunction.doCheckout(model) }
 
     /* 削除 */
     @NonNls
     private val removeMenuItem = GvMenuItem(
-        text = resourceBundle().getString("RemoteBranch.Remove"),
+        text = resourceBundle().getString("RemoteBranchContextMenu.Remove"),
         iconLiteral = "mdi2d-delete"
     ) { BranchFunction.doRemove(model) }
 

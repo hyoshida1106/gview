@@ -6,7 +6,6 @@ import gview.model.branch.GvBranch
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
 import gview.view.function.BranchFunction
-import gview.view.main.MainWindow
 import gview.view.menu.LocalBranchContextMenu
 import gview.view.menu.RemoteBranchContextMenu
 import javafx.application.Platform
@@ -146,7 +145,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
 
         init {
             if (model.isCurrentBranch) {
-                branchName.styleClass.add("CurrentBranch")
+                branchName.styleClass.add("Title.Branch")
                 showInTree.isSelected = true
                 showInTree.isDisable = true
             } else {
