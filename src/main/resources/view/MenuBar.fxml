@@ -4,6 +4,5 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <MenuBar xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-         fx:id="menuBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-         fx:controller="gview.view.main.MenuBarCtrl">
+         fx:id="menuBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 </MenuBar>

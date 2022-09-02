@@ -6,7 +6,7 @@
            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-           stylesheets="@/Gview.css" fx:controller="gview.view.commitinfo.WorkFileListCtrl">
+           stylesheets="@/Gview.css" >
     <AnchorPane>
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

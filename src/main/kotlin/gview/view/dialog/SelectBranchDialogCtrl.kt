@@ -1,0 +1,48 @@
+package gview.view.dialog
+
+import gview.model.branch.GvLocalBranch
+import gview.view.framework.GvCustomDialogCtrl
+import gview.view.util.GvColumnAdjuster
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.fxml.FXML
+import javafx.scene.control.CheckBox
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
+import javafx.scene.control.cell.CheckBoxTableCell
+import javafx.scene.control.cell.PropertyValueFactory
+
+class SelectBranchDialogCtrl(private val branches: List<GvLocalBranch>): GvCustomDialogCtrl() {
+
+    @FXML private lateinit var fileList: TableView<RowData>
+    @FXML private lateinit var nameColumn: TableColumn<RowData, String>
+    @FXML private lateinit var localPathColumn: TableColumn<RowData, String>
+    @FXML private lateinit var remotePathColumn: TableColumn<RowData, String>
+    @FXML private lateinit var fileCheckColumn: TableColumn<RowData, Boolean>
+    @FXML private lateinit var selAllCheckBox: CheckBox
+
+    private lateinit var fileListAdjuster: GvColumnAdjuster
+
+    class RowData(branch: GvLocalBranch) {
+        val branchName: String = branch.name
+        val localPath: String = branch.localPath
+        val remotePath: String? = branch.remotePath
+        val check = SimpleBooleanProperty(branch.isCurrentBranch)
+    }
+
+    val btnOkDisable = SimpleBooleanProperty(false)
+
+    override fun initialize() {
+        nameColumn.cellValueFactory = PropertyValueFactory("branchName")
+        localPathColumn.cellValueFactory = PropertyValueFactory("localPath")
+        remotePathColumn.cellValueFactory = PropertyValueFactory("remotePath")
+        fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index -> fileList.items[index].check }
+
+        fileList.items.addAll(branches.map { RowData(it) })
+        fileList.selectionModel.select(fileList.items.indexOfFirst { it.check.value })
+
+        selAllCheckBox.selectedProperty().addListener { _, _, newValue ->
+            fileList.items.forEach { it.check.value = newValue }
+        }
+        fileListAdjuster = GvColumnAdjuster(fileList, remotePathColumn)
+    }
+}

@@ -1,5 +1,6 @@
 package gview.view.function
 
+import gview.model.GvRepository
 import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
 import gview.resourceBundle
@@ -38,7 +39,7 @@ object BranchFunction {
         }
     }
 
-    // Pull
+    // Pull(1)
     fun canPull(branch: GvLocalBranch?): Boolean {
         return branch?.remoteBranch?.get() != null
     }
@@ -50,7 +51,19 @@ object BranchFunction {
         }
     }
 
-    // Push
+    // Pull(2)
+    fun canPull(): Boolean {
+        return GvRepository.currentRepository?.branches?.currentBranch?.get()?.remoteBranch?.get() != null
+    }
+    fun doPull() {
+        val currentRepository = GvRepository.currentRepository ?: return
+        val dialog = SelectBranchDialog(
+            currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
+        if(dialog.showDialog() == ButtonType.OK) {
+        }
+    }
+
+    // Push(2)
     fun canPush(branch: GvLocalBranch?): Boolean {
         return branch?.hasRemoteConf ?: false
     }

@@ -5,4 +5,4 @@ import gview.view.framework.GvBaseWindow
 /**
  * ステータスバー
  */
-object StatusBar: GvBaseWindow<MainWindowCtrl>( "/view/StatusBar.fxml", "StatusBar" )
+object StatusBar: GvBaseWindow<StatusBarCtrl>( "/view/StatusBar.fxml", StatusBarCtrl() )       // NON-NLS

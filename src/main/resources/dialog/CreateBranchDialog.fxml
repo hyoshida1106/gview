@@ -10,8 +10,7 @@
 
 <?import javafx.scene.control.CheckBox?>
 <GridPane hgap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-          fx:id="pane" fx:controller="gview.view.dialog.CreateBranchDialogCtrl"
-          vgap="12.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+          fx:id="pane" vgap="12.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
     <columnConstraints>
         <ColumnConstraints hgrow="ALWAYS"/>
         <ColumnConstraints hgrow="ALWAYS"/>
@@ -19,13 +18,13 @@
     <padding>
         <Insets bottom="12.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
-    <Label text="ブランチの名称:" GridPane.halignment="RIGHT"/>
+    <Label text="%Title.Branch" GridPane.halignment="RIGHT"/>
     <TextField fx:id="branchName" prefColumnCount="20" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-    <Label text="開始位置:" GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
-    <RadioButton fx:id="headRadio" text="HEADから" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <RadioButton fx:id="branchRadio" text="指定されたブランチから" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <RadioButton fx:id="tagRadio" text="指定されたタグから" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <Label text="%Title.StartPoint" GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
+    <RadioButton fx:id="headRadio" text="%CreateBranchDialog.FromHead" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <RadioButton fx:id="branchRadio" text="%CreateBranchDialog.FromBranch" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <RadioButton fx:id="tagRadio" text="%CreateBranchDialog.FromTag" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <ChoiceBox fx:id="branchList" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
     <ChoiceBox fx:id="tagList" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-    <CheckBox fx:id="checkout" text="作成したブランチをチェックアウトする" GridPane.rowIndex="4" GridPane.columnSpan="3"/>
+    <CheckBox fx:id="checkout" text="%CreateBranchDialog.CheckoutBranch" GridPane.rowIndex="4" GridPane.columnSpan="3"/>
 </GridPane>

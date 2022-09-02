@@ -6,7 +6,7 @@
            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2"
            AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"
            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-           stylesheets="@/Gview.css" fx:controller="gview.view.commitinfo.CommitInfoCtrl">
+           stylesheets="@/Gview.css" >
   <AnchorPane fx:id="commitInfoFiles" minHeight="180.0"/>
   <AnchorPane fx:id="commitInfoDiff"/>
 </SplitPane>

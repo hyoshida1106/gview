@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-          fx:id="pane" fx:controller="gview.view.dialog.CloneRepositoryDialogCtrl"
-           stylesheets="@/Gview.css" prefHeight="150.0" prefWidth="640.0" hgap="5" vgap="20">
+          fx:id="pane" stylesheets="@/Gview.css" prefHeight="150.0" prefWidth="640.0" hgap="5" vgap="20">
         <Label text="%CloneRepositoryDialog.RemotePath" GridPane.halignment="RIGHT"
                GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="1"/>
         <Label text="%CloneRepositoryDialog.LocalPath" GridPane.halignment="RIGHT"

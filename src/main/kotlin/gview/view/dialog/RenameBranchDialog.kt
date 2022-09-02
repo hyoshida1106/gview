@@ -6,7 +6,8 @@ import javafx.scene.control.ButtonType
 
 class RenameBranchDialog(private val lastBranchName: String) : GvCustomDialog<RenameBranchDialogCtrl>(
     resourceBundle().getString("RenameBranchDialog.Title"),
-    "/dialog/RenameBranchDialog.fxml",
+    "/dialog/RenameBranchDialog.fxml",          // NON-NLS
+    RenameBranchDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {
     init {

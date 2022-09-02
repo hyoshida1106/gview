@@ -145,7 +145,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
 
         init {
             if (model.isCurrentBranch) {
-                branchName.styleClass.add("Title.Branch")
+                branchName.styleClass.add("CurrentBranch")
                 showInTree.isSelected = true
                 showInTree.isDisable = true
             } else {

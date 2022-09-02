@@ -20,5 +20,8 @@ abstract class GvBranch(val branchList: GvBranchList, val ref: Ref) {
      */
     abstract val path: String
 
+    abstract val localPath: String?
+    abstract val remotePath: String?
+
     val repository = branchList.repository
 }

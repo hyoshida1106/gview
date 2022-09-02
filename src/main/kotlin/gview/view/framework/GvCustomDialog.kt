@@ -7,26 +7,19 @@ import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
-import org.jetbrains.annotations.NonNls
 
 /**
  * カスタムダイアログ
  *
- * @param title     ダイアログのタイトル文字列
- * @param form      FXMLファイルのパス
- * @param buttons   表示するボタン
+ * @param title         ダイアログのタイトル文字列
+ * @param form          FXMLファイルのパス
+ * @param controller    コントローラインスタンス
+ * @param buttons       表示するボタン
  */
-@NonNls
-open class GvCustomDialog<Controller>(title: String, form: String, vararg buttons: ButtonType) : Dialog<ButtonType>(),
-    GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
+open class GvCustomDialog<Controller>(title: String, form: String, val controller: Controller, vararg buttons: ButtonType)
+    : Dialog<ButtonType>(), GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
 
-    /**
-     * コントローラへの参照を保持する
-     */
-    val controller: Controller
-
-    @NonNls
-    private val cssResource = javaClass.getResource("/Gview.css")
+    private val cssResource = javaClass.getResource("/Gview.css")   /* NON-NLS */
 
     /**
      * 初期化
@@ -36,13 +29,15 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
         this.title = title
         dialogPane.buttonTypes.addAll(buttons)
 
-        //FXMLファイルをロードして、コントローラ参照を取得する
+        //FXMLファイルをロードして、コントローラ参照を設定する
         val loader = FXMLLoader(javaClass.getResource(form), resourceBundle())
+        loader.setController(controller)
         dialogPane.content = loader.load()
-        controller = loader.getController() as Controller
 
         //StyleSheetを登録
         dialogPane.stylesheets.add(cssResource.toExternalForm())
+        dialogPane.styleClass.add("GvCustomDialog")
+        dialogPane.content.styleClass.add(javaClass.name.substringAfterLast("."))
 
         // "X"で閉じないようにする
         dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }
@@ -61,15 +56,12 @@ open class GvCustomDialog<Controller>(title: String, form: String, vararg button
         disable: BooleanProperty?,
         handler: EventHandler<ActionEvent>? = null
     ) {
-
-        val button = dialogPane.lookupButton(buttonType)
-        if (button != null) {
-            if (disable != null) {
-                button.disableProperty().bind(disable)
-            }
-            if (handler != null) {
-                button.addEventFilter(ActionEvent.ACTION, handler)
-            }
+        val button = dialogPane.lookupButton(buttonType) ?: return
+        if (disable != null) {
+            button.disableProperty().bind(disable)
+        }
+        if (handler != null) {
+            button.addEventFilter(ActionEvent.ACTION, handler)
         }
     }
 

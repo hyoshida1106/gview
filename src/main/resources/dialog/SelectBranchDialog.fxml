@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<TableView fx:id="fileList" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" stylesheets="@/Gview.css"
+           editable="true" prefWidth="600" prefHeight="300">
+    <columns>
+        <TableColumn fx:id="nameColumn" editable="false" reorderable="false" text="%Term.LocalPath" minWidth="30"/>
+        <TableColumn fx:id="localPathColumn" editable="false" reorderable="false" text="%Term.LocalPath"/>
+        <TableColumn fx:id="remotePathColumn" editable="false" reorderable="false" text="%Term.RemotePath"/>
+        <TableColumn fx:id="fileCheckColumn" reorderable="false" minWidth="30" maxWidth="30">
+            <graphic>
+                <CheckBox fx:id="selAllCheckBox"/>
+            </graphic>
+        </TableColumn>
+    </columns>
+</TableView>

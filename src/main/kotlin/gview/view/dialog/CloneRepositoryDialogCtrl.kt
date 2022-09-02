@@ -1,5 +1,6 @@
 package gview.view.dialog
 
+import gview.resourceBundle
 import gview.view.framework.GvCustomDialogCtrl
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
@@ -13,8 +14,7 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 import javafx.stage.DirectoryChooser
 
-class CloneRepositoryDialogCtrl
-    : GvCustomDialogCtrl() {
+class CloneRepositoryDialogCtrl: GvCustomDialogCtrl() {
 
     @FXML private lateinit var pane: GridPane
     @FXML private lateinit var remoteRepositoryPath: TextField
@@ -30,7 +30,7 @@ class CloneRepositoryDialogCtrl
 
     //初期化
     override fun initialize() {
-        pane.style = CSS.paneStyle
+        pane.styleClass.add("CloneRepositoryDialog")
 
         remoteRepositoryPathProperty = remoteRepositoryPath.textProperty()
         localDirectoryPathProperty = localDirectoryPath.textProperty()
@@ -39,7 +39,7 @@ class CloneRepositoryDialogCtrl
         //ファイル設定(リモート)
         remoteRepositorySel.onAction = EventHandler {
             val chooser = DirectoryChooser()
-            chooser.title = "リモートリポジトリ"
+            chooser.title = resourceBundle().getString("Term.RemotePath")
             val dir = chooser.showDialog((it.target as Node).scene.window)
             if (dir != null) { remoteRepositoryPath.text = dir.absolutePath }
         }
@@ -47,7 +47,7 @@ class CloneRepositoryDialogCtrl
         //ファイル設定(ローカル)
         localDirectorySel.onAction = EventHandler {
             val chooser = DirectoryChooser()
-            chooser.title = "ローカルディレクトリ"
+            chooser.title = resourceBundle().getString("Term.LocalPath")
             val dir = chooser.showDialog((it.target as Node).scene.window)
             if (dir != null) { localDirectoryPath.text = dir.absolutePath }
         }
@@ -63,12 +63,6 @@ class CloneRepositoryDialogCtrl
             localPath: String) {
         remoteRepositoryPath.text = remotePath
         localDirectoryPath.text = localPath
-    }
-
-    object CSS {
-        val paneStyle = """
-            -fx-padding: 0 0 0 30;
-        """.trimIndent()
     }
 }
 

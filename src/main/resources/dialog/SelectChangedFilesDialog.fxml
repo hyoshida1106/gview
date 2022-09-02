@@ -2,9 +2,8 @@
 
 <?import javafx.scene.control.*?>
 
-<TableView xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:id="fileList" editable="true" prefWidth="400" prefHeight="200"
-           stylesheets="@/Gview.css" fx:controller="gview.view.dialog.SelectChangedFilesDialogCtrl">
+<TableView fx:id="fileList" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           editable="true" prefWidth="400" prefHeight="200" stylesheets="@/Gview.css">
     <columns>
         <TableColumn fx:id="fileTypeColumn" editable="false" reorderable="false" text="%Term.FileType" minWidth="50"/>
         <TableColumn fx:id="filePathColumn" editable="false" reorderable="false" text="%Term.FilePath"/>

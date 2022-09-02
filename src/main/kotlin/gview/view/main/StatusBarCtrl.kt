@@ -29,9 +29,9 @@ class StatusBarCtrl: GvBaseWindowCtrl() {
      */
     private fun updateRepository(repository: GvRepository?) {
         setCurrentRepositoryPath( repository?.absolutePath )
-        setCurrentBranch( repository?.branches?.currentBranch?.value )
+        setCurrentBranch( repository?.currentBranch )
         repository?.branches?.currentBranch?.addListener { _, _, new ->
-            Platform.runLater { setCurrentBranch( new ) } }
+            Platform.runLater { setCurrentBranch( new.name ) } }
     }
 
     /**

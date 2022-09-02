@@ -1,6 +1,7 @@
 package gview.view.menu
 
 import gview.resourceBundle
+import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCode
@@ -20,7 +21,7 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
             KeyCombination.SHIFT_DOWN
         ),
         iconLiteral = "mdi2f-folder-download"
-    ) { }
+    ) { BranchFunction.doPull() }
 
     /* プッシュ */
     @NonNls
@@ -45,6 +46,6 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
     //メニュー表示
     private fun onShowingMenu() {
         pushMenu.isDisable = true
-        pullMenu.isDisable = true
+        pullMenu.isDisable = BranchFunction.canPull().not()
     }
 }

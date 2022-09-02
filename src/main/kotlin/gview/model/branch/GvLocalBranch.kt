@@ -21,12 +21,14 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
      *
      * パスから取得する。
      */
-    override val name: String = branchList.localBranchDisplayName(ref.name)
+    override val name: String get() = branchList.localBranchDisplayName(ref.name)
 
     /**
      * ローカルブランチのパス
      */
-    override val path: String = ref.name
+    override val path: String get() = ref.name
+    override val localPath: String get() = path
+    override val remotePath: String? get() = remoteBranch.get()?.path
 
     /**
      * 関連付けられているリモートブランチの参照
@@ -36,7 +38,7 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
     /**
      * 選択中のブランチである場合、trueを保持する
      */
-    val isCurrentBranch get() = (branchList.currentBranch.value == name)
+    val isCurrentBranch get() = (branchList.repository.currentBranch == name)
 
     /**
      * 表示対象ローカルブランチの場合、trueを保持する

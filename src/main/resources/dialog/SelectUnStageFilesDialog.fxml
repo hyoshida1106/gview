@@ -2,15 +2,14 @@
 
 <?import javafx.scene.control.*?>
 
-<TableView xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:id="fileList" editable="true" prefWidth="400" prefHeight="200"
-           stylesheets="@/Gview.css" fx:controller="gview.view.dialog.SelectUnStageFilesDialogCtrl">
+<TableView fx:id="fileList" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           editable="true" prefWidth="400" prefHeight="200" stylesheets="@/Gview.css">
     <columns>
         <TableColumn fx:id="fileTypeColumn" editable="false" reorderable="false" text="種別" minWidth="50"/>
         <TableColumn fx:id="filePathColumn" editable="false" reorderable="false" text="パス"/>
         <TableColumn fx:id="fileCheckColumn" reorderable="false" minWidth="30" maxWidth="30">
             <graphic>
-                <CheckBox fx:id="selAllCheckBox" />
+                <CheckBox fx:id="selAllCheckBox"/>
             </graphic>
         </TableColumn>
     </columns>

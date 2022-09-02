@@ -3,7 +3,6 @@ package gview.model.branch
 import gview.model.GvRepository
 import gview.model.commit.GvCommit
 import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.property.SimpleStringProperty
 import org.eclipse.jgit.api.ListBranchCommand
 import org.eclipse.jgit.events.RepositoryEvent
 import org.eclipse.jgit.events.RepositoryListener
@@ -13,7 +12,7 @@ import java.lang.ref.WeakReference
 class GvBranchList(val repository: GvRepository){
     val localBranchList  = SimpleObjectProperty<List<GvLocalBranch>>()
     val remoteBranchList = SimpleObjectProperty<List<GvRemoteBranch>>()
-    val currentBranch    = SimpleStringProperty("")
+    val currentBranch    = SimpleObjectProperty<GvLocalBranch>()
 
     class BranchChangedEvent : RepositoryEvent<BranchChangedListener>() {
         override fun getListenerType(): Class<BranchChangedListener> {
@@ -72,7 +71,7 @@ class GvBranchList(val repository: GvRepository){
 
         remoteBranchList.value = remoteBranches
         localBranchList.value  = localBranches
-        currentBranch.value = repository.currentBranch
+        currentBranch.value = localBranches.find { it.isCurrentBranch }
 
         repository.workFileChanged()
         repository.commitChanged()

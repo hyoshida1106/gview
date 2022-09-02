@@ -4,9 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import org.controlsfx.control.MaskerPane?>
-<StackPane
-        xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1"
-        stylesheets="@/Gview.css" fx:controller="gview.view.main.MainWindowCtrl">
+<StackPane xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@/Gview.css">
     <BorderPane>
         <top>
             <AnchorPane fx:id="menuBar"/>

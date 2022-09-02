@@ -21,12 +21,14 @@ class GvRemoteBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, 
      *
      * パスから取得する。
      */
-    override val name: String = branchList.remoteBranchDisplayName(ref.name)
+    override val name: String get() = branchList.remoteBranchDisplayName(ref.name)
 
     /**
      * リモートブランチのパス
      */
-    override val path: String = ref.name
+    override val path: String get() = ref.name
+    override val localPath: String? get() = localBranch.get()?.path
+    override val remotePath: String get() = path
 
     /**
      * 関連付けられているローカルブランチの参照
