@@ -19,7 +19,7 @@ class GvTextMessage(title:String, message:String): HBox() {
         titleLabel.minWidth = Region.USE_PREF_SIZE
         val messageLabel = Label(message)
         messageLabel.style = CSS.messageStringStyle
-        HBox.setHgrow(titleLabel, Priority.NEVER)
+        setHgrow(titleLabel, Priority.NEVER)
         children.addAll(titleLabel, messageLabel)
     }
 

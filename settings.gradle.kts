@@ -1,2 +1,2 @@
-rootProject.name = "gview"
+rootProject.name = "gview"      // NON-NLS
 

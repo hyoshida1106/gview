@@ -33,8 +33,8 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
 
     //初期化
     fun initialize() {
-        typeColumn.cellValueFactory = PropertyValueFactory<RowData, String>("type")
-        pathColumn.cellValueFactory = PropertyValueFactory<RowData, String>("path")
+        typeColumn.cellValueFactory = PropertyValueFactory("type")
+        pathColumn.cellValueFactory = PropertyValueFactory("path")
         typeColumn.styleClass.add("TypeColumn")
         pathColumn.styleClass.add("PathColumn")
         commitFileListAdjuster = GvColumnAdjuster(commitFileList, pathColumn)

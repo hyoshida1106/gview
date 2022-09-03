@@ -44,7 +44,7 @@ object WorkTreeFunction {
             val dialog = UserNameDialog(userName, mailAddress)
             if (dialog.showDialog() != ButtonType.OK) return
             userName = dialog.userName
-            mailAddress = dialog.mailAddr
+            mailAddress = dialog.mailAddress
         }
         //対象ファイルを選択する
         val dialog = SelectCommitFilesDialog()

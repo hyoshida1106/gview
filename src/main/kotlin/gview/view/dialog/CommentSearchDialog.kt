@@ -4,9 +4,7 @@ import gview.view.framework.GvDialogInterface
 import gview.view.main.MainWindow
 import javafx.scene.control.TextInputDialog
 
-class CommentSearchDialog()
-    : TextInputDialog(),
-        GvDialogInterface<String?> {
+class CommentSearchDialog : TextInputDialog(), GvDialogInterface<String?> {
 
     init {
         initOwner(MainWindow.root.scene.window)

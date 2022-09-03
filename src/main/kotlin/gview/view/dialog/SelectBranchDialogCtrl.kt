@@ -20,16 +20,18 @@ class SelectBranchDialogCtrl(private val branches: List<GvLocalBranch>): GvCusto
     @FXML private lateinit var fileCheckColumn: TableColumn<RowData, Boolean>
     @FXML private lateinit var selAllCheckBox: CheckBox
 
+    val btnOkDisable = SimpleBooleanProperty(false)
+
+    val selectedFiles get() = fileList.items.filter { it.check.value }.map { it.branch }
+
     private lateinit var fileListAdjuster: GvColumnAdjuster
 
-    class RowData(branch: GvLocalBranch) {
+    private class RowData(val branch: GvLocalBranch) {
         val branchName: String = branch.name
         val localPath: String = branch.localPath
         val remotePath: String? = branch.remotePath
         val check = SimpleBooleanProperty(branch.isCurrentBranch)
     }
-
-    val btnOkDisable = SimpleBooleanProperty(false)
 
     override fun initialize() {
         nameColumn.cellValueFactory = PropertyValueFactory("branchName")
@@ -43,6 +45,7 @@ class SelectBranchDialogCtrl(private val branches: List<GvLocalBranch>): GvCusto
         selAllCheckBox.selectedProperty().addListener { _, _, newValue ->
             fileList.items.forEach { it.check.value = newValue }
         }
+
         fileListAdjuster = GvColumnAdjuster(fileList, remotePathColumn)
     }
 }

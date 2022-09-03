@@ -1,6 +1,5 @@
 package gview.view.menu
 
-import gview.model.GvRepository
 import gview.resourceBundle
 import gview.view.function.WorkTreeFunction
 import javafx.event.EventHandler

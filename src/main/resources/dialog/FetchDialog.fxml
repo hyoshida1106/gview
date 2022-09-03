@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" stylesheets="@/Gview.css">
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
     <TableView fx:id="remoteList" prefWidth="600" prefHeight="200">
         <columns>
             <TableColumn fx:id="nameColumn" editable="false" reorderable="false" text="%Term.Name" minWidth="80"/>

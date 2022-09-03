@@ -6,15 +6,14 @@ import javafx.fxml.FXML
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
 
-class UserNameDialogCtrl
-    : GvCustomDialogCtrl() {
+class UserNameDialogCtrl: GvCustomDialogCtrl() {
 
     @FXML private lateinit var pane: GridPane
     @FXML private lateinit var userName: TextField
-    @FXML private lateinit var mailAddr: TextField
+    @FXML private lateinit var mailAddress: TextField
 
     val userNameProperty: StringProperty get() = userName.textProperty()
-    val mailAddrProperty: StringProperty get() = mailAddr.textProperty()
+    val mailAddressProperty: StringProperty get() = mailAddress.textProperty()
 
     //初期化
     override fun initialize() {

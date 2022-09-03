@@ -1,7 +1,6 @@
 package gview.conf
 
 import gview.model.GvRepository
-import org.eclipse.jgit.lib.UserConfig
 
 /**
  * Gitコンフィギュレーション情報にアクセスするためのクラス

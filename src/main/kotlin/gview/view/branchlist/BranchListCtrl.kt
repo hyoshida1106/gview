@@ -51,7 +51,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         branchTree.isVisible = false
     }
 
-    val selectedBranch: GvBranch? get() =branchTree.selectionModel.selectedItem?.value
+    private val selectedBranch get() =branchTree.selectionModel.selectedItem?.value
 
     private fun updateRepository(repository: GvRepository) {
         val branchList = repository.branches
@@ -118,7 +118,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
     class RootItem(name: String) : BranchTreeItem(null) {
         override val cellImage: Node = Label(name)
         override val contextMenu: ContextMenu? = null
-        override val name: String = name
+        override val name: String by lazy { name }
         override val path:List<String> = emptyList()
         override fun isLeaf(): Boolean = false
         init { isExpanded = true }
@@ -132,7 +132,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
 
     class RemoteBranchItem(val model: GvRemoteBranch) : LeafItem(model) {
         override val cellImage: Node = Label(name)
-        override val contextMenu: ContextMenu? = RemoteBranchContextMenu(model)
+        override val contextMenu: ContextMenu = RemoteBranchContextMenu(model)
         override fun isLeaf(): Boolean = true
     }
 
@@ -140,7 +140,7 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         private val branchName = Label(name)
         private val showInTree = CheckBox()
         override val cellImage: Node = HBox(branchName, showInTree)
-        override val contextMenu: ContextMenu? = LocalBranchContextMenu(model)
+        override val contextMenu: ContextMenu = LocalBranchContextMenu(model)
         override fun isLeaf(): Boolean = true
 
         init {

@@ -3,7 +3,6 @@ package gview.view.commitlist
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Paint
-import org.jetbrains.annotations.NonNls
 
 /*
     コミットリスト行データの共通ベースクラス
@@ -16,11 +15,9 @@ abstract class AbstractRowData: CommitListCtrl.RowData {
     /**
      * レーン番号に対する表示色を定義する
      */
-    @NonNls
     private val colors = arrayOf(
-        "blue", "red", "teal", "slateGrey", "green", "darkMagenta", "cadetBlue",
-        "darkOliveGreen", "purple", "maroon"
-    )
+        "blue", "red", "teal", "slateGrey", "green", "darkMagenta", "cadetBlue",    // NON-NLS
+        "darkOliveGreen", "purple", "maroon"    )                                   // NON-NLS
 
     /**
      * 樹形図描画用のGraphic Contextを取得する

@@ -65,12 +65,7 @@ class GvColumnAdjuster(private val table: TableView<*>, private val adjustColumn
      * @return          縦スクロールバーのハンドルまたはnull
      */
     private fun findVerticalScrollBar(node: Node): ScrollBar? {
-        node.lookupAll(".scroll-bar").forEach {
-            var bar:ScrollBar? = it as ScrollBar
-            if(bar != null && bar.orientation == Orientation.VERTICAL) {
-                return bar
-            }
-        }
-        return null
+        return node.lookupAll(".scroll-bar")    //NON-NLS
+            .find { (it as ScrollBar).orientation == Orientation.VERTICAL } as ScrollBar?
     }
 }

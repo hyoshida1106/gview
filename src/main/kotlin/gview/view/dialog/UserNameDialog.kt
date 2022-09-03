@@ -15,11 +15,11 @@ class UserNameDialog(userName: String, mailAddress: String) : GvCustomDialog<Use
     private val userNameProperty = SimpleStringProperty(userName)
     val userName: String get() = userNameProperty.value
 
-    private val mailAddrProperty = SimpleStringProperty(mailAddress)
-    val mailAddr: String get() = mailAddrProperty.value
+    private val mailAddressProperty = SimpleStringProperty(mailAddress)
+    val mailAddress: String get() = mailAddressProperty.value
 
     init {
         controller.userNameProperty.bindBidirectional(userNameProperty)
-        controller.mailAddrProperty.bindBidirectional(mailAddrProperty)
+        controller.mailAddressProperty.bindBidirectional(mailAddressProperty)
     }
 }

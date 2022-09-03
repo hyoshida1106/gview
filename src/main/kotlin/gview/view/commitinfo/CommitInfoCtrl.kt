@@ -1,7 +1,6 @@
 package gview.view.commitinfo
 
 import gview.view.commitlist.CommitList
-import gview.view.commitlist.CommitListCtrl
 import gview.view.commitlist.CommitRowData
 import gview.view.commitlist.HeaderRowData
 import gview.view.framework.GvBaseWindowCtrl
@@ -22,14 +21,9 @@ class CommitInfoCtrl : GvBaseWindowCtrl() {
     private val headerFileListView = WorkFileList.root
     private val commitDiffView = CommitDiff.root
 
-    //初期化
-    fun initialize() {
-    }
-
     //表示完了時にListenerを設定する
     override fun displayCompleted() {
-        var commitList: CommitListCtrl = CommitList.controller
-        commitList.selectedRowProperty.addListener { _, _, newValue ->
+        CommitList.controller.selectedRowProperty.addListener { _, _, newValue ->
             when (newValue) {
                 is HeaderRowData -> selectHeaderRowData()
                 is CommitRowData -> selectCommitRowData(newValue)

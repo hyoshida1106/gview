@@ -221,11 +221,12 @@
 }
 
 /* ================================================================
-    CloneRepositoryDialog
+    Dialog
 */
 .CloneRepositoryDialog {
     -fx-padding: 0 0 0 30;
 }
+
 .SelectBranchDialog {
     -fx-background-color: -background-color;
     -fx-border-width: 0;

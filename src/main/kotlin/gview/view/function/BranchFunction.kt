@@ -60,6 +60,11 @@ object BranchFunction {
         val dialog = SelectBranchDialog(
             currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
         if(dialog.showDialog() == ButtonType.OK) {
+            try {
+                MainWindow.runTask { dialog.controller.selectedFiles.forEach { it.pull() } }
+            } catch (e: Exception) {
+                ErrorDialog(e).showDialog()
+            }
         }
     }
 

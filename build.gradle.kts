@@ -1,29 +1,31 @@
+@file:Suppress("SpellCheckingInspection")
+
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.6.21"                                //NON-NLS
     kotlin("plugin.serialization") version "1.6.21"
     id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
-group = "gview"
-version = "Proto-1"
+group = "gview"                   //NON-NLS
+version = "Proto-1"               //NON-NLS
 
 repositories { mavenCentral() }
 
 dependencies {
     // Use the Kotlin JDK standard library.
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    implementation(kotlin("stdlib-jdk8"))                                         //NON-NLS
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")      //NON-NLS
     // JGit
-    implementation("org.eclipse.jgit:org.eclipse.jgit:5.9.0.202009080501-r")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:6.2.0.202206071550-r")      //NON-NLS
     // SLF4J/Log4J
-    implementation("org.slf4j:slf4j-log4j12:1.7.32")
+    implementation("org.slf4j:slf4j-log4j12:2.0.0")                              //NON-NLS
     // Ikonli
-    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")                     //NON-NLS
+    implementation("org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1")       //NON-NLS
     //ControlFX
-    implementation("org.controlsfx:controlsfx:11.1.1")
+    implementation("org.controlsfx:controlsfx:11.1.1")                            //NON-NLS
 
-    implementation("org.jetbrains:annotations:16.0.2")
+    implementation("org.jetbrains:annotations:23.0.0")                            //NON-NLS
 }
 
 // JavaFX PlugIn

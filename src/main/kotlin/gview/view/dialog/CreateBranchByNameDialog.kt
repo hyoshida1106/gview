@@ -4,7 +4,7 @@ import gview.resourceBundle
 import gview.view.framework.GvCustomDialog
 import javafx.scene.control.ButtonType
 
-class CreateBranchByNameDialog() : GvCustomDialog<CreateBranchByNameDialogCtrl>(
+class CreateBranchByNameDialog : GvCustomDialog<CreateBranchByNameDialogCtrl>(
     resourceBundle().getString("CreateBranchByNameDialog.Title"),
     "/dialog/CreateBranchByNameDialog.fxml",    // NON-NLS
     CreateBranchByNameDialogCtrl(),

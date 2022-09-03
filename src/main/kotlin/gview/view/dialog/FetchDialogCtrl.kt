@@ -2,7 +2,6 @@ package gview.view.dialog
 
 import gview.view.framework.GvCustomDialogCtrl
 import gview.view.util.GvColumnAdjuster
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
