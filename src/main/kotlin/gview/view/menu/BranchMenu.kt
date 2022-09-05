@@ -7,12 +7,10 @@ import javafx.scene.control.Menu
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import org.jetbrains.annotations.NonNls
 
 class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
 
     /* プル */
-    @NonNls
     private val pullMenu = GvMenuItem(
         text = resourceBundle().getString("BranchMenu.Pull"),
         accelerator = KeyCodeCombination(
@@ -20,11 +18,10 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
             KeyCombination.SHORTCUT_DOWN,
             KeyCombination.SHIFT_DOWN
         ),
-        iconLiteral = "mdi2f-folder-download"
+        iconLiteral = "mdi2f-folder-download"               // NON-NLS
     ) { BranchFunction.doPull() }
 
     /* プッシュ */
-    @NonNls
     private val pushMenu = GvMenuItem(
         text = resourceBundle().getString("BranchMenu.Push"),
         accelerator = KeyCodeCombination(
@@ -32,8 +29,8 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
             KeyCombination.SHORTCUT_DOWN,
             KeyCombination.SHIFT_DOWN
         ),
-        iconLiteral = "mdi2s-source-branch-sync"
-    ) { }
+        iconLiteral = "mdi2s-source-branch-sync"          // NON-NLS
+    ) { BranchFunction.doPush() }
 
     init {
         items.setAll(
@@ -43,9 +40,9 @@ class BranchMenu : Menu(resourceBundle().getString("BranchMenu.Title")) {
         onShowing = EventHandler { onShowingMenu() }
     }
 
-    //メニュー表示
+    /* メニュー表示 */
     private fun onShowingMenu() {
-        pushMenu.isDisable = true
+        pushMenu.isDisable = BranchFunction.canPush().not()
         pullMenu.isDisable = BranchFunction.canPull().not()
     }
 }

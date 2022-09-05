@@ -68,7 +68,7 @@ object BranchFunction {
         }
     }
 
-    // Push(2)
+    // Push(1)
     fun canPush(branch: GvLocalBranch?): Boolean {
         return branch?.hasRemoteConf ?: false
     }
@@ -77,6 +77,23 @@ object BranchFunction {
             MainWindow.runTask { branch.push() }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
+        }
+    }
+
+    // Push(2)
+    fun canPush(): Boolean {
+        return GvRepository.currentRepository?.branches?.currentBranch?.get()?.remoteBranch?.get() != null
+    }
+    fun doPush() {
+        val currentRepository = GvRepository.currentRepository ?: return
+        val dialog = SelectBranchDialog(
+            currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
+        if(dialog.showDialog() == ButtonType.OK) {
+            try {
+                MainWindow.runTask { dialog.controller.selectedFiles.forEach { it.push() } }
+            } catch (e: Exception) {
+                ErrorDialog(e).showDialog()
+            }
         }
     }
 

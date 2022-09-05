@@ -26,17 +26,17 @@ class SelectBranchDialogCtrl(private val branches: List<GvLocalBranch>): GvCusto
 
     private lateinit var fileListAdjuster: GvColumnAdjuster
 
-    private class RowData(val branch: GvLocalBranch) {
-        val branchName: String = branch.name
-        val localPath: String = branch.localPath
-        val remotePath: String? = branch.remotePath
+    class RowData(val branch: GvLocalBranch) {
+        val branchName get() = branch.name
+        val localPath get() = branch.localPath
+        val remotePath get() = branch.remotePath
         val check = SimpleBooleanProperty(branch.isCurrentBranch)
     }
 
     override fun initialize() {
-        nameColumn.cellValueFactory = PropertyValueFactory("branchName")
-        localPathColumn.cellValueFactory = PropertyValueFactory("localPath")
-        remotePathColumn.cellValueFactory = PropertyValueFactory("remotePath")
+        nameColumn.cellValueFactory = PropertyValueFactory("branchName")            // NON-NLS
+        localPathColumn.cellValueFactory = PropertyValueFactory("localPath")        // NON-NLS
+        remotePathColumn.cellValueFactory = PropertyValueFactory("remotePath")      // NON-NLS
         fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index -> fileList.items[index].check }
 
         fileList.items.addAll(branches.map { RowData(it) })
