@@ -1,5 +1,6 @@
 package gview.model.branch
 
+import gview.model.GvProgressMonitor
 import gview.model.GvRepository
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.lib.Constants
@@ -35,8 +36,9 @@ class GvRemoteBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, 
      */
     var localBranch = WeakReference<GvLocalBranch>(null)
 
-    fun checkout() {
+    fun checkout(monitor: GvProgressMonitor) {
         repository.gitCommand.checkout()
+            .setProgressMonitor(monitor)
             .setName(name)
             .setStartPoint(path)
             .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK)
@@ -56,6 +58,6 @@ class GvRemoteBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, 
         val git = repository.gitCommand
         git.branchDelete().setBranchNames(name).setForce(true).call()
         git.push().setRefSpecs(refSpec).setRemote(remoteName).call()
-        GvRepository.fetch(remoteName, true)
+        repository.branchChanged()
     }
 }

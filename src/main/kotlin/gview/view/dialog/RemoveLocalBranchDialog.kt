@@ -2,7 +2,7 @@ package gview.view.dialog
 
 import gview.resourceBundle
 import gview.view.framework.GvDialogInterface
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import javafx.geometry.Insets
 import javafx.scene.Node
 import javafx.scene.control.*

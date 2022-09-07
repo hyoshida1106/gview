@@ -1,4 +1,4 @@
-package gview.view.main
+package gview.view.window
 
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.menu.*

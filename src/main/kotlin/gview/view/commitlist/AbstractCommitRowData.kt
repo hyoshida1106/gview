@@ -7,7 +7,7 @@ import javafx.scene.paint.Paint
 /*
     コミットリスト行データの共通ベースクラス
  */
-abstract class AbstractRowData: CommitListCtrl.RowData {
+abstract class AbstractCommitRowData: CommitListCtrl.RowData {
 
     protected val markRadius = 4.5
     private   val lineWidth  = 2.5

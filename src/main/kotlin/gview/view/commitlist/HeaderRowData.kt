@@ -16,7 +16,7 @@ class HeaderRowData(
     commitList: CommitListCtrl,
     val model: GvWorkFileList,
     val laneNumber: Int?
-) : AbstractRowData() {
+) : AbstractCommitRowData() {
 
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = HeaderInfoCellData(model)

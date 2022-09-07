@@ -1,6 +1,6 @@
 package gview.model.branch
 
-import gview.model.GvRepository
+import gview.model.GvProgressMonitor
 import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.BranchConfig
 import org.eclipse.jgit.lib.Constants
@@ -47,8 +47,9 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
 
     val hasRemoteConf get() = branchList.repository.remoteConfigList.isNotEmpty()
 
-    fun checkout() {
+    fun checkout(monitor: GvProgressMonitor) {
         repository.gitCommand.checkout()
+            .setProgressMonitor(monitor)
             .setName(name)
             .call()
         repository.branchChanged()
@@ -70,7 +71,7 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
             command.setPushTags()
         }
         command.call()
-        GvRepository.fetch()
+        repository.branchChanged()
     }
 
     fun mergeToHead(message: String) {
@@ -80,7 +81,6 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
             .setMessage(message)
             .call()
         repository.branchChanged()
-
     }
 
     fun remove(force: Boolean) {

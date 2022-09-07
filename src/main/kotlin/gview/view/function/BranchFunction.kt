@@ -5,7 +5,7 @@ import gview.model.branch.GvLocalBranch
 import gview.model.branch.GvRemoteBranch
 import gview.resourceBundle
 import gview.view.dialog.*
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import javafx.scene.control.ButtonType
 import org.eclipse.jgit.api.errors.NotMergedException
 
@@ -17,7 +17,9 @@ object BranchFunction {
     }
     fun doCheckout(branch: GvLocalBranch) {
         try {
-            MainWindow.runTask { branch.checkout() }
+            MainWindow.runTask { monitor ->
+                branch.checkout(monitor)
+            }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
@@ -33,7 +35,9 @@ object BranchFunction {
     }
     fun doCheckout(branch: GvRemoteBranch) {
         try {
-            MainWindow.runTask { branch.checkout() }
+            MainWindow.runTask { monitor ->
+                branch.checkout(monitor)
+            }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
@@ -45,7 +49,7 @@ object BranchFunction {
     }
     fun doPull(branch: GvLocalBranch) {
         try {
-            MainWindow.runTask { branch.pull() }
+            MainWindow.runTask { -> branch.pull() }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
@@ -61,7 +65,9 @@ object BranchFunction {
             currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                MainWindow.runTask { dialog.controller.selectedFiles.forEach { it.pull() } }
+                MainWindow.runTask { ->
+                    dialog.controller.selectedFiles.forEach { it.pull() }
+                }
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }
@@ -74,7 +80,7 @@ object BranchFunction {
     }
     fun doPush(branch: GvLocalBranch) {
         try {
-            MainWindow.runTask { branch.push() }
+            MainWindow.runTask { -> branch.push() }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
@@ -90,7 +96,9 @@ object BranchFunction {
             currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
         if(dialog.showDialog() == ButtonType.OK) {
             try {
-                MainWindow.runTask { dialog.controller.selectedFiles.forEach { it.push() } }
+                MainWindow.runTask { ->
+                    dialog.controller.selectedFiles.forEach { it.push() }
+                }
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }
@@ -106,7 +114,7 @@ object BranchFunction {
             String.format(resourceBundle().getString("Message.ConfirmToRemove"), branch.name))
         if (dialog.showDialog()) {
             try {
-                MainWindow.runTask { branch.remove(dialog.forceRemove) }
+                MainWindow.runTask { -> branch.remove(dialog.forceRemove) }
             } catch (e:NotMergedException) {
                 ErrorDialog(resourceBundle().getString("Message.BranchNotMerged").format(branch.name)).showDialog()
             } catch (e: Exception) {
@@ -128,7 +136,7 @@ object BranchFunction {
             String.format(resourceBundle().getString("Message.ConfirmToRemove"), branch.name))
         if (dialog.showDialog()) {
             try {
-                MainWindow.runTask { branch.remove() }
+                MainWindow.runTask { -> branch.remove() }
             } catch (e:NotMergedException) {
                 ErrorDialog(resourceBundle().getString("Message.BranchNotMerged").format(branch.name)).showDialog()
             } catch (e: Exception) {
@@ -144,7 +152,9 @@ object BranchFunction {
         val dialog = MergeDialog()
         if (dialog.showDialog() != ButtonType.OK) return
         try {
-            MainWindow.runTask { branch.mergeToHead(dialog.message) }
+            MainWindow.runTask { ->
+                branch.mergeToHead(dialog.message)
+            }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }
@@ -158,7 +168,9 @@ object BranchFunction {
         val dialog = RenameBranchDialog(branch.name)
         if(dialog.showDialog() != ButtonType.OK) return
         try {
-            MainWindow.runTask { branch.rename(dialog.controller.newBranchName) }
+            MainWindow.runTask { ->
+                branch.rename(dialog.controller.newBranchName)
+            }
         } catch (e: Exception) {
             ErrorDialog(e).showDialog()
         }

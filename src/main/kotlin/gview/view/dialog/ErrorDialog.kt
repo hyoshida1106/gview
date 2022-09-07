@@ -2,7 +2,7 @@ package gview.view.dialog
 
 import gview.resourceBundle
 import gview.view.framework.GvDialogInterface
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import javafx.scene.control.Alert
 
 class ErrorDialog(message: String?) : Alert(AlertType.ERROR, message), GvDialogInterface<Unit> {

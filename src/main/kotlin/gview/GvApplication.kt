@@ -4,7 +4,7 @@ import gview.conf.SystemModal
 import gview.model.GvRepository
 import gview.view.dialog.ConfirmationDialog
 import gview.view.dialog.ConfirmationDialog.ConfirmationType
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvIdleTimer
 import javafx.application.Application

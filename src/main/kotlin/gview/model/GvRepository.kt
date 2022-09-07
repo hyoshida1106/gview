@@ -13,7 +13,6 @@ import org.eclipse.jgit.revplot.PlotWalk
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.transport.RemoteConfig
 import org.eclipse.jgit.treewalk.*
-import org.jetbrains.annotations.NonNls
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
@@ -183,12 +182,12 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
             )
         }
 
-        fun fetch(remote: String? = null, prune: Boolean = false) {
+        fun fetch(monitor: ProgressMonitor, remote: String? = null, prune: Boolean = false) {
             val repository = currentRepository ?: return
-            @NonNls
             val remoteName = remote
-                ?: if (repository.remoteConfigList.isNotEmpty()) repository.remoteConfigList[0].name else "origin"
+                ?: if (repository.remoteConfigList.isNotEmpty()) repository.remoteConfigList[0].name else "origin"  // NON-NLS
             repository.gitCommand.fetch()
+                .setProgressMonitor(monitor)
                 .setRemote(remoteName)
                 .setRemoveDeletedRefs(prune)
                 .call()

@@ -199,8 +199,8 @@
 .CommitInfo, .CommitFileList {
     -fx-background-color: -background-color;
 }
-
 .CommitFileList .table-view {
+    -fx-background-color: -background-color;
     -fx-padding: 10 8 7 8;
 }
 .CommitFileList .text-area {
@@ -218,6 +218,14 @@
     -fx-alignment: CENTER;
 }
 .CommitFileList .PathColumn {
+}
+
+/* ================================================================
+    ProgressWindow
+*/
+.ProgressWindow {
+    -fx-padding: 10;
+    -fx-spacing: 10;
 }
 
 /* ================================================================

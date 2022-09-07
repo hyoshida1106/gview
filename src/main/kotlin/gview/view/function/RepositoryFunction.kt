@@ -6,7 +6,7 @@ import gview.resourceBundle
 import gview.view.dialog.CloneRepositoryDialog
 import gview.view.dialog.ErrorDialog
 import gview.view.dialog.FetchDialog
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import javafx.scene.control.ButtonType
 import javafx.stage.DirectoryChooser
 
@@ -21,7 +21,9 @@ object RepositoryFunction {
         val dialog = FetchDialog(repository.remoteConfigList)
         if (dialog.showDialog() == ButtonType.OK) {
             try {
-                MainWindow.runTask { GvRepository.fetch(dialog.remote, dialog.prune) }
+                MainWindow.runTask { monitor ->
+                    GvRepository.fetch(monitor, dialog.remote, dialog.prune)
+                }
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
             }
@@ -30,7 +32,7 @@ object RepositoryFunction {
 
     fun doOpen(filePath: String) {
         try {
-            MainWindow.runTask {
+            MainWindow.runTask { ->
                 GvRepository.open(filePath)
                 SystemModal.addLastOpenedFile(filePath)
             }
@@ -51,7 +53,7 @@ object RepositoryFunction {
         chooser.title = resourceBundle().getString("Message.CreateNewRepositoryPathMessage")
         val dir = chooser.showDialog(MainWindow.root.scene.window) ?: return
         try {
-            MainWindow.runTask {
+            MainWindow.runTask { ->
                 GvRepository.init(dir.absolutePath)
                 SystemModal.addLastOpenedFile(dir.absolutePath)
             }
@@ -64,7 +66,7 @@ object RepositoryFunction {
         val dialog = CloneRepositoryDialog("", "")
         if (dialog.showDialog() != ButtonType.OK) return
         try {
-            MainWindow.runTask {
+            MainWindow.runTask { ->
                 GvRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
                 SystemModal.addLastOpenedFile(dialog.localPath)
             }

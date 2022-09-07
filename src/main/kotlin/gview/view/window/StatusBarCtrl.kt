@@ -1,4 +1,4 @@
-package gview.view.main
+package gview.view.window
 
 import gview.model.GvRepository
 import gview.resourceBundle

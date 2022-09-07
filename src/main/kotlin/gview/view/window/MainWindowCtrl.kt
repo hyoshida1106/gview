@@ -1,6 +1,7 @@
-package gview.view.main
+package gview.view.window
 
 import gview.conf.SystemModal
+import gview.model.GvProgressMonitor
 import gview.view.branchlist.BranchList
 import gview.view.commitinfo.CommitInfo
 import gview.view.commitlist.CommitList
@@ -75,7 +76,7 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
     }
 
     /**
-     * 処理の実行
+     * 処理の実行    待機カーソル表示付き
      *
      * カーソルの表示を切り替えた後、指定された処理を実行する。
      * 処理終了後、カーソルを元に戻す。
@@ -94,6 +95,29 @@ class MainWindowCtrl: GvBaseWindowCtrl() {
             }
         }
         masker.visibleProperty().bind(task.runningProperty())
+        Thread(task).start()
+    }
+
+    /**
+     * 処理の実行    プログレス表示付き
+     *
+     * 進捗表示ウィンドウを表示し、指定された処理を実行する。
+     * 処理終了後、ウィンドウを閉じる。
+     * @param[function]         実行する関数
+     */
+    fun runTask(function: (GvProgressMonitor) -> Unit) {
+        val monitor = GvProgressMonitor()
+        val window  = ProgressWindow(monitor)
+        window.show()
+        val task = object : Task<Unit>() {
+            override fun call() {
+                try {
+                    function(monitor)
+                } finally {
+                    Platform.runLater { window.hide() }
+                }
+            }
+        }
         Thread(task).start()
     }
 }

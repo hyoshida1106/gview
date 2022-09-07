@@ -2,4 +2,4 @@ package gview.view.commitinfo
 
 import gview.view.framework.GvBaseWindow
 
-object CommitDiff : GvBaseWindow<CommitDiffCtrl>("/view/CommitDiff.fxml", CommitDiffCtrl()) // NON-NLS
+object CommitDiff : GvBaseWindow<CommitDiffCtrl>("/window/CommitDiff.fxml", CommitDiffCtrl()) // NON-NLS

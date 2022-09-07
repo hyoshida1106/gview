@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.paint.Paint
 import javafx.scene.shape.ArcType
 
-class CommitRowData(commitList: CommitListCtrl, val model: GvCommit) : AbstractRowData() {
+class CommitRowData(commitList: CommitListCtrl, val model: GvCommit) : AbstractCommitRowData() {
     override val treeCellValue: CommitListCtrl.CellData = CommitTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = CommitInfoCellData(model)
     override val styleClassName: String = "commit-row"      // NON-NLS

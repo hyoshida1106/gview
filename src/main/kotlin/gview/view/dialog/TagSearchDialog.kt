@@ -1,7 +1,7 @@
 package gview.view.dialog
 
 import gview.view.framework.GvDialogInterface
-import gview.view.main.MainWindow
+import gview.view.window.MainWindow
 import javafx.scene.control.TextInputDialog
 
 class TagSearchDialog
