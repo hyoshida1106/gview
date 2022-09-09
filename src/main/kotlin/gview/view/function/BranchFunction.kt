@@ -91,13 +91,16 @@ object BranchFunction {
         return GvRepository.currentRepository?.branches?.currentBranch?.get()?.remoteBranch?.get() != null
     }
     fun doPush() {
-        val currentRepository = GvRepository.currentRepository ?: return
+        val repository = GvRepository.currentRepository ?: return
         val dialog = SelectBranchDialog(
-            currentRepository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
+            repository.branches.localBranchList.value.filter { it.remoteBranch.get() != null })
         if(dialog.showDialog() == ButtonType.OK) {
+            val command = repository.gitCommand.push().setRemote(repository.remoteName)
+            dialog.controller.selectedFiles.forEach { command.add(it.name) }
             try {
                 MainWindow.runTask { ->
-                    dialog.controller.selectedFiles.forEach { it.push() }
+                    command.call()
+                    repository.fetch()
                 }
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
@@ -125,19 +128,18 @@ object BranchFunction {
 
     // Remove Remote Branch
     fun canRemove(branch: GvRemoteBranch?): Boolean {
-        return if(branch != null) {
-            branch.localBranch.get() == null
-        } else {
-            false
-        }
+        return branch != null
     }
     fun doRemove(branch: GvRemoteBranch) {
         val dialog = RemoveRemoteBranchDialog(
-            String.format(resourceBundle().getString("Message.ConfirmToRemove"), branch.name))
+            String.format(resourceBundle().getString("Message.ConfirmToRemove"), branch.name)
+        )
         if (dialog.showDialog()) {
             try {
-                MainWindow.runTask { -> branch.remove() }
-            } catch (e:NotMergedException) {
+                MainWindow.runTask { monitor ->
+                    branch.remove(monitor)
+                }
+            } catch (e: NotMergedException) {
                 ErrorDialog(resourceBundle().getString("Message.BranchNotMerged").format(branch.name)).showDialog()
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()

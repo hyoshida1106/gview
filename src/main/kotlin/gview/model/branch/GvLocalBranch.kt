@@ -3,7 +3,6 @@ package gview.model.branch
 import gview.model.GvProgressMonitor
 import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.BranchConfig
-import org.eclipse.jgit.lib.Constants
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.SubmoduleConfig
 import java.lang.ref.WeakReference
@@ -63,10 +62,10 @@ class GvLocalBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, r
         repository.branchChanged()
     }
 
-    fun push(remote: String = Constants.DEFAULT_REMOTE_NAME, tag: Boolean = true) {
+    fun push(tag: Boolean = true) {
         val command = repository.gitCommand.push()
             .add(name)
-            .setRemote(remote)
+            .setRemote(repository.remoteName)
         if (tag) {
             command.setPushTags()
         }

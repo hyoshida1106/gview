@@ -168,11 +168,12 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
          * @param[remoteUrl]        クローンするリモートリポジトリのURL
          * @param[isBare]           生成するリポジトリがBareの場合、trueを指定する
          */
-        fun clone(directoryPath: String, remoteUrl: String, isBare: Boolean = false) {
+        fun clone(monitor: ProgressMonitor, directoryPath: String, remoteUrl: String, isBare: Boolean = false) {
             currentRepository?.jgitRepository?.close()
             currentRepositoryProperty.set(
                 GvRepository(
                     Git.cloneRepository()
+                        .setProgressMonitor(monitor)
                         .setURI(remoteUrl)
                         .setDirectory(File(directoryPath))
                         .setBare(isBare)
@@ -181,18 +182,17 @@ class GvRepository private constructor(private val jgitRepository: Repository) {
                 )
             )
         }
+    }
 
-        fun fetch(monitor: ProgressMonitor, remote: String? = null, prune: Boolean = false) {
-            val repository = currentRepository ?: return
-            val remoteName = remote
-                ?: if (repository.remoteConfigList.isNotEmpty()) repository.remoteConfigList[0].name else "origin"  // NON-NLS
-            repository.gitCommand.fetch()
-                .setProgressMonitor(monitor)
-                .setRemote(remoteName)
-                .setRemoveDeletedRefs(prune)
-                .call()
-            open(repository.absolutePath)
-        }
+    val remoteName: String get() =
+        if (remoteConfigList.isNotEmpty()) remoteConfigList[0].name else Constants.DEFAULT_REMOTE_NAME
 
+    fun fetch(monitor: ProgressMonitor = NullProgressMonitor.INSTANCE, remote: String = remoteName, prune: Boolean = false) {
+        gitCommand.fetch()
+            .setProgressMonitor(monitor)
+            .setRemote(remote)
+            .setRemoveDeletedRefs(prune)
+            .call()
+        branchChanged()
     }
 }

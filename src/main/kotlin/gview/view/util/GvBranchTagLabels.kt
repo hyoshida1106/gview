@@ -21,7 +21,7 @@ class GvBranchTagLabels(model: GvCommit): ArrayList<Label>() {
         }
         //リモートブランチ
         model.remoteBranches.forEach {
-            val label = Label("remote/${it.name}")
+            val label = Label("remote/${it.name}")          //NON-NLS
             label.style = CSS.remoteBranchLabelStyle
             add(label)
         }

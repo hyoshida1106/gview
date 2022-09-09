@@ -21,11 +21,11 @@ import javafx.scene.layout.HBox
 class BranchListCtrl: GvBaseWindowCtrl() {
     @FXML private lateinit var branchTree: TreeView<GvBranch>
 
-    private var localTreeRoot  = RootItem("Local")
-    private var remoteTreeRoot = RootItem("Remote")
+    private var localTreeRoot  = RootItem("Local")          //NON-NLS
+    private var remoteTreeRoot = RootItem("Remote")         //NON-NLS
 
     fun initialize() {
-        val root = RootItem("Branch Root" )
+        val root = RootItem("Branch Root" )                 //NON-NLS
         root.children.setAll(localTreeRoot, remoteTreeRoot)
 
         branchTree.root = root
@@ -57,9 +57,10 @@ class BranchListCtrl: GvBaseWindowCtrl() {
         val branchList = repository.branches
         updateLocalBranches(branchList.localBranchList.value)
         updateRemoteBranches(branchList.remoteBranchList.value)
-//        branchList.localBranchList.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
-//        branchList.remoteBranchList.addListener { _ -> updateRemoteBranches(branchList.remoteBranchList.value) }
-        branchList.currentBranch.addListener { _ -> updateLocalBranches(branchList.localBranchList.value) }
+        branchList.remoteBranchList.addListener { _, _, _
+            -> Platform.runLater{ updateRemoteBranches(branchList.remoteBranchList.value) }}
+        branchList.currentBranch.addListener { _, _, _
+            -> Platform.runLater { updateLocalBranches(branchList.localBranchList.value) }}
         branchTree.selectionModel.clearSelection()
         branchTree.isVisible = true
     }

@@ -1,9 +1,8 @@
 package gview.model.branch
 
-import gview.model.GvProgressMonitor
-import gview.model.GvRepository
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.lib.ProgressMonitor
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.transport.RefSpec
 import java.lang.ref.WeakReference
@@ -36,7 +35,7 @@ class GvRemoteBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, 
      */
     var localBranch = WeakReference<GvLocalBranch>(null)
 
-    fun checkout(monitor: GvProgressMonitor) {
+    fun checkout(monitor: ProgressMonitor) {
         repository.gitCommand.checkout()
             .setProgressMonitor(monitor)
             .setName(name)
@@ -50,14 +49,24 @@ class GvRemoteBranch(branchList: GvBranchList, ref: Ref) : GvBranch(branchList, 
     /**
      * ブランチの削除
      */
-    fun remove() {
+    fun remove(monitor: ProgressMonitor) {
         if(repository.remoteConfigList.isEmpty()) return
+        val git = repository.gitCommand
+        //ローカルブランチの削除
+        git.branchDelete()
+            .setBranchNames(name)
+            .setForce(true)
+            .call()
+        //リモートブランチの削除
         val remoteName = repository.remoteConfigList[0].name
         val destination = path.replace(Constants.R_REMOTES + remoteName + "/", Constants.R_HEADS)
         val refSpec = RefSpec().setSource(null).setDestination(destination)
-        val git = repository.gitCommand
-        git.branchDelete().setBranchNames(name).setForce(true).call()
-        git.push().setRefSpecs(refSpec).setRemote(remoteName).call()
-        repository.branchChanged()
+        git.push()
+            .setProgressMonitor(monitor)
+            .setRefSpecs(refSpec)
+            .setRemote(remoteName)
+            .call()
+        //ブランチ更新
+        repository.fetch()
     }
 }

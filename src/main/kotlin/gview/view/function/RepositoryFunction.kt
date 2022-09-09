@@ -22,7 +22,7 @@ object RepositoryFunction {
         if (dialog.showDialog() == ButtonType.OK) {
             try {
                 MainWindow.runTask { monitor ->
-                    GvRepository.fetch(monitor, dialog.remote, dialog.prune)
+                    repository.fetch(monitor, dialog.remote, dialog.prune)
                 }
             } catch (e: Exception) {
                 ErrorDialog(e).showDialog()
@@ -66,8 +66,8 @@ object RepositoryFunction {
         val dialog = CloneRepositoryDialog("", "")
         if (dialog.showDialog() != ButtonType.OK) return
         try {
-            MainWindow.runTask { ->
-                GvRepository.clone(dialog.localPath, dialog.remotePath, dialog.bareRepo)
+            MainWindow.runTask { monitor ->
+                GvRepository.clone(monitor, dialog.localPath, dialog.remotePath, dialog.bareRepo)
                 SystemModal.addLastOpenedFile(dialog.localPath)
             }
         } catch (e: Exception) {

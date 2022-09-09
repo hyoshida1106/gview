@@ -2,10 +2,9 @@ package gview.model
 
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
-import org.eclipse.jgit.lib.ProgressMonitor
+import org.eclipse.jgit.lib.EmptyProgressMonitor
 
-
-class GvProgressMonitor: ProgressMonitor {
+class GvProgressMonitor: EmptyProgressMonitor() {
 
     val scaleProperty = SimpleIntegerProperty(0)
     val valueProperty = SimpleIntegerProperty(0)
@@ -16,9 +15,6 @@ class GvProgressMonitor: ProgressMonitor {
     val value get() = valueProperty.value ?: 0
     var cancel = false
 
-    override fun start(totalTasks: Int) {
-    }
-
     override fun beginTask(title: String?, totalWork: Int) {
         titleProperty.value = title
         scaleProperty.value = totalWork
@@ -27,9 +23,6 @@ class GvProgressMonitor: ProgressMonitor {
 
     override fun update(completed: Int) {
         valueProperty.value += completed
-    }
-
-    override fun endTask() {
     }
 
     override fun isCancelled(): Boolean {
