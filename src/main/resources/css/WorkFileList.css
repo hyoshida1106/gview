@@ -1,0 +1,17 @@
+.WorkFileList {
+    -fx-padding: 0;
+    -fx-background-color: -background-color;
+}
+.table-view {
+    -fx-padding: 5 8 5 8;
+    -fx-background-color: -background-color;
+}
+.TitleClass {
+    -fx-padding: 10 0 0 10;
+}
+.TypeColumn {
+    -fx-alignment: CENTER;
+}
+.BottomBox {
+    -fx-padding: 0 10 10 10;
+}

@@ -1,0 +1,16 @@
+.MenuBar {
+    -fx-background-color: -background-color;
+    -fx-effect: innershadow(three-pass-box, gray, 3, 0.5, 1, 1);
+}
+.menu-item {
+    -fx-background-color: -background-color;
+}
+.menu-item:focused {
+     -fx-background-color: -selected-color;
+}
+.menu-item FontIcon {
+    -fx-icon-color: -fx-selection-bar;
+}
+.menu-item:focused FontIcon {
+    -fx-icon-color: -fx-selection-bar-text;
+}

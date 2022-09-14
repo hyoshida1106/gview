@@ -1,0 +1,7 @@
+.Title {
+    -fx-font-weight: bold;
+    -fx-padding: 1;
+}
+.Message {
+    -fx-padding: 1;
+}

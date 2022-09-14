@@ -1,0 +1,5 @@
+.SelectBranchDialog {
+    -fx-background-color: -background-color;
+    -fx-border-width: 0;
+    -fx-padding: 10;
+}

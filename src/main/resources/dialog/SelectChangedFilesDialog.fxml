@@ -7,7 +7,7 @@
     <columns>
         <TableColumn fx:id="fileTypeColumn" editable="false" reorderable="false" text="%Term.FileType" minWidth="50"/>
         <TableColumn fx:id="filePathColumn" editable="false" reorderable="false" text="%Term.FilePath"/>
-        <TableColumn fx:id="fileCheckColumn" reorderable="false" minWidth="30" maxWidth="30">
+        <TableColumn fx:id="fileCheckColumn" reorderable="false" sortable="false" minWidth="30" maxWidth="30">
             <graphic>
                 <CheckBox fx:id="selAllCheckBox" selected="true"/>
             </graphic>

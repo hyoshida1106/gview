@@ -10,75 +10,63 @@ import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.SeparatorMenuItem
-import org.jetbrains.annotations.NonNls
 import java.lang.Exception
 
 class CommitRowContextMenu(private val model: GvCommit): ContextMenu() {
 
     /* このコミットをチェックアウトする... */
-    @NonNls
     private val checkoutMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Checkout"),
-        iconLiteral = "mdi2s-source-branch"
+        iconLiteral = "mdi2s-source-branch"                 // NON-NLS
     ) { checkoutFromThisCommit() }
 
     /* このコミットからブランチを作成する... */
-    @NonNls
     private val createBranchMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.CreateBranch"),
-        iconLiteral = "mdi2s-source-branch"
+        iconLiteral = "mdi2s-source-branch"                 // NON-NLS
     ) { createNewBranchFromThisCommit() }
 
     /* このコミットをヘッドへマージする... */
-    @NonNls
     private val mergeMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Merge"),
-        iconLiteral = "mdi2s-source-merge"
+        iconLiteral = "mdi2s-source-merge"                  // NON-NLS
     ) { mergeThisCommitToHead() }
 
     /* このコミットにタグを作成する... */
-    @NonNls
     private val tagMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Tag"),
-        iconLiteral = "mdi2t-tag-outline"
+        iconLiteral = "mdi2t-tag-outline"                   // NON-NLS
     ) { }
 
     /* リベース/インタラクティブなリベース... */
-    @NonNls
     private val rebaseMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Rebase"),
-        iconLiteral = "mdi2s-source-merge"
+        iconLiteral = "mdi2s-source-merge"                   // NON-NLS
     ) { }
 
     /* ここまでリセット */
-    @NonNls
     private val resetMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Reset"),
-        iconLiteral = "mdi2r-rewind"
+        iconLiteral = "mdi2r-rewind"                        // NON-NLS
     ) { }
 
     /* リバース */
-    @NonNls
     private val reverseMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.Reverse"),
-        iconLiteral = "mdi2r-restore"
+        iconLiteral = "mdi2r-restore"                       // NON-NLS
     ) { }
 
     /* パッチ生成 */
-    @NonNls
     private val patchMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.CreatePatch"),
-        iconLiteral = "mdi2d-download-outline"
+        iconLiteral = "mdi2d-download-outline"              // NON-NLS
     ) { }
 
     /* チェリーピック */
-    @NonNls
     private val cherryPickMenu = GvMenuItem(
         text = resourceBundle().getString("CommitRowContextMenu.CherryPick"),
-        iconLiteral = "mdi2s-source-commit-local"
+        iconLiteral = "mdi2s-source-commit-local"           // NON-NLS
     ) { }
-
-//    private val branches = model.localBranches.filter { !it.isCurrentBranch }
 
     init {
         items.setAll(

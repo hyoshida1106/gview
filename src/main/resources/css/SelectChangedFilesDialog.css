@@ -1,0 +1,11 @@
+.FileList {
+    -fx-background-color: -background-color;
+}
+.FileType {
+    -fx-alignment: CENTER;
+}
+.FilePath {
+}
+.FileCheck {
+    -fx-alignment: CENTER;
+}

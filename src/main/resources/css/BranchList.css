@@ -1,0 +1,14 @@
+.tree-view {
+    -fx-background-color: -background-color;
+    -fx-padding: 0;
+}
+.CurrentBranch {
+    -fx-font-weight: bold;
+}
+.tree-cell {
+    -fx-padding: 2 0;
+}
+.check-box {
+    -fx-padding: 0 0 0 2;
+}
+

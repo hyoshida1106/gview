@@ -2,7 +2,6 @@ package gview.view.menu
 
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCodeCombination
-import org.jetbrains.annotations.NonNls
 import org.kordamp.ikonli.javafx.FontIcon
 
 class GvSubMenu(
@@ -13,8 +12,7 @@ class GvSubMenu(
     vararg subMenuList: GvMenuItem
 ) : Menu(text) {
 
-    @NonNls
-    private val boldStyle = "-fx-font-weight: bold;"
+    private val boldStyle = "-fx-font-weight: bold;"           // NON-NLS
 
     init {
         if (bold) {

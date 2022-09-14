@@ -13,7 +13,10 @@ import javafx.scene.Parent
  */
 open class GvBaseWindow<Controller>(formPath: String, val controller: Controller) where Controller : GvBaseWindowCtrl {
 
-    private val cssResource = javaClass.getResource("/Gview.css")   /* NON-NLS */
+    /**
+     * 継承クラスの名称
+     */
+    private val className: String = javaClass.name.substringAfterLast(".")
 
     /**
      * ルートウィンドウ
@@ -27,8 +30,12 @@ open class GvBaseWindow<Controller>(formPath: String, val controller: Controller
         val loader = FXMLLoader(javaClass.getResource(formPath), resourceBundle())
         loader.setController(controller)
         root = loader.load()
-        root.stylesheets.add(cssResource.toExternalForm())
-        root.styleClass.add("GvBaseWindow")
-        root.styleClass.add(javaClass.name.substringAfterLast("."))
+        root.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())    //NON-NLS
+        val localCSS = javaClass.getResource("/css/${className}.css")                 //NON-NLS
+        if(localCSS != null) {
+            root.stylesheets.add(localCSS.toExternalForm())
+        }
+        root.styleClass.add("GvBaseWindow")                                           //NON-NLS
+        root.styleClass.add(className)
     }
 }

@@ -4,7 +4,6 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.control.MenuItem
 import javafx.scene.input.KeyCodeCombination
-import org.jetbrains.annotations.NonNls
 import org.kordamp.ikonli.javafx.FontIcon
 
 /**
@@ -24,8 +23,7 @@ class GvMenuItem(
     eventHandler: EventHandler<ActionEvent>
 ) : MenuItem(text) {
 
-    @NonNls
-    private val boldStyle = "-fx-font-weight: bold;"
+    private val boldStyle = "-fx-font-weight: bold;"           // NON-NLS
 
     init {
         if (bold) {

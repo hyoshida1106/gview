@@ -1,19 +1,18 @@
 package gview.view.dialog
 
+import gview.resourceBundle
 import gview.view.framework.GvDialogInterface
 import gview.view.window.MainWindow
 import javafx.scene.control.TextInputDialog
 
-class TagSearchDialog
-    : TextInputDialog(),
-        GvDialogInterface<String?> {
+class TagSearchDialog : TextInputDialog(), GvDialogInterface<String?> {
 
     init {
         initOwner(MainWindow.root.scene.window)
-        title = "タグ検索"
+        title = resourceBundle().getString("TagSearchDialog.Title")
         graphic = null
         headerText = null
-        contentText = "検索するタグ"
+        contentText = resourceBundle().getString("TagSearchDialog.Content")
     }
 
     override fun showDialog(): String? {

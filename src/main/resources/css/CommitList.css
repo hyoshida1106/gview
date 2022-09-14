@@ -1,0 +1,17 @@
+.CommitFileList {
+    -fx-background-color: -background-color;
+}
+.column-header,
+.column-header-background .filler {
+    -fx-pref-height: 14;
+}
+.header-row {
+    -fx-background-color: #ddeedd;
+}
+.header-row:selected {
+    -fx-background-color: -selected-color, -fx-background;
+}
+.table-cell {
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}

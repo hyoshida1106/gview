@@ -19,7 +19,10 @@ import javafx.scene.control.Dialog
 open class GvCustomDialog<Controller>(title: String, form: String, val controller: Controller, vararg buttons: ButtonType)
     : Dialog<ButtonType>(), GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
 
-    private val cssResource = javaClass.getResource("/Gview.css")   /* NON-NLS */
+    /**
+     * 継承クラスの名称
+     */
+    private val className: String = javaClass.name.substringAfterLast(".")
 
     /**
      * 初期化
@@ -35,9 +38,13 @@ open class GvCustomDialog<Controller>(title: String, form: String, val controlle
         dialogPane.content = loader.load()
 
         //StyleSheetを登録
-        dialogPane.stylesheets.add(cssResource.toExternalForm())
-        dialogPane.styleClass.add("GvCustomDialog")
-        dialogPane.content.styleClass.add(javaClass.name.substringAfterLast("."))
+        dialogPane.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())        //NON-NLS
+        val localCSS = javaClass.getResource("/css/${className}.css")                           //NON-NLS
+        if(localCSS != null) {
+            dialogPane.stylesheets.add(localCSS.toExternalForm())
+        }
+        dialogPane.styleClass.add("GvCustomDialog")                                             //NON-NLS
+        dialogPane.content.styleClass.add(className)
 
         // "X"で閉じないようにする
         dialogPane.scene.window.onCloseRequest = EventHandler { it.consume() }

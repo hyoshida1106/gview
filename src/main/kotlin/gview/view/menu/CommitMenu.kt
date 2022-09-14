@@ -7,54 +7,46 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import org.jetbrains.annotations.NonNls
 
 class CommitMenu: Menu(resourceBundle().getString("CommitMenu.Title")) {
 
-    @NonNls
     private val checkOutMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.Checkout"),
-        iconLiteral = "mdi2s-source-branch",
+        iconLiteral = "mdi2s-source-branch",            // NON-NLS
         bold = true
     ) { }
 
-    @NonNls
     private val branchMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.Branch"),
         accelerator = KeyCodeCombination(
             KeyCode.B,
             KeyCombination.SHORTCUT_DOWN),
-        iconLiteral = "mdi2s-source-branch"
+        iconLiteral = "mdi2s-source-branch"            // NON-NLS
     ) { }
 
-    @NonNls
     private val mergeMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.Merge"),
         accelerator = KeyCodeCombination(
             KeyCode.M,
             KeyCombination.SHORTCUT_DOWN),
-        iconLiteral = "mdi2s-source-merge"
+        iconLiteral = "mdi2s-source-merge"            // NON-NLS
     ) { }
 
-    @NonNls
     private val tagMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.Tag"),
-        iconLiteral = "mdi2t-tag-outline"
+        iconLiteral = "mdi2t-tag-outline"            // NON-NLS
     ) { }
 
     /* リベース/インタラクティブなリベース... */
-    @NonNls
     private val rebaseMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.Rebase"),
-        iconLiteral = "mdi2s-source-merge"
+        iconLiteral = "mdi2s-source-merge"           // NON-NLS
     ) { }
 
-    @NonNls
     private val tagSearchMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.TagSearch")
     ) { searchCommitByTagName() }
 
-    @NonNls
     private val commentSearchMenuItem = GvMenuItem(
         text = resourceBundle().getString("CommitMenu.CommentSearch")
     ) { searchCommitByComment() }

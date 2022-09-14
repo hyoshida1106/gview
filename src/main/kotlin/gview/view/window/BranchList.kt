@@ -1,4 +1,4 @@
-package gview.view.branchlist
+package gview.view.window
 
 import gview.view.framework.GvBaseWindow
 

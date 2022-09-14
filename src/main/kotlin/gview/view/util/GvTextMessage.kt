@@ -14,24 +14,21 @@ import javafx.scene.layout.Region
 class GvTextMessage(title:String, message:String): HBox() {
 
     init {
+        val localCSS = javaClass.getResource("/css/TextMessage.css")                 //NON-NLS
+        if(localCSS != null) {
+            stylesheets.add(localCSS.toExternalForm())
+        }
+        styleClass.add("TextMessage")               // NON-NLS
+
         val titleLabel   = Label(title)
-        titleLabel.style = CSS.titleStringStyle
         titleLabel.minWidth = Region.USE_PREF_SIZE
+        titleLabel.styleClass.add("Title")          // NON-NLS
+        children.add(titleLabel)
+
         val messageLabel = Label(message)
-        messageLabel.style = CSS.messageStringStyle
         setHgrow(titleLabel, Priority.NEVER)
-        children.addAll(titleLabel, messageLabel)
-    }
-
-    object CSS {
-        val titleStringStyle = """
-            -fx-font-weight: bold;
-            -fx-padding: 1;
-        """.trimIndent()
-
-        val messageStringStyle = """
-            -fx-padding: 1; 
-        """.trimIndent()
+        messageLabel.styleClass.add("Message")      // NON-NLS
+        children.add(messageLabel)
     }
 }
 

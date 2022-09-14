@@ -1,7 +1,7 @@
 package gview.view.commitlist
 
 import gview.view.menu.CommitRowContextMenu
-import gview.view.util.GvBranchTagLabels
+import gview.view.util.GvCommitLabel
 import gview.view.util.GvTextMessage
 import gview.model.commit.GvCommit
 import gview.resourceBundle
@@ -164,7 +164,7 @@ class CommitRowData(commitList: CommitListCtrl, val model: GvCommit) : AbstractC
             val row1 = GvTextMessage(resourceBundle().getString("Title.Date"), model.commitTime)
             val row2 = GvTextMessage(resourceBundle().getString("Title.Author"), model.author)
             val row3 = GvTextMessage(resourceBundle().getString("Title.Comment"), model.shortMessage)
-            row1.children.addAll(GvBranchTagLabels(model))
+            row1.children.addAll(GvCommitLabel(model))
             return Pair(VBox(row1, row2, row3), null)
         }
 

@@ -1,18 +1,19 @@
 package gview.view.menu
 
+import gview.resourceBundle
 import javafx.event.EventHandler
 import javafx.scene.control.Menu
 
-class HelpMenu: Menu("ヘルプ(_H)") {
+class HelpMenu: Menu(resourceBundle().getString("HelpMenu.Title")) {
 
     private val helpMenuItem = GvMenuItem(
-            text = "ヘルプ...",
-            iconLiteral = "mdi2h-help-circle-outline"
-    ) { onHelp() }
+            text = resourceBundle().getString("HelpMenu.Help"),
+            iconLiteral = "mdi2h-help-circle-outline"   // NON-NLS
+    ) {  }
 
     private val aboutMenuItem = GvMenuItem(
-            text = "プログラムについて..."
-    ) { onAbout() }
+            text = resourceBundle().getString("HelpMenu.Program")
+    ) {  }
 
     init {
         items.setAll(
@@ -23,14 +24,7 @@ class HelpMenu: Menu("ヘルプ(_H)") {
     }
 
     private fun onMyShowing() {
+        helpMenuItem.isDisable = true
         aboutMenuItem.isDisable = true
-    }
-
-    private fun onHelp() {
-        println("Help")
-    }
-
-    private fun onAbout() {
-        println("About")
     }
 }

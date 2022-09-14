@@ -12,9 +12,7 @@ import javafx.scene.control.TableView
 import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.control.cell.PropertyValueFactory
 
-class SelectUnStageFilesDialogCtrl
-    : GvCustomDialogCtrl() {
-
+class SelectUnStageFilesDialogCtrl: GvCustomDialogCtrl() {
     @FXML private lateinit var selAllCheckBox: CheckBox
     @FXML private lateinit var fileList: TableView<RowData>
     @FXML private lateinit var fileTypeColumn: TableColumn<RowData, String>
@@ -32,18 +30,15 @@ class SelectUnStageFilesDialogCtrl
 
     //初期化
     override fun initialize() {
+        fileList.styleClass.add("FileList")                                     //NON-NLS
 
-        fileList.selectionModel = null
-        fileList.style = CSS.fileListStyle
+        fileTypeColumn.cellValueFactory = PropertyValueFactory("type")          //NON-NLS
+        filePathColumn.cellValueFactory = PropertyValueFactory("path")          //NON-NLS
+        fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index -> fileList.items[index].check }
 
-        fileTypeColumn.cellValueFactory = PropertyValueFactory("type")
-        filePathColumn.cellValueFactory = PropertyValueFactory("path")
-        fileCheckColumn.cellFactory = CheckBoxTableCell.forTableColumn { index ->
-            fileList.items[index].check }
-
-        fileTypeColumn.style = CSS.fileTypeStyle
-        filePathColumn.style = CSS.filePathStyle
-        fileCheckColumn.style = CSS.fileCheckStyle
+        fileTypeColumn.styleClass.add("FileType")                               //NON-NLS
+        filePathColumn.styleClass.add("FilePath")                               //NON-NLS
+        fileCheckColumn.styleClass.add("FileCheck")                             //NON-NLS
 
         val currentRepository = GvRepository.currentRepository
         if(currentRepository != null) {
@@ -60,18 +55,4 @@ class SelectUnStageFilesDialogCtrl
     //選択されたファイル一覧
     val selectedFiles: List<GvCommitFile> get() =
         fileList.items.filter { it.check.value }.map { it.diffEntry }
-
-    //CSSスタイル定義
-    private object CSS {
-        val fileListStyle = """ 
-        """.trimIndent()
-        val fileTypeStyle = """
-            -fx-alignment: CENTER;
-        """.trimIndent()
-        val filePathStyle = """
-        """.trimIndent()
-        val fileCheckStyle = """
-            -fx-alignment: CENTER;
-        """.trimIndent()
-    }
 }

@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.control.ContextMenu
 import javafx.scene.layout.Pane
 import javafx.scene.layout.VBox
-import org.jetbrains.annotations.NonNls
 import java.text.DateFormat
 import java.util.*
 
@@ -21,8 +20,7 @@ class HeaderRowData(
     override val treeCellValue: CommitListCtrl.CellData = HeaderTreeCellData(commitList, model)
     override val infoCellValue: CommitListCtrl.CellData = HeaderInfoCellData(model)
 
-    @NonNls
-    override val styleClassName: String = "header-row"
+    override val styleClassName: String = "header-row"           // NON-NLS
 
     //コミットツリーセル
     inner class HeaderTreeCellData(private val commitList: CommitListCtrl, val model: GvWorkFileList) :

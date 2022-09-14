@@ -33,7 +33,7 @@ open class SerializableData(fileName: String) {
         return try {
             val out = ByteArrayOutputStream()
             FileInputStream(filePath).use { stream -> stream.copyTo(out) }
-            val str = out.toString("utf-8")
+            val str = out.toString("utf-8")         // NON-NLS
             if (str != null) { json.decodeFromString(serializer, str) } else { null }
         } catch(e: FileNotFoundException) {
             null

@@ -41,10 +41,10 @@ object WorkTreeFunction {
         var userName = GitConfigInfo.userName
         var mailAddress = GitConfigInfo.mailAddress
         while (userName.isEmpty() || mailAddress.isEmpty()) {
-            val dialog = UserNameDialog(userName, mailAddress)
-            if (dialog.showDialog() != ButtonType.OK) return
-            userName = dialog.userName
-            mailAddress = dialog.mailAddress
+            val userNameDialog = UserNameDialog(userName, mailAddress)
+            if (userNameDialog.showDialog() != ButtonType.OK) return
+            userName = userNameDialog.userName
+            mailAddress = userNameDialog.mailAddress
         }
         //対象ファイルを選択する
         val dialog = SelectCommitFilesDialog()

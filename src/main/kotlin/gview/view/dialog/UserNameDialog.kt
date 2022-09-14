@@ -11,7 +11,6 @@ class UserNameDialog(userName: String, mailAddress: String) : GvCustomDialog<Use
     UserNameDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {
-
     private val userNameProperty = SimpleStringProperty(userName)
     val userName: String get() = userNameProperty.value
 

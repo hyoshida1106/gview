@@ -1,7 +1,7 @@
 package gview.view.commitinfo
 
 import gview.view.framework.GvBaseWindowCtrl
-import gview.view.util.GvBranchTagLabels
+import gview.view.util.GvCommitLabel
 import gview.view.util.GvColumnAdjuster
 import gview.view.util.GvTextMessage
 import gview.model.commit.GvCommit
@@ -59,7 +59,7 @@ class CommitFileListCtrl: GvBaseWindowCtrl()  {
         if(model != null) {
             val labelList = TextFlow()
             labelList.styleClass.add("LabelList")
-            labelList.children.setAll(GvBranchTagLabels(model))
+            labelList.children.setAll(GvCommitLabel(model))
 
             commitProps.children.setAll(
                     GvTextMessage(resourceBundle().getString("Title.ID"), model.id.toString()),

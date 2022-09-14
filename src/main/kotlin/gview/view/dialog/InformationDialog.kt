@@ -1,5 +1,6 @@
 package gview.view.dialog
 
+import gview.resourceBundle
 import gview.view.framework.GvDialogInterface
 import gview.view.window.MainWindow
 import javafx.scene.control.Alert
@@ -10,7 +11,7 @@ class InformationDialog(message:String):
 
     override fun showDialog() {
         initOwner(MainWindow.root.scene.window)
-        title = "Information"
+        title = resourceBundle().getString("InformationDialog.Title")
         headerText = null
         showAndWait()
     }

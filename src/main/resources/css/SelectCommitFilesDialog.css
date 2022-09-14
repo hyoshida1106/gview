@@ -1,0 +1,17 @@
+.FileList {
+    -fx-background-color: -background-color;
+}
+.FileType {
+    -fx-alignment: CENTER;
+}
+.FilePath {
+}
+.FileCheck {
+    -fx-alignment: CENTER;
+}
+.CommitMessageLabel {
+    -fx-padding: 10 5 0 5;
+}
+.CommitMessageText {
+    -fx-background-color: "white";
+}

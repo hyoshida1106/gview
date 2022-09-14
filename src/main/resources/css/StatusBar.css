@@ -1,0 +1,6 @@
+.StatusBar {
+    -fx-background-color: -background-color;
+    -fx-effect: innerShadow(three-pass-box, gray, 3, 0.5, 1, 1);
+    -fx-padding: 3 10;
+    -fx-spacing: 10;
+}

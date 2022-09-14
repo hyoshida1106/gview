@@ -11,54 +11,49 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
-import org.jetbrains.annotations.NonNls
 
 class FileMenu: Menu(resourceBundle().getString("FileMenu.Title")) {
 
     /* リポジトリを開く(_O)... */
-    @NonNls
     private val openMenu = GvMenuItem(
         text = resourceBundle().getString("FileMenu.OpenRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.O,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2f-folder-open-outline"
+        iconLiteral = "mdi2f-folder-open-outline"           // NON-NLS
     ) {
         RepositoryFunction.doOpen()
     }
 
     /* 新規リポジトリ(_N)... */
-    @NonNls
     private val createMenu = GvMenuItem(
         text = resourceBundle().getString("FileMenu.CreateNewRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.N,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2f-folder-plus-outline"
+        iconLiteral = "mdi2f-folder-plus-outline"           // NON-NLS
     ) {
         RepositoryFunction.doCreate()
     }
 
     /* クローン(_C)... */
-    @NonNls
     private val cloneMenu = GvMenuItem(
         text = resourceBundle().getString("FileMenu.CloneRepository"),
         accelerator = KeyCodeCombination(
             KeyCode.C,
             KeyCombination.SHORTCUT_DOWN
         ),
-        iconLiteral = "mdi2f-folder-download-outline"
+        iconLiteral = "mdi2f-folder-download-outline"       // NON-NLS
     ) {
         RepositoryFunction.doClone()
     }
 
     /* 終了(_X) */
-    @NonNls
     private val quitMenu = GvMenuItem(
         text = resourceBundle().getString("FileMenu.Quit"),
-        iconLiteral = "mdi2s-stop-circle-outline"
+        iconLiteral = "mdi2s-stop-circle-outline"           // NON-NLS
     ) {
         GvApplication.confirmToQuit()
     }

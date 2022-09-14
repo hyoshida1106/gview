@@ -12,7 +12,6 @@ import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.stage.Stage
 import org.eclipse.jgit.errors.LockFailedException
-import org.jetbrains.annotations.NonNls
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -107,5 +106,4 @@ fun main(args: Array<String>) {
 /**
  * リソースバンドルを参照するためのグローバルインスタンス
  */
-@NonNls
-fun resourceBundle(): ResourceBundle = ResourceBundle.getBundle("Gview")
+fun resourceBundle(): ResourceBundle = ResourceBundle.getBundle("Gview")              // NON-NLS

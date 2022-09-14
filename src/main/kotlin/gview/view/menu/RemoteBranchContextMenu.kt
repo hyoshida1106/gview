@@ -5,23 +5,20 @@ import gview.resourceBundle
 import gview.view.function.BranchFunction
 import javafx.event.EventHandler
 import javafx.scene.control.ContextMenu
-import org.jetbrains.annotations.NonNls
 
 
 class RemoteBranchContextMenu(val model: GvRemoteBranch) : ContextMenu() {
 
     /* このブランチをチェックアウト */
-    @NonNls
     private val checkOutMenuItem = GvMenuItem(
         text = resourceBundle().getString("RemoteBranchContextMenu.Checkout"),
-        iconLiteral = "mdi2s-source-branch-check",
+        iconLiteral = "mdi2s-source-branch-check",          // NON-NLS
     ) { BranchFunction.doCheckout(model) }
 
     /* 削除 */
-    @NonNls
     private val removeMenuItem = GvMenuItem(
         text = resourceBundle().getString("RemoteBranchContextMenu.Remove"),
-        iconLiteral = "mdi2d-delete"
+        iconLiteral = "mdi2d-delete"                       // NON-NLS
     ) { BranchFunction.doRemove(model) }
 
     init {
