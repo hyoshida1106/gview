@@ -1,6 +1,5 @@
-package gview.model.branch
+package gview.model
 
-import gview.model.GvProgressMonitor
 import javafx.beans.property.SimpleBooleanProperty
 import org.eclipse.jgit.lib.BranchConfig
 import org.eclipse.jgit.lib.Ref

@@ -12,11 +12,10 @@ import javafx.scene.control.Dialog
  * カスタムダイアログ
  *
  * @param title         ダイアログのタイトル文字列
- * @param form          FXMLファイルのパス
  * @param controller    コントローラインスタンス
  * @param buttons       表示するボタン
  */
-open class GvCustomDialog<Controller>(title: String, form: String, val controller: Controller, vararg buttons: ButtonType)
+open class GvCustomDialog<Controller>(title: String, val controller: Controller, vararg buttons: ButtonType)
     : Dialog<ButtonType>(), GvDialogInterface<ButtonType?> where Controller : GvCustomDialogCtrl {
 
     /**
@@ -28,18 +27,21 @@ open class GvCustomDialog<Controller>(title: String, form: String, val controlle
      * 初期化
      */
     init {
+        val formPath = "/dialog/${className}.fxml"              //NON-NLS
+        val cssPath  = "/dialog/${className}.css"               //NON-NLS
+
         //タイトルとボタンを追加する
         this.title = title
         dialogPane.buttonTypes.addAll(buttons)
 
         //FXMLファイルをロードして、コントローラ参照を設定する
-        val loader = FXMLLoader(javaClass.getResource(form), resourceBundle())
+        val loader = FXMLLoader(javaClass.getResource(formPath), resourceBundle())
         loader.setController(controller)
         dialogPane.content = loader.load()
 
         //StyleSheetを登録
         dialogPane.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())        //NON-NLS
-        val localCSS = javaClass.getResource("/css/${className}.css")                           //NON-NLS
+        val localCSS = javaClass.getResource(cssPath)
         if(localCSS != null) {
             dialogPane.stylesheets.add(localCSS.toExternalForm())
         }

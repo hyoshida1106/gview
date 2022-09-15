@@ -1,6 +1,5 @@
-package gview.model.commit
+package gview.model
 
-import gview.model.GvRepository
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.events.RepositoryEvent
 import org.eclipse.jgit.events.RepositoryListener

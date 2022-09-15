@@ -1,6 +1,6 @@
 package gview.view.dialog
 
-import gview.model.branch.GvLocalBranch
+import gview.model.GvLocalBranch
 import gview.view.framework.GvCustomDialogCtrl
 import gview.view.util.GvColumnAdjuster
 import javafx.beans.property.SimpleBooleanProperty

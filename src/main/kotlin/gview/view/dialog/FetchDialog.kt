@@ -7,7 +7,6 @@ import org.eclipse.jgit.transport.RemoteConfig
 
 class FetchDialog(remoteConfigList: List<RemoteConfig>) : GvCustomDialog<FetchDialogCtrl>(
     resourceBundle().getString("FetchDialog.Title"),
-    "/dialog/FetchDialog.fxml",         // NON-NLS
     FetchDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {

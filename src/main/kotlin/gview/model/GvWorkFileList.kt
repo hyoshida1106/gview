@@ -1,9 +1,5 @@
-package gview.model.workfile
+package gview.model
 
-import gview.model.GvRepository
-import gview.model.commit.GvCommitFile
-import gview.model.commit.GvConflictFile
-import gview.model.commit.GvModifiedFile
 import gview.resourceBundle
 import gview.view.dialog.InformationDialog
 import javafx.beans.property.SimpleObjectProperty

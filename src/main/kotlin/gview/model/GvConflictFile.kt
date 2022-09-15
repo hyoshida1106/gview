@@ -1,4 +1,4 @@
-package gview.model.commit
+package gview.model
 
 import org.eclipse.jgit.dircache.DirCacheEntry
 

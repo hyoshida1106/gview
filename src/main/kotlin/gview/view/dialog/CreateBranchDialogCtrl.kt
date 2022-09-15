@@ -2,8 +2,8 @@ package gview.view.dialog
 
 import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
-import gview.model.branch.GvLocalBranch
-import gview.model.commit.GvCommit
+import gview.model.GvLocalBranch
+import gview.model.GvCommit
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -20,7 +20,7 @@ class CreateBranchDialogCtrl
     @FXML private lateinit var checkout: CheckBox
     private val selectorGroup = ToggleGroup()
 
-    private lateinit var branchMap: Map<String,GvLocalBranch>
+    private lateinit var branchMap: Map<String, GvLocalBranch>
     private lateinit var tagMap: Map<String, GvCommit>
 
     //OKボタンの無効を指示するプロパティ

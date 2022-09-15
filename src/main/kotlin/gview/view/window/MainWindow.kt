@@ -6,7 +6,7 @@ import gview.view.framework.GvBaseWindow
 /**
  * メインウィンドウオブジェクト
  */
-object MainWindow: GvBaseWindow<MainWindowCtrl>("/window/MainWindow.fxml", MainWindowCtrl()) {      // NON-NLS
+object MainWindow: GvBaseWindow<MainWindowCtrl>(MainWindowCtrl()) {
     fun runTask(function: () -> Unit) {
         controller.runTask(function)
     }

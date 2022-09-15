@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType
 
 class CreateBranchDialog : GvCustomDialog<CreateBranchDialogCtrl>(
     resourceBundle().getString("CreateBranchDialog.Title"),
-    "/dialog/CreateBranchDialog.fxml",      // NON-NLS
     CreateBranchDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {

@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType
 
 class CloneRepositoryDialog(remotePath: String, localPath: String) : GvCustomDialog<CloneRepositoryDialogCtrl>(
     resourceBundle().getString("CloneRepositoryDialog.Title"),
-    "/dialog/CloneRepositoryDialog.fxml",   // NON-NLS
     CloneRepositoryDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {

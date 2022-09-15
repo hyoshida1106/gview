@@ -1,10 +1,7 @@
-package gview.view.commitinfo
+package gview.view.window
 
-import gview.view.commitlist.CommitList
-import gview.view.commitlist.CommitRowData
-import gview.view.commitlist.HeaderRowData
 import gview.view.framework.GvBaseWindowCtrl
-import gview.model.commit.GvCommit
+import gview.model.GvCommit
 import javafx.beans.property.SimpleObjectProperty
 import javafx.fxml.FXML
 import javafx.scene.control.SplitPane

@@ -1,4 +1,4 @@
-package gview.model.branch
+package gview.model
 
 import org.eclipse.jgit.api.CreateBranchCommand
 import org.eclipse.jgit.lib.Constants

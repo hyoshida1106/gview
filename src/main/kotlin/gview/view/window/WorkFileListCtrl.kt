@@ -1,10 +1,10 @@
-package gview.view.commitinfo
+package gview.view.window
 
 import gview.conf.SystemModal
 import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GvCommitFile
+import gview.model.GvCommitFile
 import gview.resourceBundle
 import gview.view.function.WorkTreeFunction
 import javafx.beans.property.SimpleIntegerProperty

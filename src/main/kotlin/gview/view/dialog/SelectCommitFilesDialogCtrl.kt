@@ -3,7 +3,7 @@ package gview.view.dialog
 import gview.model.GvRepository
 import gview.view.framework.GvCustomDialogCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GvCommitFile
+import gview.model.GvCommitFile
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.fxml.FXML
 import javafx.scene.control.*

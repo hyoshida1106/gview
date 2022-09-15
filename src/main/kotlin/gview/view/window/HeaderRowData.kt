@@ -1,7 +1,7 @@
-package gview.view.commitlist
+package gview.view.window
 
 import gview.view.util.GvTextMessage
-import gview.model.workfile.GvWorkFileList
+import gview.model.GvWorkFileList
 import gview.resourceBundle
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas

@@ -4,7 +4,7 @@ import gview.model.GvRepository
 import gview.view.dialog.CreateBranchByNameDialog
 import gview.view.dialog.ErrorDialog
 import gview.view.dialog.MergeDialog
-import gview.model.commit.GvCommit
+import gview.model.GvCommit
 import gview.resourceBundle
 import javafx.event.EventHandler
 import javafx.scene.control.ButtonType

@@ -7,8 +7,7 @@ import javafx.scene.Scene
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 
-class ProgressWindow(monitor: GvProgressMonitor):
-    GvBaseWindow<ProgressWindowCtrl>("/window/ProgressWindow.fxml", ProgressWindowCtrl(monitor)) {      // NON-NLS
+class ProgressWindow(monitor: GvProgressMonitor): GvBaseWindow<ProgressWindowCtrl>(ProgressWindowCtrl(monitor)) {
 
     private val stage = Stage()
 

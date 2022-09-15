@@ -7,7 +7,6 @@ import javafx.scene.control.ButtonType
 
 class UserNameDialog(userName: String, mailAddress: String) : GvCustomDialog<UserNameDialogCtrl>(
     resourceBundle().getString("UserNameDialog.Title"),
-    "/dialog/UserNameDialog.fxml",          // NON-NLS
     UserNameDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {

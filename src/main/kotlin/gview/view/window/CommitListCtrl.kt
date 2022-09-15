@@ -1,10 +1,10 @@
-package gview.view.commitlist
+package gview.view.window
 
 import gview.model.GvRepository
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvColumnAdjuster
-import gview.model.commit.GvCommitList
-import gview.model.workfile.GvWorkFileList
+import gview.model.GvCommitList
+import gview.model.GvWorkFileList
 import javafx.application.Platform
 import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.property.SimpleObjectProperty

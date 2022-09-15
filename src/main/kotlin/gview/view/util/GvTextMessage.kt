@@ -14,10 +14,6 @@ import javafx.scene.layout.Region
 class GvTextMessage(title:String, message:String): HBox() {
 
     init {
-        val localCSS = javaClass.getResource("/css/TextMessage.css")                 //NON-NLS
-        if(localCSS != null) {
-            stylesheets.add(localCSS.toExternalForm())
-        }
         styleClass.add("TextMessage")               // NON-NLS
 
         val titleLabel   = Label(title)

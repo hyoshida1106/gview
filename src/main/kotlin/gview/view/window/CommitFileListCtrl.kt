@@ -1,11 +1,11 @@
-package gview.view.commitinfo
+package gview.view.window
 
 import gview.view.framework.GvBaseWindowCtrl
 import gview.view.util.GvCommitLabel
 import gview.view.util.GvColumnAdjuster
 import gview.view.util.GvTextMessage
-import gview.model.commit.GvCommit
-import gview.model.commit.GvCommitFile
+import gview.model.GvCommit
+import gview.model.GvCommitFile
 import gview.resourceBundle
 import javafx.fxml.FXML
 import javafx.scene.control.TableColumn

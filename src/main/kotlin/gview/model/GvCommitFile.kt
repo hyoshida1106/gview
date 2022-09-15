@@ -1,4 +1,4 @@
-package gview.model.commit
+package gview.model
 
 import gview.resourceBundle
 
@@ -21,12 +21,12 @@ abstract class  GvCommitFile {
      * 更新タイプに対応する文字列
      */
     val typeName: String by lazy {  when (type) {
-        ModifiedType.ADD        -> resourceBundle().getString("Term.New")
-        ModifiedType.COPY       -> resourceBundle().getString("Term.Copy")
-        ModifiedType.DELETE     -> resourceBundle().getString("Term.Delete")
-        ModifiedType.MODIFY     -> resourceBundle().getString("Term.Modify")
-        ModifiedType.RENAME     -> resourceBundle().getString("Term.Rename")
-        ModifiedType.CONFLICT   -> resourceBundle().getString("Term.Conflict")
+        ModifiedType.ADD -> resourceBundle().getString("Term.New")
+        ModifiedType.COPY -> resourceBundle().getString("Term.Copy")
+        ModifiedType.DELETE -> resourceBundle().getString("Term.Delete")
+        ModifiedType.MODIFY -> resourceBundle().getString("Term.Modify")
+        ModifiedType.RENAME -> resourceBundle().getString("Term.Rename")
+        ModifiedType.CONFLICT -> resourceBundle().getString("Term.Conflict")
         else -> "???"
     } }
 

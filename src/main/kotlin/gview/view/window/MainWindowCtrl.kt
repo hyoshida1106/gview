@@ -2,8 +2,6 @@ package gview.view.window
 
 import gview.conf.SystemModal
 import gview.model.GvProgressMonitor
-import gview.view.commitinfo.CommitInfo
-import gview.view.commitlist.CommitList
 import gview.view.framework.GvBaseWindowCtrl
 import javafx.application.Platform
 import javafx.concurrent.Task

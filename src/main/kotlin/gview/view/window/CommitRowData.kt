@@ -1,9 +1,9 @@
-package gview.view.commitlist
+package gview.view.window
 
 import gview.view.menu.CommitRowContextMenu
 import gview.view.util.GvCommitLabel
 import gview.view.util.GvTextMessage
-import gview.model.commit.GvCommit
+import gview.model.GvCommit
 import gview.resourceBundle
 import javafx.scene.Node
 import javafx.scene.canvas.Canvas

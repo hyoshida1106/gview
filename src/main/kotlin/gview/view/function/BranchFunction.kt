@@ -1,8 +1,8 @@
 package gview.view.function
 
 import gview.model.GvRepository
-import gview.model.branch.GvLocalBranch
-import gview.model.branch.GvRemoteBranch
+import gview.model.GvLocalBranch
+import gview.model.GvRemoteBranch
 import gview.resourceBundle
 import gview.view.dialog.*
 import gview.view.window.MainWindow

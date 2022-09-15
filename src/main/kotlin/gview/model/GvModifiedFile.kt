@@ -1,6 +1,5 @@
-package gview.model.commit
+package gview.model
 
-import gview.model.GvRepository
 import org.eclipse.jgit.diff.DiffEntry
 
 /**

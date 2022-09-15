@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType
 
 class MergeDialog: GvCustomDialog<MergeDialogCtrl>(
     resourceBundle().getString("Message.MergeComment"),
-    "/dialog/MergeDialog.fxml",             // NON-NLS
     MergeDialogCtrl(),
     ButtonType.OK, ButtonType.CANCEL
 ) {

@@ -8,10 +8,9 @@ import javafx.scene.Parent
  * 基本ウィンドウクラス
  *
  * @constructor             プライマリコンストラクタ
- * @param[formPath]         FXMLファイルのパス
  * @param controller        コントローラインスタンス
  */
-open class GvBaseWindow<Controller>(formPath: String, val controller: Controller) where Controller : GvBaseWindowCtrl {
+open class GvBaseWindow<Controller>(val controller: Controller) where Controller : GvBaseWindowCtrl {
 
     /**
      * 継承クラスの名称
@@ -27,11 +26,14 @@ open class GvBaseWindow<Controller>(formPath: String, val controller: Controller
      * 初期化
      */
     init {
+        val formPath = "/window/${className}.fxml"              //NON-NLS
+        val cssPath  = "/window/${className}.css"               //NON-NLS
+
         val loader = FXMLLoader(javaClass.getResource(formPath), resourceBundle())
         loader.setController(controller)
         root = loader.load()
         root.stylesheets.add(javaClass.getResource("/Gview.css").toExternalForm())    //NON-NLS
-        val localCSS = javaClass.getResource("/css/${className}.css")                 //NON-NLS
+        val localCSS = javaClass.getResource(cssPath)
         if(localCSS != null) {
             root.stylesheets.add(localCSS.toExternalForm())
         }

@@ -1,8 +1,5 @@
-package gview.model.commit
+package gview.model
 
-import gview.model.GvRepository
-import gview.model.branch.GvLocalBranch
-import gview.model.branch.GvRemoteBranch
 import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.revplot.PlotCommit
 import org.eclipse.jgit.revplot.PlotLane

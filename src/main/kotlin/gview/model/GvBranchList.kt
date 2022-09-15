@@ -1,7 +1,5 @@
-package gview.model.branch
+package gview.model
 
-import gview.model.GvRepository
-import gview.model.commit.GvCommit
 import javafx.beans.property.SimpleObjectProperty
 import org.eclipse.jgit.api.ListBranchCommand
 import org.eclipse.jgit.events.RepositoryEvent

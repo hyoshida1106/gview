@@ -1,4 +1,4 @@
-package gview.view.commitlist
+package gview.view.window
 
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext

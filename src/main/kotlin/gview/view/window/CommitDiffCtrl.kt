@@ -1,7 +1,7 @@
-package gview.view.commitinfo
+package gview.view.window
 
 import gview.view.framework.GvBaseWindowCtrl
-import gview.model.commit.GvCommitFile
+import gview.model.GvCommitFile
 import javafx.fxml.FXML
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView

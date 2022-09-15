@@ -1,6 +1,6 @@
 package gview.view.menu
 
-import gview.model.branch.GvLocalBranch
+import gview.model.GvLocalBranch
 import gview.resourceBundle
 import gview.view.function.BranchFunction
 import javafx.event.EventHandler

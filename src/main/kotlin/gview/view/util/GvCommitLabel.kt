@@ -1,6 +1,6 @@
 package gview.view.util
 
-import gview.model.commit.GvCommit
+import gview.model.GvCommit
 import javafx.scene.control.Label
 
 /**
@@ -9,11 +9,8 @@ import javafx.scene.control.Label
  * @param model     表示するCommit情報
  */
 class GvCommitLabel(model: GvCommit): ArrayList<Label>() {
-    private val localCSS = javaClass.getResource("/css/CommitLabel.css")?.toExternalForm()   //NON-NLS
-
     inner class CommitLabel(text: String, style: String): Label(text) {
         init {
-            if(localCSS != null) stylesheets.add(localCSS)
             styleClass.addAll("CommitLabel", style)                                                     //NON-NLS
         }
     }

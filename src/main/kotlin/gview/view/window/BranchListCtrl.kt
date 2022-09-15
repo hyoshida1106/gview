@@ -2,9 +2,9 @@ package gview.view.window
 
 import gview.view.framework.GvBaseWindowCtrl
 import gview.model.GvRepository
-import gview.model.branch.GvBranch
-import gview.model.branch.GvLocalBranch
-import gview.model.branch.GvRemoteBranch
+import gview.model.GvBranch
+import gview.model.GvLocalBranch
+import gview.model.GvRemoteBranch
 import gview.view.function.BranchFunction
 import gview.view.menu.LocalBranchContextMenu
 import gview.view.menu.RemoteBranchContextMenu
